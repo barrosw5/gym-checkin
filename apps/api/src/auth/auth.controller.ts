@@ -5,9 +5,13 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Get,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
+import { JwtAuthGuard } from './jwt-auth.guard.js';
 
 @Controller('auth')
 export class AuthController {
@@ -30,5 +34,12 @@ export class AuthController {
     });
 
     return { message: 'Login successful', user };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Req() req: Request) {
+    const userId = (req.user as any).userId;
+    return this.authService.getProfile(userId);
   }
 }
