@@ -1,0 +1,34 @@
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { AuthService } from './auth.service.js';
+import type { Response } from 'express';
+
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
+    const user = await this.authService.validateUser(
+      body.username,
+      body.password,
+    );
+    const token = await this.authService.login(user);
+
+    // Set the JWT as an HttpOnly cookie
+    res.cookie('Authentication', token.access_token, {
+      httpOnly: true, // JS cannot read it
+      secure: false, // Set to true in production (HTTPS)
+      sameSite: 'lax',
+    });
+
+    return { message: 'Login successful', user };
+  }
+}

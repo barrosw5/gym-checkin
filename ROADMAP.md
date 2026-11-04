@@ -186,8 +186,8 @@ Sem datas fixas: avança no teu ritmo, mas só passa à fase seguinte quando a a
 ### Fase 1: Base (utilizadores e sessões)
 
 - [x] Schema Prisma e migrações (incluindo o índice parcial)
-- [ ] Seed com utilizadores e sessões falsas
-- [ ] Login/logout com cookie e rotas protegidas por papel
+- [x] Seed com utilizadores e sessões falsas
+- [x] Login/logout com cookie e rotas protegidas por papel
 - [ ] `GET /me` e o ecrã de login
 
 ### Fase 2: Check-in simples (método C) e ocupação
