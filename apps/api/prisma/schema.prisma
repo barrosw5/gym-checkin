@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  RECEPTION
+  ADMIN
+}
+
+enum SessionMethod {
+  SCREEN_QR
+  RECEPTION_APPROVAL
+  SIMPLE
+  MANUAL
+}
+
+enum ClosedBy {
+  USER
+  RECEPTION
+  AUTO
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  room         String
+  username     String    @unique
+  passwordHash String
+  role         Role      @default(STUDENT)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  entryAt   DateTime      @default(now())
+  exitAt    DateTime?
+  method    SessionMethod
+  closedBy  ClosedBy?
+}
+
+model CheckinRequest {
+  id          String   @id @default(uuid())
+  userId      String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+  status      String   @default("PENDING")
+  decidedById String?
+  decidedAt   DateTime?
+}
+
+model Settings {
+  id              String   @id @default("global")
+  capacity        Int      @default(10)
+  autoCloseHours  Int      @default(2)
+  enabledMethods  String[]
+  qrWindowSeconds Int      @default(30)
+}
