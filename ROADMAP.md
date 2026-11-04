@@ -188,7 +188,7 @@ Sem datas fixas: avança no teu ritmo, mas só passa à fase seguinte quando a a
 - [x] Schema Prisma e migrações (incluindo o índice parcial)
 - [x] Seed com utilizadores e sessões falsas
 - [x] Login/logout com cookie e rotas protegidas por papel
-- [ ] `GET /me` e o ecrã de login
+- [x] `GET /me` e o ecrã de login
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
