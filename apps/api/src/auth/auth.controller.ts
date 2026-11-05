@@ -42,4 +42,11 @@ export class AuthController {
     const userId = (req.user as any).userId;
     return this.authService.getProfile(userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('Authentication');
+    return { message: 'Logout successful' };
+  }
 }

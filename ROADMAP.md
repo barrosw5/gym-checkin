@@ -174,16 +174,15 @@ gym-checkin/
 
 Para manter um código limpo e escalável, o frontend (React) deve seguir estritamente esta arquitetura em camadas. O fluxo de dados é top-down:
 
-**Page (View) → Components (UI) → Hooks (State/Logic) → Services (Business Rules) → API (HTTP Calls)**
+**Page (View) → Components (UI + Hook) → Hooks (State/Logic) → Services (Business Rules) → API (HTTP Calls)**
 
 ### Estrutura de pastas (`apps/web/src/`)
-
-- `pages/`: as views (ex: Login, Dashboard). Apenas juntam componentes e chamam hooks.
-- `components/`: componentes de UI "burros" (ex: `LoginForm`, `Button`, `Navbar`). Recebem dados via props e não fazem chamadas HTTP.
-- `hooks/`: custom React hooks (ex: `useAuth.ts`). Gerem o estado (`useState`, `useEffect`) e chamam os serviços.
-- `core/services/`: lógica de negócio. Processam dados antes de enviar para a API ou depois de receber.
-- `core/api/`: chamadas HTTP puras usando `fetch` ou `axios` (ex: `authApi.ts`). Sem estado React.
-- `core/types/`: interfaces e tipos TypeScript partilhados.
+*   `pages/`: as views (ex: `pages/auth/page.tsx`, `pages/dashboard/page.tsx`). São "cascas vazias" que apenas importam os Componentes para montar a página (semelhante ao padrão do Next.js App Router).
+*   `components/`: componentes de UI (ex: `LoginForm`, `Dashboard`). **Devem chamar os seus próprios Hooks internamente** para gerir o estado e a lógica, mantendo a Page limpa.
+*   `hooks/`: custom React hooks (ex: `useAuth.ts`, `useDashboard.ts`). Gerem o estado (`useState`, `useEffect`), chamam os serviços e devolvem os dados para o componente.
+*   `core/services/`: lógica de negócio. Processam dados antes de enviar para a API ou depois de receber.
+*   `core/api/`: chamadas HTTP puras usando `fetch` ou `axios` (ex: `authApi.ts`). Sem estado React.
+*   `core/types/`: interfaces e tipos TypeScript partilhados.
 
 ## 12. Roadmap por fases
 
