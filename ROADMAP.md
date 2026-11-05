@@ -1,6 +1,8 @@
 # Plano do projeto: registo de entradas no ginásio (PIO XII)
 
-Plano de trabalho · versão 1 · 2 de novembro de 2026
+Plano de trabalho · versão 2 · 5 de novembro de 2026
+
+---
 
 ## 1. Resumo
 
@@ -76,29 +78,30 @@ Três peças, num único repositório:
 
 1. **App dos estudantes (React):** login, ecrã de scan/entrada/saída, contador ao vivo, estatísticas públicas e histórico pessoal.
 2. **Painel de receção/admin (React, mesma app com rotas protegidas por papel):** ecrã do QR dinâmico, lista de pedidos pendentes, ocupação atual, correção de sessões, gestão de utilizadores.
-3. **API + base de dados (TypeScript no Node):** autenticação, regras de negócio, estatísticas, tempo real.
+3. **API + base de dados (NestJS + Prisma + PostgreSQL):** autenticação, regras de negócio, estatísticas, tempo real.
 
-Fluxo geral: `Telemóvel / PC da receção  →  API REST  →  PostgreSQL`, com a API a enviar atualizações em tempo real (Server-Sent Events) para o contador e para o painel.
+Fluxo geral: `Telemóvel / PC da receção → API REST → PostgreSQL`, com a API a enviar atualizações em tempo real (Server-Sent Events) para o contador e para o painel.
 
 ## 7. Stack
 
 - **Linguagem:** TypeScript em tudo, para partilhar tipos e validações.
-- **Frontend:** React com Vite; React Router; TanStack Query para os dados; Recharts (ou ECharts) para os gráficos; biblioteca de QR (`qrcode.react`) para desenhar e `html5-qrcode`/`zxing-js` apenas se precisares de ler QR na receção.
+- **Frontend:** React com Vite; React Router; TanStack Query; Recharts; `qrcode.react`.
 - **Backend:** NestJS.
-- **Base de dados:** PostgreSQL.
-- **ORM:** Prisma (ou Drizzle). O Prisma não suporta índices parciais diretamente no schema, por isso essa regra entra com uma migração em SQL puro.
+- **Base de dados:** PostgreSQL (alojado na Neon).
+- **ORM:** Prisma.
 - **Validação:** `zod`, num pacote partilhado entre front e back.
-- **Autenticação:** sessões por cookie `httpOnly` (mais simples e segura para este caso) ou JWT; passwords com argon2 ou bcrypt.
+- **Autenticação:** sessões por cookie `httpOnly` com JWT.
 - **Tempo real:** Server-Sent Events.
-- **Testes:** Vitest (unitários e de API); Playwright para um teste ponta a ponta do fluxo principal.
-- **Base de dados:** Neon (Cloud).
+- **Testes:** Vitest (unitários e de API); Playwright para um teste ponta a ponta.
+- **Infra local:** Base de dados Neon (Cloud) para desenvolvimento e produção.
 - **CI:** GitHub Actions (lint, testes, build).
+- **Hospedagem:** Render (Web Service para a API) + Neon (PostgreSQL).
 
 ## 8. Modelo de dados
 
 **User**
 
-- `id`, `name`, `room`, `username`, `passwordHash`
+- `id`, `name`, `room`, `username` (unique), `passwordHash`
 - `role`: `STUDENT` | `RECEPTION` | `ADMIN`
 - `active`, `createdAt`
 
@@ -126,15 +129,13 @@ CREATE UNIQUE INDEX one_open_session_per_user
   WHERE "exitAt" IS NULL;
 ```
 
-Assim, mesmo que haja duas chamadas ao mesmo tempo, a base de dados garante que ninguém tem duas sessões abertas.
-
 ## 9. API (primeira versão)
 
-**Autenticação e utilizador**
+### Autenticação e utilizador
 
-- `POST /auth/login`, `POST /auth/logout`, `GET /me`
+- `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
 
-**Estudantes**
+### Estudantes
 
 - `GET /gym/occupancy` devolve `{ count, capacity }`
 - `GET /gym/stream` (SSE) envia atualizações da ocupação
@@ -143,52 +144,62 @@ Assim, mesmo que haja duas chamadas ao mesmo tempo, a base de dados garante que 
 - `POST /checkout`
 - `GET /me/sessions` mostra o histórico pessoal
 
-**Receção/admin**
+### Receção/admin
 
-- `GET /admin/qr/current` devolve o token atual (só para o papel RECEPTION/ADMIN)
+- `GET /admin/qr/current` devolve o token atual
 - `GET /admin/requests` e `POST /admin/requests/:id/approve|reject`
-- `GET /admin/sessions` e `PATCH /admin/sessions/:id` para corrigir
-- `POST /admin/users/import` (CSV com nome, quarto, email) e `PATCH /admin/users/:id`
-- `GET`/`PATCH /admin/settings`
+- `GET /admin/sessions` e `PATCH /admin/sessions/:id`
+- `POST /admin/users/import` e `PATCH /admin/users/:id`
+- `GET/PATCH /admin/settings`
 
-**Estatísticas** (agregadas, sem dados pessoais)
+### Estatísticas (agregadas, sem dados pessoais)
 
-- `GET /stats/heatmap` (ocupação média por dia da semana e hora)
+- `GET /stats/heatmap`
 - `GET /stats/hourly` e `GET /stats/duration`
 
 ## 10. Estrutura do repositório
 
-```
+```text
 gym-checkin/
   apps/
     web/        # React + Vite
     api/        # NestJS + Prisma
   packages/
     shared/     # tipos e schemas zod
-  docker-compose.yml
   README.md
   docs/         # diagrama de arquitetura, decisões, RGPD
 ```
 
-Gestor de pacotes: `pnpm` com workspaces.
+## 11. Frontend Architecture Guidelines
 
-## 11. Roadmap por fases
+Para manter um código limpo e escalável, o frontend (React) deve seguir estritamente esta arquitetura em camadas. O fluxo de dados é top-down:
 
-Sem datas fixas: avança no teu ritmo, mas só passa à fase seguinte quando a atual estiver a funcionar e com testes.
+**Page (View) → Components (UI) → Hooks (State/Logic) → Services (Business Rules) → API (HTTP Calls)**
+
+### Estrutura de pastas (`apps/web/src/`)
+
+- `pages/`: as views (ex: Login, Dashboard). Apenas juntam componentes e chamam hooks.
+- `components/`: componentes de UI "burros" (ex: `LoginForm`, `Button`, `Navbar`). Recebem dados via props e não fazem chamadas HTTP.
+- `hooks/`: custom React hooks (ex: `useAuth.ts`). Gerem o estado (`useState`, `useEffect`) e chamam os serviços.
+- `core/services/`: lógica de negócio. Processam dados antes de enviar para a API ou depois de receber.
+- `core/api/`: chamadas HTTP puras usando `fetch` ou `axios` (ex: `authApi.ts`). Sem estado React.
+- `core/types/`: interfaces e tipos TypeScript partilhados.
+
+## 12. Roadmap por fases
 
 ### Fase 0: Preparação
 
 - [x] Criar o repositório e o monorepo com pnpm
-- [x] Docker Compose com PostgreSQL
-- [x] API "hello world" em Fastify e app React a chamá-la
-- [x] Lint, formatação e CI básica
+- [x] API "hello world" em NestJS e app React a chamá-la
+- [x] Deploy inicial na Render e ligação à base de dados Neon
 
 ### Fase 1: Base (utilizadores e sessões)
 
 - [x] Schema Prisma e migrações (incluindo o índice parcial)
 - [x] Seed com utilizadores e sessões falsas
-- [x] Login/logout com cookie e rotas protegidas por papel
-- [x] `GET /me` e o ecrã de login
+- [x] Login/logout com cookie e rotas protegidas por papel (Backend e Frontend de login)
+- [x] `GET /auth/me` e o ecrã de login (backend e frontend)
+- [ ] Refatoração do frontend para a arquitetura em camadas (API → Services → Hooks → Components → Pages)
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
@@ -197,7 +208,7 @@ Sem datas fixas: avança no teu ritmo, mas só passa à fase seguinte quando a a
 - [ ] Auto-close das sessões esquecidas (tarefa periódica)
 - [ ] Testes das regras de negócio
 
-No fim desta fase já tens um sistema utilizável, só falta a verificação de presença.
+> No fim desta fase já tens um sistema utilizável, só falta a verificação de presença.
 
 ### Fase 3: QR dinâmico (método A)
 
@@ -233,36 +244,32 @@ No fim desta fase já tens um sistema utilizável, só falta a verificação de 
 - [ ] Testar com um grupo pequeno de residentes
 - [ ] Recolher feedback e ajustar
 
-## 12. RGPD e privacidade
+## 13. RGPD e privacidade
 
-- Guardar o **mínimo** de dados: nome, quarto, email e as sessões.
-- As estatísticas públicas mostram só **agregados** (contagens), nunca quem estava lá.
+- Guardar o mínimo de dados: nome, quarto, username e as sessões.
+- As estatísticas públicas mostram só agregados (contagens), nunca quem estava lá.
 - Cada utilizador vê apenas o seu próprio histórico; só a receção/admin vê sessões individuais.
-- Definir uma **política de retenção** (por exemplo apagar ou anonimizar sessões com mais de 12 meses).
+- Definir uma política de retenção (por exemplo apagar ou anonimizar sessões com mais de 12 meses).
 - Permitir a um utilizador pedir a eliminação da conta.
-- Documentar isto no repositório; num piloto real, falar com a residência sobre quem é o responsável pelo tratamento de dados.
+- Documentar isto no repositório.
 
-## 13. Riscos e decisões em aberto
+## 14. Riscos e decisões em aberto
 
-- **Adoção:** se a folha em papel continuar a existir em paralelo, o contador fica incompleto. Convém combinar com a receção que o sistema passa a ser o registo oficial no piloto.
-- **Ecrã da receção:** confirmar que existe um computador ou ecrã que possa mostrar a página do QR durante o dia.
+- **Adoção:** se a folha em papel continuar a existir em paralelo, o contador fica incompleto.
+- **Ecrã da receção:** confirmar que existe um computador ou ecrã que possa mostrar a página do QR.
 - **Falta de ligação:** se o Wi-Fi falhar, deve haver um plano B (a folha em papel como contingência).
-- **Decisão por tomar:** escolher entre Fastify e NestJS (sugestão: NestJS primeiro, porque é mais valorizado).
-- **Decisão por tomar:** sessão por cookie ou JWT (sugestão: cookie `httpOnly`).
-- **Decisão por tomar:** tempo do auto-close e capacidade do ginásio (valores configuráveis, ajustar com dados reais).
+- **Decisão por tomar:** tempo do auto-close e capacidade do ginásio.
+- **Decisão tomada:** Backend em NestJS (em vez de Fastify).
+- **Decisão tomada:** Sessão por cookie `httpOnly` com JWT.
+- **Decisão tomada:** Frontend com React + Vite (SPA).
+- **Decisão tomada:** Hospedagem do backend na Render, com serviço de keep-alive (UptimeRobot) para evitar hibernação.
 
-## 14. Ordem de estudo para aprender o backend
+## 15. Ordem de estudo para aprender o backend
 
-Como o backend é a parte nova, uma boa ordem para aprender à medida que constróis:
-
-1. Fundamentos de HTTP e REST (métodos, códigos de estado, cookies) e o Fastify básico.
+1. Fundamentos de HTTP e REST (métodos, códigos de estado, cookies) e o NestJS básico.
 2. SQL e PostgreSQL (joins, índices, transações), antes ou ao lado do Prisma.
 3. Autenticação: sessões, hash de passwords, papéis e autorização.
-4. Validação com zod e tratamento de erros.
+4. Validação com `zod` e tratamento de erros.
 5. Testes de API com Vitest.
 6. Server-Sent Events e tarefas periódicas (auto-close).
-7. Docker Compose e CI.
-
-## 15. Próximo passo imediato
-
-Começar pela **Fase 0**: criar o repositório, o Compose com Postgres e a API "hello world" ligada ao React. Quando estiver feito, avançar para o schema da Fase 1.
+7. CI e deploy.
