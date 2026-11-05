@@ -198,7 +198,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] Seed com utilizadores e sessões falsas
 - [x] Login/logout com cookie e rotas protegidas por papel (Backend e Frontend de login)
 - [x] `GET /auth/me` e o ecrã de login (backend e frontend)
-- [ ] Refatoração do frontend para a arquitetura em camadas (API → Services → Hooks → Components → Pages)
+- [x] Refatoração do frontend para a arquitetura em camadas (API → Services → Hooks → Components → Pages)
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
