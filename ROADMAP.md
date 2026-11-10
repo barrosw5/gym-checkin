@@ -192,7 +192,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] API "hello world" em NestJS e app React a chamá-la
 - [x] Ligação à base de dados Neon
 - [ ] Deploy inicial na Render (a API serve também o `web/dist`) + keep-alive (UptimeRobot)
-- [ ] CI com GitHub Actions (lint, test, build) e proteção do ramo `main` (PR obrigatório + checks verdes); trabalhar sempre em ramos `feat/...`, `fix/...`
+- [x] CI com GitHub Actions (lint, test, build) e proteção do ramo `main` (PR obrigatório + checks verdes); trabalhar sempre em ramos `feat/...`, `fix/...`
 
 ### Fase 1: Base (utilizadores e sessões)
 
