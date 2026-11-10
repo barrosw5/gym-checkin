@@ -210,11 +210,11 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [ ] Validação do body do login com `zod` (hoje é `@Body() body: any`)
 - [ ] Rate limit no `POST /auth/login`
 - [ ] Rejeitar login/token de utilizadores com `active = false`
-- [ ] Testes de `AuthService` e `AuthController` com Prisma/Jwt mockados (hoje 2 testes falham: faltam providers) + casos de borda (password errada, user inexistente)
-- [ ] `pnpm lint` da API sem erros (`main.ts`: promise sem `await`/`void`; `passwordHash` não usado)
-- [ ] `pnpm lint` do web a funcionar (`typescript-eslint` não suporta TS 7.0: fixar `typescript` em 6.x ou esperar suporte)
+- [x] Testes de `AuthService` e `AuthController` com Prisma/Jwt mockados (hoje 2 testes falham: faltam providers) + casos de borda (password errada, user inexistente)
+- [x] `pnpm lint` da API sem erros (`main.ts`: promise sem `await`/`void`; `passwordHash` não usado)
+- [x] `pnpm lint` do web a funcionar (`typescript-eslint` não suporta TS 7.0: fixar `typescript` em 6.x ou esperar suporte)
 - [ ] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
-- [ ] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
+- [x] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
 - [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
 
 ### Fase 2: Check-in simples (método C) e ocupação

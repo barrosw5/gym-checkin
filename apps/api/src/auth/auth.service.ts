@@ -20,7 +20,7 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
     // 3. Remove passwordHash from the returned object
-    const { passwordHash, ...result } = user;
+    const { passwordHash: _passwordHash, ...result } = user;
     return result;
   }
 
@@ -41,7 +41,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const { passwordHash, ...result } = user;
+    const { passwordHash: _passwordHash, ...result } = user;
     return result;
   }
 }

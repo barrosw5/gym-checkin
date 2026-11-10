@@ -1,3 +1,5 @@
+import type { User } from "../types/user";
+
 export const authApi = {
   login: async (username: string, password: string) => {
     const response = await fetch("/auth/login", {
@@ -15,7 +17,7 @@ export const authApi = {
     return response.json();
   },
 
-  getMe: async () => {
+  getMe: async (): Promise<User> => {
     const response = await fetch("/auth/me");
     if (!response.ok) throw new Error("Not authenticated");
     return response.json();

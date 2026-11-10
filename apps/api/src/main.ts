@@ -10,4 +10,8 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`API running at: http://localhost:${port}`);
 }
-bootstrap();
+bootstrap().catch((error) => {
+  // Fail loudly: a rejected promise here would otherwise be an unhandled rejection
+  console.error('Failed to start the API', error);
+  process.exit(1);
+});
