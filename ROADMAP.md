@@ -131,6 +131,8 @@ CREATE UNIQUE INDEX one_open_session_per_user
 
 ## 9. API (primeira versão)
 
+Todas as rotas da API têm o prefixo `/api` (ex.: `POST /api/auth/login`). Os restantes caminhos pertencem ao frontend, por isso as páginas e a API nunca colidem. Abaixo os caminhos aparecem sem o prefixo.
+
 ### Autenticação e utilizador
 
 - `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`

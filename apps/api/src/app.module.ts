@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { API_PREFIX } from './app.setup.js';
 import { validateEnv } from './config/env.validation.js';
 import { HealthController } from './health/health.controller.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -13,6 +14,8 @@ import { PrismaService } from './prisma/prisma.service.js';
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), '..', 'web', 'dist'),
+      // Unknown /api routes must return a JSON 404, never the SPA's index.html
+      exclude: [`/${API_PREFIX}/{*path}`],
     }),
     AuthModule,
   ],
