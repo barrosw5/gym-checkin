@@ -9,13 +9,17 @@ import {
   Get,
   Req,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service.js';
 import type { Response, Request } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private config: ConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -29,7 +33,8 @@ export class AuthController {
     // Set the JWT as an HttpOnly cookie
     res.cookie('Authentication', token.access_token, {
       httpOnly: true, // JS cannot read it
-      secure: false, // Set to true in production (HTTPS)
+      // HTTPS only in production (localhost dev runs on plain HTTP)
+      secure: this.config.get('NODE_ENV') === 'production',
       sameSite: 'lax',
     });
 

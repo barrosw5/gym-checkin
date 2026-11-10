@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { validateEnv } from './config/env.validation.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { HealthController } from './health/health.controller.js';
@@ -9,6 +11,8 @@ import { PrismaService } from './prisma/prisma.service.js';
 
 @Module({
   imports: [
+    // isGlobal: ConfigService can be injected anywhere without re-importing the module
+    ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), '..', 'web', 'dist'),
     }),
