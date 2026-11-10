@@ -41,6 +41,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 
 - NestJS organized in **domain modules** (`auth/`, `checkin/`, `gym/`, `stats/`, `admin/`...).
 - Layering: **Controller (HTTP) → Service (business rules) → Prisma (data access)**.
+- **Every API route is under `/api`** (global prefix in `src/app.setup.ts`). All other paths belong to the SPA, so a page and an API route never share a path.
   - Controllers contain no business logic: they parse the request, call the service, and return the response.
   - Services know nothing about HTTP (no `req`/`res`); they throw domain/Nest exceptions.
 - Validation with `zod`, with schemas and types shared between front and back in `packages/shared` (planned).

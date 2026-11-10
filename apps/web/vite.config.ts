@@ -6,10 +6,8 @@ export default defineConfig({
     plugins: [react()],
     server: {
         proxy: {
-            // Any request starting with /auth or /health or /gym goes to NestJS
-            "/auth": "http://localhost:3000",
-            "/health": "http://localhost:3000",
-            "/gym": "http://localhost:3000",
+            // Every API route lives under /api (same rule as in production)
+            "/api": "http://localhost:3000",
         },
     },
 });
