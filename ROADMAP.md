@@ -193,7 +193,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] Criar o repositório e o monorepo com pnpm
 - [x] API "hello world" em NestJS e app React a chamá-la
 - [x] Ligação à base de dados Neon
-- [ ] Deploy inicial na Render (a API serve também o `web/dist`) + keep-alive (UptimeRobot)
+- [x] Deploy inicial na Render (a API serve também o `web/dist`) + keep-alive (UptimeRobot)
 - [x] CI com GitHub Actions (lint, test, build) e proteção do ramo `main` (PR obrigatório + checks verdes); trabalhar sempre em ramos `feat/...`, `fix/...`
 
 ### Fase 1: Base (utilizadores e sessões)
@@ -218,6 +218,8 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [ ] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
 - [x] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
 - [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
+- [ ] Seed sem passwords no código: ler de variáveis de ambiente (`SEED_ADMIN_PASSWORD`, ...) e trocar as passwords do `admin` e da `rececao` na base `production` (o site está público e `password123` está no GitHub)
+- [ ] Remover o cabeçalho `x-powered-by: Express` (`app.disable('x-powered-by')` em `app.setup.ts`)
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
@@ -270,6 +272,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [ ] Apresentar uma demonstração à direção/receção
 - [ ] Testar com um grupo pequeno de residentes
 - [ ] Recolher feedback e ajustar
+- [ ] Instalação on-prem na residência: `Dockerfile` + `docker compose` (API + PostgreSQL local), acessível só na rede interna do PIO; dados reais dos residentes só aqui, nunca na demo em cloud
 
 ## 13. RGPD e privacidade
 
