@@ -2,11 +2,13 @@ import { UnauthorizedException } from '@nestjs/common';
 import type { Response } from 'express';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthController } from './auth.controller.js';
+import type { ConfigService } from '@nestjs/config';
 import type { AuthService } from './auth.service.js';
 
 describe('AuthController', () => {
   const validateUser = vi.fn();
   const login = vi.fn();
+  const getConfig = vi.fn();
   let controller: AuthController;
   let res: {
     cookie: ReturnType<typeof vi.fn>;
@@ -15,10 +17,10 @@ describe('AuthController', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    controller = new AuthController({
-      validateUser,
-      login,
-    } as unknown as AuthService);
+    controller = new AuthController(
+      { validateUser, login } as unknown as AuthService,
+      { get: getConfig } as unknown as ConfigService,
+    );
     res = { cookie: vi.fn(), clearCookie: vi.fn() };
   });
 
@@ -39,6 +41,26 @@ describe('AuthController', () => {
         expect.objectContaining({ httpOnly: true, sameSite: 'lax' }),
       );
       expect(result).toEqual({ message: 'Login successful', user });
+    });
+
+    it.each([
+      ['production', true],
+      ['development', false],
+    ])('sets cookie secure flag for NODE_ENV=%s -> %s', async (env, secure) => {
+      getConfig.mockReturnValue(env);
+      validateUser.mockResolvedValue({ id: 'u1' });
+      login.mockResolvedValue({ access_token: 'jwt' });
+
+      await controller.login(
+        { username: 'joao', password: 'password123' },
+        res as unknown as Response,
+      );
+
+      expect(res.cookie).toHaveBeenCalledWith(
+        'Authentication',
+        'jwt',
+        expect.objectContaining({ secure }),
+      );
     });
 
     it('does not set a cookie when the credentials are invalid', async () => {
