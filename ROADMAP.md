@@ -190,15 +190,32 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 
 - [x] Criar o repositório e o monorepo com pnpm
 - [x] API "hello world" em NestJS e app React a chamá-la
-- [x] Deploy inicial na Render e ligação à base de dados Neon
+- [x] Ligação à base de dados Neon
+- [ ] Deploy inicial na Render (a API serve também o `web/dist`) + keep-alive (UptimeRobot)
+- [ ] CI com GitHub Actions (lint, test, build) e proteção do ramo `main` (PR obrigatório + checks verdes); trabalhar sempre em ramos `feat/...`, `fix/...`
 
 ### Fase 1: Base (utilizadores e sessões)
 
 - [x] Schema Prisma e migrações (incluindo o índice parcial)
-- [x] Seed com utilizadores e sessões falsas
-- [x] Login/logout com cookie e rotas protegidas por papel (Backend e Frontend de login)
+- [x] Seed com utilizadores (aluno, receção, admin)
+- [ ] Seed com sessões falsas e linha `Settings` (capacidade, métodos ativos)
+- [x] Login/logout com cookie `httpOnly` (backend e frontend)
+- [ ] Rotas protegidas por papel: `RolesGuard` + decorator `@Roles()` no backend, e rota protegida no frontend
 - [x] `GET /auth/me` e o ecrã de login (backend e frontend)
 - [x] Refatoração do frontend para a arquitetura em camadas (API → Services → Hooks → Components → Pages)
+
+**Pendências da Fase 1** (encontradas na revisão de 10 nov 2026, ver CLAUDE.md):
+
+- [ ] Segredo JWT fora do código: ler de `process.env` (`ConfigModule`/`JWT_SECRET`) em `auth.module.ts` e `jwt.strategy.ts`; `secure: true` no cookie em produção
+- [ ] Validação do body do login com `zod` (hoje é `@Body() body: any`)
+- [ ] Rate limit no `POST /auth/login`
+- [ ] Rejeitar login/token de utilizadores com `active = false`
+- [ ] Testes de `AuthService` e `AuthController` com Prisma/Jwt mockados (hoje 2 testes falham: faltam providers) + casos de borda (password errada, user inexistente)
+- [ ] `pnpm lint` da API sem erros (`main.ts`: promise sem `await`/`void`; `passwordHash` não usado)
+- [ ] `pnpm lint` do web a funcionar (`typescript-eslint` não suporta TS 7.0: fixar `typescript` em 6.x ou esperar suporte)
+- [ ] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
+- [ ] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
+- [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
@@ -231,11 +248,20 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 
 ### Fase 6: Polimento e GitHub
 
+- [ ] Identidade visual do PIO XII (ver passos abaixo)
 - [ ] PWA (instalável) e boa experiência no telemóvel
 - [ ] README com problema, diagrama, screenshots/GIF e instruções com `docker compose up`
 - [ ] Documentação da API (OpenAPI/Swagger)
 - [ ] Secção de RGPD e decisões de segurança em `docs/`
 - [ ] Teste ponta a ponta do fluxo principal (Playwright)
+
+**Identidade visual do PIO XII (passos, por ordem):**
+
+- [ ] Obter o símbolo da residência (de preferência **SVG**; se só houver PNG, o maior possível com fundo transparente) e confirmar que se pode usar (pedir autorização à direção, é um logótipo institucional)
+- [ ] Guardar os ficheiros: logótipo usado nos componentes em `apps/web/src/assets/brand/pio-logo.svg` (importado no código, o Vite otimiza); ícone do separador em `apps/web/public/favicon.svg` (referenciado em `index.html`); para a PWA, ícones PNG 192×192 e 512×512 em `apps/web/public/icons/`
+- [ ] Extrair as cores do símbolo e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
+- [ ] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
+- [ ] Usar o logótipo no ecrã de login, no cabeçalho e no ecrã do QR da receção
 
 ### Fase 7: Piloto na residência (opcional)
 

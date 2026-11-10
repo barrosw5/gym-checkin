@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel older runs of the same PR when new commits are pushed
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: CI only needs to read the code
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API (lint, test, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: apps/api
+    env:
+      # Dummy value: prisma generate only needs the variable to exist, it does not connect
+      DATABASE_URL: postgresql://user:pass@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # @prisma/client postinstall is disabled in pnpm-workspace.yaml, so generate explicitly
+      - run: pnpm exec prisma generate
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+  web:
+    name: Web (lint, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm build
