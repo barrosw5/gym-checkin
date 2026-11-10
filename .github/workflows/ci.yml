@@ -26,7 +26,7 @@ jobs:
       # Dummy value: prisma generate only needs the variable to exist, it does not connect
       DATABASE_URL: postgresql://user:pass@localhost:5432/ci
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 12
@@ -49,7 +49,7 @@ jobs:
       run:
         working-directory: apps/web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 12
