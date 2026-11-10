@@ -27,12 +27,12 @@ jobs:
       DATABASE_URL: postgresql://user:pass@localhost:5432/ci
     steps:
       - uses: actions/checkout@v7
+      # pnpm version comes from packageManager in the root package.json
       - uses: pnpm/action-setup@v6
-        with:
-          version: 12
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          # Same Node version as production (Render reads .node-version too)
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # @prisma/client postinstall is disabled in pnpm-workspace.yaml, so generate explicitly
@@ -50,12 +50,12 @@ jobs:
         working-directory: apps/web
     steps:
       - uses: actions/checkout@v7
+      # pnpm version comes from packageManager in the root package.json
       - uses: pnpm/action-setup@v6
-        with:
-          version: 12
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          # Same Node version as production (Render reads .node-version too)
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint

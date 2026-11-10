@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './config/env.validation.js';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { HealthController } from './health/health.controller.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
@@ -18,7 +16,7 @@ import { PrismaService } from './prisma/prisma.service.js';
     }),
     AuthModule,
   ],
-  controllers: [AppController, HealthController],
-  providers: [AppService, PrismaService],
+  controllers: [HealthController],
+  providers: [PrismaService],
 })
 export class AppModule {}
