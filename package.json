@@ -1,0 +1,9 @@
+{
+  "name": "gym-checkin",
+  "private": true,
+  "packageManager": "pnpm@12.16.1",
+  "scripts": {
+    "build": "pnpm --filter web build && pnpm --filter api exec prisma generate && pnpm --filter api build",
+    "start": "pnpm --filter api exec prisma migrate deploy && pnpm --filter api start:prod"
+  }
+}
