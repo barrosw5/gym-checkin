@@ -215,10 +215,10 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] Testes de `AuthService` e `AuthController` com Prisma/Jwt mockados (hoje 2 testes falham: faltam providers) + casos de borda (password errada, user inexistente)
 - [x] `pnpm lint` da API sem erros (`main.ts`: promise sem `await`/`void`; `passwordHash` não usado)
 - [x] `pnpm lint` do web a funcionar (`typescript-eslint` não suporta TS 7.0: fixar `typescript` em 6.x ou esperar suporte)
-- [ ] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
+- [x] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
 - [x] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
 - [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
-- [ ] Seed sem passwords no código: ler de variáveis de ambiente (`SEED_ADMIN_PASSWORD`, ...) e trocar as passwords do `admin` e da `rececao` na base `production` (o site está público e `password123` está no GitHub)
+- [x] Seed sem passwords no código: ler de variáveis de ambiente (`SEED_ADMIN_PASSWORD`, ...) e trocar as passwords do `admin` e da `rececao` na base `production` (o site está público e `password123` está no GitHub)
 - [ ] Remover o cabeçalho `x-powered-by: Express` (`app.disable('x-powered-by')` em `app.setup.ts`)
 
 ### Fase 2: Check-in simples (método C) e ocupação

@@ -3,6 +3,8 @@
 Gym check-in system for a student residence (see [ROADMAP.md](ROADMAP.md) for the full plan).
 Monorepo with pnpm: `apps/web` (React + Vite), `apps/api` (NestJS + Prisma + PostgreSQL on Neon), `packages/shared` (planned: zod schemas and shared types).
 
+Environments: local dev uses the Neon `development` branch; the public demo <https://gym-checkin-pjyi.onrender.com> (Render, auto-deploy on merge to `main`) uses the Neon `production` branch. Seed users are created/rotated with `pnpm db:seed` (passwords from `SEED_*` env vars).
+
 ## How to work with me (learning mode)
 
 This project is also a learning project: the goal is to grow as a backend/full-stack developer and write code at a senior level.
