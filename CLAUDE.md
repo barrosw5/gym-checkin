@@ -22,7 +22,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **Conventional Commits** for every commit: `feat(scope): ...`, `fix(scope): ...`, `refactor(scope): ...`, `test(scope): ...`, `docs: ...`, `chore: ...` (e.g. roadmap updates are `docs: update roadmap`).
 - **The stack is decided.** Do not reopen decisions already taken (NestJS, React + Vite SPA, Prisma, Neon, SSE, Vitest). **Ask before adding any new dependency.**
 - Before considering a task done, run:
-  - `apps/api`: `pnpm lint` and `pnpm test`
+  - `apps/api`: `pnpm lint`, `pnpm test` and `pnpm build` (Vitest does not type-check; only the build catches type errors, same as CI)
   - `apps/web`: `pnpm lint` and `pnpm build`
 
 ## Business Rules and Security
