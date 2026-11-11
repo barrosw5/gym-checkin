@@ -6,7 +6,7 @@ import { HealthController } from './health/health.controller.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
 import { AuthModule } from './auth/auth.module.js';
-import { PrismaService } from './prisma/prisma.service.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { PrismaService } from './prisma/prisma.service.js';
       // Unknown /api routes must return a JSON 404, never the SPA's index.html
       exclude: [`/${API_PREFIX}/{*path}`],
     }),
+    PrismaModule,
     AuthModule,
   ],
   controllers: [HealthController],
-  providers: [PrismaService],
 })
 export class AppModule {}

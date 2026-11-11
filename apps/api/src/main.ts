@@ -6,6 +6,8 @@ import { setupApp } from './app.setup.js';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   setupApp(app);
+  // Run onModuleDestroy hooks (e.g. close DB connections) on SIGTERM from Render
+  app.enableShutdownHooks();
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
