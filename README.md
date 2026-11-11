@@ -18,7 +18,8 @@ Requirements: Node 24 (see `.node-version`) and pnpm (version in `packageManager
 
 ```bash
 pnpm install
-cp apps/api/.env.example apps/api/.env   # fill in DATABASE_URL and JWT_SECRET
+cp apps/api/.env.example apps/api/.env   # fill in DATABASE_URL, JWT_SECRET and SEED_*
+pnpm --filter api db:seed                # create/update the test users
 pnpm --filter api start:dev              # API at http://localhost:3000/api
 pnpm --filter web dev                    # site at http://localhost:5173
 ```
