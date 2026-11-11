@@ -32,13 +32,50 @@ describe('AuthService', () => {
         id: 'u1',
         username: 'joao',
         role: 'STUDENT',
+        active: true,
         passwordHash,
       });
 
       const result = await service.validateUser('joao', PASSWORD);
 
-      expect(result).toEqual({ id: 'u1', username: 'joao', role: 'STUDENT' });
+      expect(result).toEqual({
+        id: 'u1',
+        username: 'joao',
+        role: 'STUDENT',
+        active: true,
+      });
       expect(result).not.toHaveProperty('passwordHash');
+    });
+
+    it('throws Unauthorized for an inactive user, even with the right password', async () => {
+      findUnique.mockResolvedValue({ id: 'u1', active: false, passwordHash });
+
+      await expect(service.validateUser('joao', PASSWORD)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('uses the same message for an inactive user and a wrong password', async () => {
+      // Must not reveal that the account exists but was deactivated
+      findUnique.mockResolvedValueOnce({
+        id: 'u1',
+        active: false,
+        passwordHash,
+      });
+      const inactive = await service
+        .validateUser('joao', PASSWORD)
+        .catch((e: Error) => e.message);
+
+      findUnique.mockResolvedValueOnce({
+        id: 'u1',
+        active: true,
+        passwordHash,
+      });
+      const wrongPassword = await service
+        .validateUser('joao', 'wrong')
+        .catch((e: Error) => e.message);
+
+      expect(inactive).toBe(wrongPassword);
     });
 
     it('throws Unauthorized when the user does not exist', async () => {
@@ -92,19 +129,37 @@ describe('AuthService', () => {
     });
   });
 
-  describe('getProfile', () => {
-    it('returns the profile without passwordHash', async () => {
-      findUnique.mockResolvedValue({ id: 'u1', name: 'João', passwordHash });
+  describe('getActiveUser', () => {
+    it('returns an active user without passwordHash', async () => {
+      findUnique.mockResolvedValue({ id: 'u1', active: true, passwordHash });
 
-      const result = await service.getProfile('u1');
+      const result = await service.getActiveUser('u1');
 
-      expect(result).toEqual({ id: 'u1', name: 'João' });
+      expect(result).toEqual({ id: 'u1', active: true });
+    });
+
+    it('throws Unauthorized when the user was deactivated', async () => {
+      findUnique.mockResolvedValue({ id: 'u1', active: false, passwordHash });
+
+      await expect(service.getActiveUser('u1')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('throws Unauthorized when the user no longer exists', async () => {
       findUnique.mockResolvedValue(null);
 
-      await expect(service.getProfile('gone')).rejects.toThrow(
+      await expect(service.getActiveUser('gone')).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+  });
+
+  describe('getProfile', () => {
+    it('rejects a deactivated user', async () => {
+      findUnique.mockResolvedValue({ id: 'u1', active: false, passwordHash });
+
+      await expect(service.getProfile('u1')).rejects.toThrow(
         UnauthorizedException,
       );
     });
