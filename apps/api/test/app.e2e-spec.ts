@@ -25,6 +25,11 @@ describe('App (e2e)', () => {
       .expect({ ok: true });
   });
 
+  it('does not expose the x-powered-by header', async () => {
+    const res = await request(app.getHttpServer()).get('/api/health');
+    expect(res.headers['x-powered-by']).toBeUndefined();
+  });
+
   afterEach(async () => {
     await app.close();
   });

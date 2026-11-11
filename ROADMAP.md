@@ -219,7 +219,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
 - [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
 - [x] Seed sem passwords no código: ler de variáveis de ambiente (`SEED_ADMIN_PASSWORD`, ...) e trocar as passwords do `admin` e da `rececao` na base `production` (o site está público e `password123` está no GitHub)
-- [ ] Remover o cabeçalho `x-powered-by: Express` (`app.disable('x-powered-by')` em `app.setup.ts`)
+- [x] Remover o cabeçalho `x-powered-by: Express` (`app.disable('x-powered-by')` em `app.setup.ts`)
 
 ### Fase 2: Check-in simples (método C) e ocupação
 
