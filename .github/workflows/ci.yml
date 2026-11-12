@@ -35,6 +35,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The API imports the compiled shared package (dist/), so build it first
+      - run: pnpm --filter @gym-checkin/shared build
       # @prisma/client postinstall is disabled in pnpm-workspace.yaml, so generate explicitly
       - run: pnpm exec prisma generate
       - run: pnpm lint
