@@ -10,6 +10,8 @@ import {
   Req,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { loginSchema, type LoginInput } from '@gym-checkin/shared';
+import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AuthService } from './auth.service.js';
 import type { Response, Request } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
@@ -23,7 +25,11 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
+  async login(
+    // Validated before this method runs: invalid bodies get a 400
+    @Body(new ZodValidationPipe(loginSchema)) body: LoginInput,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = await this.authService.validateUser(
       body.username,
       body.password,

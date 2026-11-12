@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prettier *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm test:e2e)",
+      "Bash(pnpm build *)",
+      "Bash(echo \"build exit=$?\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"tsc exit=$?\")"
+    ]
+  }
+}

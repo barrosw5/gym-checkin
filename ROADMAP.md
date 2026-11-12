@@ -209,7 +209,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 **Pendências da Fase 1** (encontradas na revisão de 10 nov 2026, ver CLAUDE.md):
 
 - [x] Segredo JWT fora do código: ler de `process.env` (`ConfigModule`/`JWT_SECRET`) em `auth.module.ts` e `jwt.strategy.ts`; `secure: true` no cookie em produção
-- [ ] Validação do body do login com `zod` (hoje é `@Body() body: any`)
+- [x] Validação do body do login com `zod` (hoje é `@Body() body: any`)
 - [ ] Rate limit no `POST /auth/login`
 - [x] Rejeitar login/token de utilizadores com `active = false`
 - [x] Testes de `AuthService` e `AuthController` com Prisma/Jwt mockados (hoje 2 testes falham: faltam providers) + casos de borda (password errada, user inexistente)
