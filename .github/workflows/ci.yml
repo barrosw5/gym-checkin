@@ -37,6 +37,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The API imports the compiled shared package (dist/), so build it first
       - run: pnpm --filter @gym-checkin/shared build
+      # Shared schemas are business rules too; run here so they're a required check
+      - run: pnpm --filter @gym-checkin/shared test
       # @prisma/client postinstall is disabled in pnpm-workspace.yaml, so generate explicitly
       - run: pnpm exec prisma generate
       - run: pnpm lint
