@@ -62,5 +62,7 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The web app imports the compiled shared package (dist/), so build it first
+      - run: pnpm --filter @gym-checkin/shared build
       - run: pnpm lint
       - run: pnpm build
