@@ -14,5 +14,7 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests are not part of the published dist/
+  "exclude": ["src/**/*.spec.ts"]
 }

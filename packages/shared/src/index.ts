@@ -3,3 +3,6 @@
  * Shared so the API (global prefix) and the web app (fetch URLs) never drift apart.
  */
 export const API_PREFIX = 'api';
+
+export { loginSchema } from './auth.js';
+export type { LoginInput } from './auth.js';
