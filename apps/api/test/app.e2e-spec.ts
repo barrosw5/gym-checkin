@@ -24,6 +24,16 @@ describe('App (e2e)', () => {
       .expect({ ok: true });
   });
 
+  it('POST /api/auth/login rejects an invalid body with 400', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({ username: 123 })
+      .expect(400);
+
+    expect(res.body).toMatchObject({ message: 'Validation failed' });
+    expect(res.body.errors).toHaveLength(2);
+  });
+
   it('does not expose the x-powered-by header', async () => {
     const res = await request(app.getHttpServer()).get('/api/health');
     expect(res.headers['x-powered-by']).toBeUndefined();
