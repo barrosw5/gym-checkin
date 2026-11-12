@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Gym check-in system for a student residence (see [ROADMAP.md](ROADMAP.md) for the full plan).
-Monorepo with pnpm: `apps/web` (React + Vite), `apps/api` (NestJS + Prisma + PostgreSQL on Neon), `packages/shared` (planned: zod schemas and shared types).
+Monorepo with pnpm: `apps/web` (React + Vite), `apps/api` (NestJS + Prisma + PostgreSQL on Neon), `packages/shared` (`@gym-checkin/shared`: zod schemas, shared types and constants; compiled to `dist/`, so build it before api/web).
 
 Environments: local dev uses the Neon `development` branch; the public demo <https://gym-checkin-pjyi.onrender.com> (Render, auto-deploy on merge to `main`) uses the Neon `production` branch. Seed users are created/rotated with `pnpm db:seed` (passwords from `SEED_*` env vars).
 
@@ -46,7 +46,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **Every API route is under `/api`** (global prefix in `src/app.setup.ts`). All other paths belong to the SPA, so a page and an API route never share a path.
   - Controllers contain no business logic: they parse the request, call the service, and return the response.
   - Services know nothing about HTTP (no `req`/`res`); they throw domain/Nest exceptions.
-- Validation with `zod`, with schemas and types shared between front and back in `packages/shared` (planned).
+- Validation with `zod`, with schemas and types shared between front and back in `packages/shared`.
 - Every new business rule ships with **Vitest tests**, including edge cases (duplicate open session, checkout without session, expired token, future token, token reuse).
 
 ## Frontend Architecture (`apps/web`)

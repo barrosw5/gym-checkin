@@ -18,6 +18,7 @@ Requisitos: Node 24 (ver `.node-version`) e pnpm (versão em `packageManager` no
 
 ```bash
 pnpm install
+pnpm --filter @gym-checkin/shared build   # a API e o web importam o resultado compilado
 cp apps/api/.env.example apps/api/.env   # preencher DATABASE_URL, JWT_SECRET e SEED_*
 pnpm --filter api db:seed                # cria/atualiza os utilizadores de teste
 pnpm --filter api start:dev              # API em http://localhost:3000/api

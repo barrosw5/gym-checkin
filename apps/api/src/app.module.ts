@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { API_PREFIX } from './app.setup.js';
+import { API_PREFIX } from '@gym-checkin/shared';
 import { validateEnv } from './config/env.validation.js';
 import { HealthController } from './health/health.controller.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
