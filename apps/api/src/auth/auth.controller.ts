@@ -7,13 +7,14 @@ import {
   HttpStatus,
   UseGuards,
   Get,
-  Req,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { loginSchema, type LoginInput } from '@gym-checkin/shared';
 import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AuthService } from './auth.service.js';
-import type { Response, Request } from 'express';
+import type { Response } from 'express';
+import type { AuthUser } from './auth-user.js';
+import { CurrentUser } from './current-user.decorator.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { Throttle } from '@nestjs/throttler';
 import { LoginThrottlerGuard } from './login-throttler.guard.js';
@@ -57,9 +58,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getMe(@Req() req: Request) {
-    const userId = (req.user as any).userId;
-    return this.authService.getProfile(userId);
+  async getMe(@CurrentUser() user: AuthUser) {
+    return this.authService.getProfile(user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
