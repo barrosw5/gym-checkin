@@ -202,7 +202,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] Seed com utilizadores (aluno, receção, admin)
 - [ ] Seed com sessões falsas e linha `Settings` (capacidade, métodos ativos)
 - [x] Login/logout com cookie `httpOnly` (backend e frontend)
-- [ ] Rotas protegidas por papel: `RolesGuard` + decorator `@Roles()` no backend, e rota protegida no frontend
+- [x] Rotas protegidas por papel: `RolesGuard` + decorator `@Roles()` no backend, e rota protegida no frontend
 - [x] `GET /auth/me` e o ecrã de login (backend e frontend)
 - [x] Refatoração do frontend para a arquitetura em camadas (API → Services → Hooks → Components → Pages)
 
@@ -217,7 +217,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 - [x] `pnpm lint` do web a funcionar (`typescript-eslint` não suporta TS 7.0: fixar `typescript` em 6.x ou esperar suporte)
 - [x] Corrigir o seed: o `upsert` procura `aluno1` mas cria `joaosilva` (não é idempotente)
 - [x] Criar `core/types/` no frontend (`User`, `Role`) e remover os `any` de `useAuth`/`useDashboard`
-- [ ] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
+- [x] Proteger a rota `/dashboard` no frontend (guard de rota em vez de depender só do `useEffect`) e tratar o erro 401 no `authApi`
 - [x] Seed sem passwords no código: ler de variáveis de ambiente (`SEED_ADMIN_PASSWORD`, ...) e trocar as passwords do `admin` e da `rececao` na base `production` (o site está público e `password123` está no GitHub)
 - [x] `PrismaModule` global: hoje o `PrismaService` está nos `providers` do `AppModule` e do `AuthModule` (2 instâncias = 2 pools de ligações à BD)
 - [x] Encerramento limpo: `enableShutdownHooks()` + `$disconnect()` no `onModuleDestroy` (a Render envia `SIGTERM` a cada deploy)
