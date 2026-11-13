@@ -15,6 +15,11 @@ import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AuthService } from './auth.service.js';
 import type { Response, Request } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
+import { Throttle } from '@nestjs/throttler';
+import { LoginThrottlerGuard } from './login-throttler.guard.js';
+
+/** 5 attempts per minute per (IP, username): enough for typos, not for guessing. */
+export const LOGIN_RATE_LIMIT = { limit: 5, ttl: 60_000 };
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +29,9 @@ export class AuthController {
   ) {}
 
   @HttpCode(HttpStatus.OK)
+  // Throttle first: limit attempts before any validation or bcrypt work
+  @UseGuards(LoginThrottlerGuard)
+  @Throttle({ default: LOGIN_RATE_LIMIT })
   @Post('login')
   async login(
     // Validated before this method runs: invalid bodies get a 400
