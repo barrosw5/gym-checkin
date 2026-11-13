@@ -1,10 +1,8 @@
+import { Link } from "react-router-dom";
 import { useDashboard } from "../hooks/useDashboard";
 
 export default function Dashboard() {
-  const { user, loading, logout } = useDashboard();
-
-  if (loading) return <p style={{ textAlign: "center" }}>A carregar...</p>;
-  if (!user) return null; // Fallback just in case
+  const { user, isStaff, logout } = useDashboard();
 
   return (
     <div
@@ -21,6 +19,11 @@ export default function Dashboard() {
       <p>
         <strong>Role:</strong> {user.role}
       </p>
+      {isStaff && (
+        <p>
+          <Link to="/reception">Painel da receção</Link>
+        </p>
+      )}
 
       <button
         onClick={logout}
