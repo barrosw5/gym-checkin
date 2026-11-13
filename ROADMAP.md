@@ -200,7 +200,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 
 - [x] Schema Prisma e migrações (incluindo o índice parcial)
 - [x] Seed com utilizadores (aluno, receção, admin)
-- [ ] Seed com sessões falsas e linha `Settings` (capacidade, métodos ativos)
+- [x] Seed com sessões falsas e linha `Settings` (capacidade, métodos ativos)
 - [x] Login/logout com cookie `httpOnly` (backend e frontend)
 - [x] Rotas protegidas por papel: `RolesGuard` + decorator `@Roles()` no backend, e rota protegida no frontend
 - [x] `GET /auth/me` e o ecrã de login (backend e frontend)
