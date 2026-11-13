@@ -8,6 +8,7 @@ import type { AuthService } from './auth.service.js';
 describe('AuthController', () => {
   const validateUser = vi.fn();
   const login = vi.fn();
+  const getProfile = vi.fn();
   const getConfig = vi.fn();
   let controller: AuthController;
   let res: {
@@ -18,7 +19,7 @@ describe('AuthController', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     controller = new AuthController(
-      { validateUser, login } as unknown as AuthService,
+      { validateUser, login, getProfile } as unknown as AuthService,
       { get: getConfig } as unknown as ConfigService,
     );
     res = { cookie: vi.fn(), clearCookie: vi.fn() };
@@ -73,6 +74,22 @@ describe('AuthController', () => {
         ),
       ).rejects.toThrow(UnauthorizedException);
       expect(res.cookie).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getMe', () => {
+    it('loads the profile of the authenticated user', async () => {
+      const profile = { id: 'u1', username: 'joao' };
+      getProfile.mockResolvedValue(profile);
+
+      const result = await controller.getMe({
+        userId: 'u1',
+        username: 'joao',
+        role: 'STUDENT',
+      });
+
+      expect(getProfile).toHaveBeenCalledWith('u1');
+      expect(result).toBe(profile);
     });
   });
 

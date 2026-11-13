@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import type { Role } from '@prisma/client';
 import type { Request } from 'express';
+import type { AuthUser } from './auth-user.js';
 import { ROLES_KEY } from './roles.decorator.js';
 
 /**
@@ -28,7 +29,7 @@ export class RolesGuard implements CanActivate {
     if (!required || required.length === 0) return true;
 
     const user = context.switchToHttp().getRequest<Request>().user as
-      { role?: Role } | undefined;
+      Partial<AuthUser> | undefined;
 
     // 403, not 401: the user is known, they just lack permission
     if (!user?.role || !required.includes(user.role)) {

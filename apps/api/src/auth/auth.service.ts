@@ -3,6 +3,7 @@ import type { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import type { JwtPayload } from './auth-user.js';
 
 /** A user as it may leave the service: never with the password hash. */
 export type SafeUser = Omit<User, 'passwordHash'>;
@@ -32,9 +33,14 @@ export class AuthService {
     return toSafeUser(user);
   }
 
-  async login(user: any) {
+  // Pick: only the fields the token needs, so callers can't pass a full User by mistake
+  async login(user: Pick<SafeUser, 'id' | 'username' | 'role'>) {
     // Generate the JWT "card" with user ID and role
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    const payload: JwtPayload = {
+      username: user.username,
+      sub: user.id,
+      role: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

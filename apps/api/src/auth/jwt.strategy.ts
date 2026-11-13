@@ -5,12 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { AuthService } from './auth.service.js';
 
-/** What AuthService.login() puts inside the token. */
-interface JwtPayload {
-  sub: string;
-  username: string;
-  role: string;
-}
+import type { AuthUser, JwtPayload } from './auth-user.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -31,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Runs after the signature and expiry are verified. A valid signature is not
   // enough: the user may have been deactivated since the token was issued.
-  async validate(payload: JwtPayload) {
+  async validate(payload: JwtPayload): Promise<AuthUser> {
     const user = await this.authService.getActiveUser(payload.sub);
     // Role from the DB, not from the token: role changes apply immediately
     return { userId: user.id, username: user.username, role: user.role };
