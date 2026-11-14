@@ -1,18 +1,5 @@
 import { ClosedBy, SessionMethod, type Prisma } from '@prisma/client';
 
-/**
- * Default row of the Settings singleton. The API reads it by this id;
- * there is never more than one row.
- */
-export const DEFAULT_SETTINGS = {
-  id: 'global',
-  capacity: 10,
-  autoCloseHours: 2,
-  // Only the simple method exists until Phase 3 (QR) and Phase 4 (approval)
-  enabledMethods: [SessionMethod.SIMPLE],
-  qrWindowSeconds: 30,
-} satisfies Prisma.SettingsCreateInput;
-
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
