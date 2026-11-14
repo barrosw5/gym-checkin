@@ -1,10 +1,6 @@
 import { PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import {
-  DEFAULT_SETTINGS,
-  buildFakeSessions,
-  seededRandom,
-} from './seed-data.js';
+import { buildFakeSessions, seededRandom } from './seed-data.js';
 
 const prisma = new PrismaClient();
 
@@ -70,18 +66,7 @@ async function main() {
     console.log(`Seeded ${user.role} user "${user.username}"`);
   }
 
-  await seedSettings();
   await seedFakeSessions('joaosilva');
-}
-
-async function seedSettings() {
-  await prisma.settings.upsert({
-    where: { id: DEFAULT_SETTINGS.id },
-    // Empty update: re-running the seed must not undo what an admin changed
-    update: {},
-    create: DEFAULT_SETTINGS,
-  });
-  console.log('Seeded settings');
 }
 
 /**
@@ -97,8 +82,9 @@ async function seedFakeSessions(username: string) {
     return;
   }
 
+  // The Settings row is created by a migration, not by the seed
   const settings = await prisma.settings.findUniqueOrThrow({
-    where: { id: DEFAULT_SETTINGS.id },
+    where: { id: 'global' },
   });
   const sessions = buildFakeSessions({
     userId: user.id,

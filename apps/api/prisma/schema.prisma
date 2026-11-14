@@ -20,6 +20,15 @@ enum SessionMethod {
   MANUAL
 }
 
+// Ways a student can open a session (Strategy pattern in the API).
+// Separate from SessionMethod: MANUAL is an admin correction, never something
+// the residence can "enable".
+enum CheckinMethod {
+  SIMPLE
+  SCREEN_QR
+  RECEPTION_APPROVAL
+}
+
 enum ClosedBy {
   USER
   RECEPTION
@@ -59,10 +68,13 @@ model CheckinRequest {
   decidedAt   DateTime?
 }
 
+// Singleton: exactly one row, id "global", created by a migration so every
+// environment has it without running the seed. CHECK constraints in the
+// migration enforce the single row and positive values.
 model Settings {
-  id              String   @id @default("global")
-  capacity        Int      @default(10)
-  autoCloseHours  Int      @default(2)
-  enabledMethods  String[]
-  qrWindowSeconds Int      @default(30)
+  id              String          @id @default("global")
+  capacity        Int             @default(10)
+  autoCloseHours  Int             @default(2)
+  enabledMethods  CheckinMethod[] @default([SIMPLE])
+  qrWindowSeconds Int             @default(30)
 }
