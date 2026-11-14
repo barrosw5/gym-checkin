@@ -1,0 +1,76 @@
+import {
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
+import { type CheckinMethod, Prisma, SessionMethod } from '@prisma/client';
+import type { CheckinInput } from '@gym-checkin/shared';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { SettingsService } from '../settings/settings.service.js';
+import {
+  CHECKIN_METHOD_STRATEGIES,
+  type CheckinMethodStrategy,
+} from './checkin-method.strategy.js';
+
+// Record over the enum: adding a CheckinMethod without saying how its
+// sessions are recorded is a compile error, not a runtime surprise
+const SESSION_METHOD: Record<CheckinMethod, SessionMethod> = {
+  SIMPLE: SessionMethod.SIMPLE,
+  SCREEN_QR: SessionMethod.SCREEN_QR,
+  RECEPTION_APPROVAL: SessionMethod.RECEPTION_APPROVAL,
+};
+
+// Prisma's code for a unique constraint violation
+const UNIQUE_VIOLATION = 'P2002';
+
+/** Opened session as returned to the client (no user data). */
+export interface CheckinResult {
+  id: string;
+  entryAt: Date;
+  method: SessionMethod;
+}
+
+@Injectable()
+export class CheckinService {
+  private readonly strategies: Map<CheckinMethod, CheckinMethodStrategy>;
+
+  constructor(
+    private prisma: PrismaService,
+    private settings: SettingsService,
+    @Inject(CHECKIN_METHOD_STRATEGIES) strategies: CheckinMethodStrategy[],
+  ) {
+    this.strategies = new Map(strategies.map((s) => [s.method, s]));
+  }
+
+  async checkIn(userId: string, input: CheckinInput): Promise<CheckinResult> {
+    const { enabledMethods } = await this.settings.get();
+    const strategy = this.strategies.get(input.method);
+    // Enabled in Settings but not implemented yet (e.g. SCREEN_QR before
+    // Phase 3) is treated the same as disabled: the method is not available
+    if (!enabledMethods.includes(input.method) || !strategy) {
+      throw new ForbiddenException('Check-in method not available');
+    }
+
+    // Method-specific proof of presence (no-op for SIMPLE)
+    await strategy.verify({ userId, input });
+
+    try {
+      return await this.prisma.session.create({
+        data: { userId, method: SESSION_METHOD[input.method] },
+        select: { id: true, entryAt: true, method: true },
+      });
+    } catch (err) {
+      // No "is there an open session?" query first: two quick taps would both
+      // pass it (race condition). The partial unique index
+      // one_open_session_per_user is the single source of truth.
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === UNIQUE_VIOLATION
+      ) {
+        throw new ConflictException('You are already checked in');
+      }
+      throw err;
+    }
+  }
+}
