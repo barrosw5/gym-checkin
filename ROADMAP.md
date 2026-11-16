@@ -254,7 +254,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 - [x] Pedidos pendentes com expiração
 - [x] Lista em tempo real e aprovar/rejeitar
-- [ ] Correção manual de sessões e gestão de utilizadores (import CSV)
+- [x] Correção manual de sessões e gestão de utilizadores (import CSV)
 - [x] Remover o método `SIMPLE` (sem prova de presença): ficam só o QR e a aprovação da receção; as sessões antigas `SIMPLE` mantêm-se no histórico
 
 ### Fase 5: Estatísticas
