@@ -10,6 +10,9 @@ async function logIn(page: Page, { username, password }: { username: string; pas
   await page.getByLabel("Username").fill(username);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Entrar" }).click();
+  // Fail here, clearly, if the login was refused (wrong password, or the
+  // 5-per-minute rate limit after many runs in a row)
+  await expect(page, `login as ${username} failed`).not.toHaveURL(/\/login/);
 }
 
 /** People inside now, read the way a screen reader does: "3 de 10 lugares ocupados". */
@@ -54,4 +57,21 @@ test("a student asks to enter, reception accepts, the student leaves", async ({ 
   await student.getByRole("button", { name: "Sair do ginásio" }).click();
   await expect(student.getByText("Não estás no ginásio")).toBeVisible();
   await expect.poll(() => occupancy(student)).toBe(before);
+});
+
+/**
+ * Students use phones: no page may scroll sideways. Caught a real bug once
+ * (the heatmap's screen-reader text escaped its scroll box and widened the
+ * whole statistics page), so it stays checked.
+ */
+test("the student pages fit a phone screen", async ({ browser }) => {
+  const page = await (await browser.newContext({ viewport: { width: 360, height: 740 } })).newPage();
+  await logIn(page, STUDENT);
+
+  for (const path of ["/dashboard", "/stats"]) {
+    await page.goto(path);
+    await page.getByRole("img", { name: /lugares ocupados/ }).or(page.getByRole("table")).first().waitFor();
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width, `${path} scrolls sideways`).toBeLessThanOrEqual(360);
+  }
 });
