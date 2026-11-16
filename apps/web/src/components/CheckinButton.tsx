@@ -1,10 +1,7 @@
 import type { CSSProperties } from "react";
+import { formatTime } from "../core/utils/format";
 import { useCheckin } from "../hooks/useCheckin";
 
-const timeFormat = new Intl.DateTimeFormat("pt-PT", {
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 const buttonStyle = (color: string, busy: boolean): CSSProperties => ({
   padding: "16px 32px",
@@ -39,7 +36,7 @@ export default function CheckinButton() {
         <>
           <p>
             Estás no ginásio desde as{" "}
-            {timeFormat.format(state.session.entryAt)}.
+            {formatTime(state.session.entryAt)}.
           </p>
           <button
             onClick={leave}

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { AdminUser } from "../core/types/adminUsers";
 import { useUsersAdmin } from "../hooks/useUsersAdmin";
+import UserRow from "./UserRow";
 
 const EXAMPLE = "nome;quarto;username\nAna Silva;101;ana.silva\nRui Costa;102;rui.costa";
 
@@ -115,51 +115,5 @@ export default function UsersAdmin() {
         </p>
       )}
     </section>
-  );
-}
-
-function UserRow(props: {
-  user: AdminUser;
-  busy: boolean;
-  onUpdate: (body: { active?: boolean; room?: string }) => void;
-}) {
-  const { user, busy, onUpdate } = props;
-  const [room, setRoom] = useState(user.room);
-
-  return (
-    <li
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "10px",
-        alignItems: "center",
-        padding: "10px 0",
-        borderBottom: "1px solid #e2e8f0",
-        opacity: user.active ? 1 : 0.6,
-      }}
-    >
-      <span style={{ flex: "1 1 220px" }}>
-        <strong>{user.name}</strong> · {user.username} · {user.role}
-        {!user.active && " · desativada"}
-      </span>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onUpdate({ room });
-        }}
-        style={{ display: "flex", gap: "6px" }}
-      >
-        <label>
-          Quarto{" "}
-          <input value={room} onChange={(e) => setRoom(e.target.value)} size={6} required />
-        </label>
-        <button type="submit" disabled={busy || room.trim() === user.room}>
-          Guardar
-        </button>
-      </form>
-      <button onClick={() => onUpdate({ active: !user.active })} disabled={busy}>
-        {user.active ? "Desativar" : "Reativar"}
-      </button>
-    </li>
   );
 }

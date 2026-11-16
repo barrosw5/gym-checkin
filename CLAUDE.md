@@ -65,6 +65,7 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 - `core/services/`: business logic. Processes data before sending it to the API or after receiving it.
 - `core/api/`: pure HTTP calls using `fetch` or `axios` (e.g. `authApi.ts`). No React state.
 - `core/types/`: shared TypeScript interfaces and types.
+- `core/utils/`: pure presentation helpers (e.g. `formatTime`), no state and no API. The only `core/` folder components may import directly; services are reached only through the component's hook.
 
 ### File naming
 

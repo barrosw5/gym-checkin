@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { toLocalInput } from "../core/services/sessionsTodayService";
-import type { AdminSession } from "../core/types/adminSessions";
+import { formatTime } from "../core/utils/format";
 import { useSessionsToday } from "../hooks/useSessionsToday";
-
-const time = new Intl.DateTimeFormat("pt-PT", { hour: "2-digit", minute: "2-digit" });
+import SessionCorrectionForm from "./SessionCorrectionForm";
 
 /** Reception panel: who came today, close a session, fix wrong times. */
 export default function SessionsToday() {
@@ -31,7 +29,7 @@ export default function SessionsToday() {
                 <strong>{s.name}</strong> · Quarto {s.room}
                 <br />
                 <small>
-                  {time.format(s.entryAt)} → {s.exitAt ? time.format(s.exitAt) : "dentro agora"}
+                  {formatTime(s.entryAt)} → {s.exitAt ? formatTime(s.exitAt) : "dentro agora"}
                   {s.closedBy === "AUTO" && " (fechada automaticamente)"}
                 </small>
               </span>
@@ -53,7 +51,7 @@ export default function SessionsToday() {
               </button>
             </div>
             {editing === s.id && (
-              <CorrectionForm
+              <SessionCorrectionForm
                 session={s}
                 busy={busyId === s.id}
                 onSave={async (entry, exit) => {
@@ -71,42 +69,5 @@ export default function SessionsToday() {
         </p>
       )}
     </section>
-  );
-}
-
-function CorrectionForm(props: {
-  session: AdminSession;
-  busy: boolean;
-  onSave: (entryLocal: string, exitLocal: string) => void;
-}) {
-  const { session, busy, onSave } = props;
-  const [entry, setEntry] = useState(toLocalInput(session.entryAt));
-  const [exit, setExit] = useState(session.exitAt ? toLocalInput(session.exitAt) : "");
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSave(entry, exit);
-      }}
-      style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}
-    >
-      <label>
-        Entrada{" "}
-        <input
-          type="datetime-local"
-          value={entry}
-          onChange={(e) => setEntry(e.target.value)}
-          required
-        />
-      </label>
-      <label>
-        Saída{" "}
-        <input type="datetime-local" value={exit} onChange={(e) => setExit(e.target.value)} />
-      </label>
-      <button type="submit" disabled={busy} style={{ padding: "8px 16px" }}>
-        Guardar
-      </button>
-    </form>
   );
 }

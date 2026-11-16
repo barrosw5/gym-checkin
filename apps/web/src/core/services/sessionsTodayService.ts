@@ -27,15 +27,6 @@ function errorMessage(err: unknown): string {
   return "Não foi possível guardar. Tenta outra vez.";
 }
 
-/** "YYYY-MM-DDTHH:mm" in local time: the format of <input type="datetime-local">. */
-export const toLocalInput = (date: Date): string => {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return (
-    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
-    `T${pad(date.getHours())}:${pad(date.getMinutes())}`
-  );
-};
-
 async function correct(id: string, body: SessionCorrection): Promise<void> {
   try {
     await adminSessionsApi.correct(id, body);

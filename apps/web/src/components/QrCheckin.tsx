@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
+import { formatTime } from "../core/utils/format";
 import { useQrCheckin } from "../hooks/useQrCheckin";
 import CheckinButton from "./CheckinButton";
 
-const timeFormat = new Intl.DateTimeFormat("pt-PT", {
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 /** Landing page of the reception QR (/c/<token>), built for phones. */
 export default function QrCheckin() {
@@ -30,7 +27,7 @@ export default function QrCheckin() {
             ✅
           </p>
           <h1>Entraste no ginásio</h1>
-          <p>Às {timeFormat.format(state.session.entryAt)}. Bom treino!</p>
+          <p>Às {formatTime(state.session.entryAt)}. Bom treino!</p>
           <p>Quando saíres, carrega em "Sair do ginásio" no início.</p>
         </div>
       )}

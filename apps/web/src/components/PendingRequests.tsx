@@ -1,10 +1,6 @@
+import { formatTimeWithSeconds } from "../core/utils/format";
 import { usePendingRequests } from "../hooks/usePendingRequests";
 
-const timeFormat = new Intl.DateTimeFormat("pt-PT", {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-});
 
 /** Reception panel: who is asking to enter, oldest first. */
 export default function PendingRequests() {
@@ -33,7 +29,7 @@ export default function PendingRequests() {
             <span style={{ flex: "1 1 200px" }}>
               <strong>{r.name}</strong> · Quarto {r.room}
               <br />
-              <small>Pedido às {timeFormat.format(r.createdAt)}</small>
+              <small>Pedido às {formatTimeWithSeconds(r.createdAt)}</small>
             </span>
             <button
               onClick={() => decide(r.id, "approve")}
