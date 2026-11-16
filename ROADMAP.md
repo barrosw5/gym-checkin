@@ -287,7 +287,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] RGPD e decisões de segurança em `docs/`
 - [x] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
 - [x] Vitest no frontend, a começar pela lógica das estatísticas
-- [ ] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)
+- [x] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)
 - [ ] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
 - [ ] `docker compose up`: API, web e PostgreSQL local com um só comando
 - [ ] Teste ponta a ponta do fluxo principal (Playwright), também no CI
