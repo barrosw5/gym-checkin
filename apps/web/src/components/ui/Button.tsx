@@ -22,9 +22,10 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  // sm stays 36 px: secondary row actions on the reception PC
-  sm: "h-9 px-3 text-sm",
-  // 44 px: the minimum touch target on a phone (WCAG 2.5.8)
+  // sm looks 36 px (compact row actions), but an invisible ::before adds 4 px
+  // above and below, so the area you can tap is still 44 px
+  sm: "relative h-9 px-3 text-sm before:absolute before:inset-x-0 before:-inset-y-1",
+  // 44 px: the touch target the project asks for (WCAG 2.5.5, "AAA")
   md: "h-11 px-4 text-[15px]",
   lg: "h-12 px-5 text-base",
 };

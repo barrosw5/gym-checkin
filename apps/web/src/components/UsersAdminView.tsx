@@ -52,7 +52,8 @@ export default function UsersAdminView({
                 const file = e.target.files?.[0];
                 if (file) setCsv(await file.text());
               }}
-              className="mt-1.5 block w-full text-sm text-slate-600 file:mr-3 file:h-9 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:font-medium file:text-slate-900 hover:file:bg-slate-200"
+              // py-1 around the 36 px button: the whole input (44 px) opens the picker
+              className="mt-1.5 block w-full py-1 text-sm text-slate-600 file:mr-3 file:h-9 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:font-medium file:text-slate-900 hover:file:bg-slate-200"
             />
           </label>
           <textarea

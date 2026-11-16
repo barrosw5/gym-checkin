@@ -39,16 +39,16 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
         }}
         className="flex items-center gap-2"
       >
-        <label className="sr-only" htmlFor={`room-${user.id}`}>
-          {t("users.roomLabel")}
+        {/* The label wraps the input: a tap on its 4 px padding focuses it too (44 px in all) */}
+        <label className="py-1">
+          <span className="sr-only">{t("users.roomLabel")}</span>
+          <input
+            value={room}
+            onChange={(e) => setRoom(e.target.value)}
+            required
+            className="block h-9 w-20 rounded-lg bg-white px-2 text-sm tabular-nums ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
+          />
         </label>
-        <input
-          id={`room-${user.id}`}
-          value={room}
-          onChange={(e) => setRoom(e.target.value)}
-          required
-          className="h-9 w-20 rounded-lg bg-white px-2 text-sm tabular-nums ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
-        />
         <Button size="sm" variant="secondary" type="submit" disabled={busy || room.trim() === user.room}>
           {t("common.save")}
         </Button>
