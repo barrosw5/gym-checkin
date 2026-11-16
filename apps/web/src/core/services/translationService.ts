@@ -20,16 +20,18 @@ const isLocale = (value: unknown): value is Locale =>
   typeof value === "string" && (LOCALES as readonly string[]).includes(value);
 
 export const translationService = {
-  /** Saved choice, else the browser's language, else Portuguese. */
+  /**
+   * Saved choice, else Portuguese. The browser language is ignored on purpose:
+   * the residence works in Portuguese, so that is what a first visit shows.
+   */
   getInitialLocale: (): Locale => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (isLocale(saved)) return saved;
     } catch {
-      // Storage blocked (private mode): fall through to the browser language
+      // Storage blocked (private mode): fall back to the default
     }
-    const browser = navigator.language.slice(0, 2).toLowerCase();
-    return isLocale(browser) ? browser : DEFAULT_LOCALE;
+    return DEFAULT_LOCALE;
   },
 
   saveLocale: (locale: Locale): void => {
