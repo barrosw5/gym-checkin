@@ -9,3 +9,13 @@ export interface OpenSession {
   id: string;
   entryAt: Date;
 }
+
+export type CheckinRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "EXPIRED";
+
+// Mirrors the API's MyCheckinRequest (method B: asking reception)
+export interface MyCheckinRequestDto {
+  id: string;
+  status: CheckinRequestStatus;
+  createdAt: string;
+  expiresAt: string;
+}

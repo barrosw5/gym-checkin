@@ -1,0 +1,28 @@
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
+import type { AuthUser } from '../auth/auth-user.js';
+import { CurrentUser } from '../auth/current-user.decorator.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { UserThrottlerGuard } from '../common/user-throttler.guard.js';
+import { CHECKIN_RATE_LIMIT } from './checkin.controller.js';
+import { CheckinRequestService } from './checkin-request.service.js';
+
+/** The student's side of method B. */
+@Controller('checkin/requests')
+@UseGuards(JwtAuthGuard, UserThrottlerGuard)
+export class CheckinRequestController {
+  constructor(private requests: CheckinRequestService) {}
+
+  // 201: a new request resource. Same limit as check-in (spam protection)
+  @Throttle({ default: CHECKIN_RATE_LIMIT })
+  @Post()
+  create(@CurrentUser() user: AuthUser) {
+    return this.requests.create(user.userId);
+  }
+
+  // Polled every few seconds while the student waits
+  @Get('current')
+  async current(@CurrentUser() user: AuthUser) {
+    return { request: await this.requests.getLatest(user.userId) };
+  }
+}

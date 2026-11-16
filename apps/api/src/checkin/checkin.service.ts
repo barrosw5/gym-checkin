@@ -97,6 +97,15 @@ export class CheckinService {
     return session;
   }
 
+  /**
+   * Methods a student can use right now, so the UI shows the right button.
+   * Not secret (no personal data); every action still re-checks Settings.
+   */
+  async getEnabledMethods(): Promise<CheckinMethod[]> {
+    const { enabledMethods } = await this.settings.get();
+    return enabledMethods;
+  }
+
   /** The user's open session, or null when they are not in the gym. */
   getOpenSession(userId: string): Promise<OpenSession | null> {
     return this.prisma.session.findFirst({

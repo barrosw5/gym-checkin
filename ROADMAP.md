@@ -252,8 +252,8 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 ### Fase 4: Painel de receção (método B)
 
-- [ ] Pedidos pendentes com expiração
-- [ ] Lista em tempo real e aprovar/rejeitar
+- [x] Pedidos pendentes com expiração
+- [x] Lista em tempo real e aprovar/rejeitar
 - [ ] Correção manual de sessões e gestão de utilizadores (import CSV)
 - [ ] Remover o método `SIMPLE` (sem prova de presença): ficam só o QR e a aprovação da receção; as sessões antigas `SIMPLE` mantêm-se no histórico
 

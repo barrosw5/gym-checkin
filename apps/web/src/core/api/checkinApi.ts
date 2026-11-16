@@ -1,5 +1,9 @@
-import { API_PREFIX, type CheckinInput } from "@gym-checkin/shared";
-import type { OpenSessionDto } from "../types/checkin";
+import {
+  API_PREFIX,
+  type CheckinInput,
+  type CheckinMethodName,
+} from "@gym-checkin/shared";
+import type { MyCheckinRequestDto, OpenSessionDto } from "../types/checkin";
 import { toHttpError } from "./httpError";
 
 const BASE_URL = `/${API_PREFIX}`;
@@ -19,6 +23,26 @@ export const checkinApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+    if (!response.ok) throw await toHttpError(response);
+    return response.json();
+  },
+
+  getMethods: async (): Promise<{ enabledMethods: CheckinMethodName[] }> => {
+    const response = await fetch(`${BASE_URL}/checkin/methods`);
+    if (!response.ok) throw await toHttpError(response);
+    return response.json();
+  },
+
+  createRequest: async (): Promise<MyCheckinRequestDto> => {
+    const response = await fetch(`${BASE_URL}/checkin/requests`, {
+      method: "POST",
+    });
+    if (!response.ok) throw await toHttpError(response);
+    return response.json();
+  },
+
+  getMyRequest: async (): Promise<{ request: MyCheckinRequestDto | null }> => {
+    const response = await fetch(`${BASE_URL}/checkin/requests/current`);
     if (!response.ok) throw await toHttpError(response);
     return response.json();
   },

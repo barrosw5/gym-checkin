@@ -1,6 +1,11 @@
 import { checkinApi } from "../api/checkinApi";
 import { HttpError } from "../api/httpError";
-import type { OpenSession, OpenSessionDto } from "../types/checkin";
+import type { CheckinMethodName } from "@gym-checkin/shared";
+import type {
+  CheckinRequestStatus,
+  OpenSession,
+  OpenSessionDto,
+} from "../types/checkin";
 
 const toOpenSession = (dto: OpenSessionDto): OpenSession => ({
   id: dto.id,
@@ -46,7 +51,6 @@ export const checkinService = {
     return session ? toOpenSession(session) : null;
   },
 
-  // SIMPLE is the only method until Phase 3 (QR) adds a token to the request
   // Dashboard button: the SIMPLE method (no proof of presence)
   checkIn: async (): Promise<OpenSession> =>
     toOpenSession(await withMessage(checkinApi.checkIn({ method: "SIMPLE" }))),
@@ -65,4 +69,27 @@ export const checkinService = {
   },
 
   checkOut: async (): Promise<void> => withMessage(checkinApi.checkOut()),
+
+  /** Which buttons to show; the API re-checks on every action anyway. */
+  getEnabledMethods: async (): Promise<CheckinMethodName[]> =>
+    (await withMessage(checkinApi.getMethods())).enabledMethods,
+
+  /** Method B: ask reception to let the user in. */
+  requestEntry: async (): Promise<void> => {
+    try {
+      await checkinApi.createRequest();
+    } catch (err) {
+      if (err instanceof HttpError && err.status === 409) {
+        throw new Error(
+          "Já tens um pedido à espera, ou já estás no ginásio.",
+          { cause: err },
+        );
+      }
+      throw new Error(errorMessage(err), { cause: err });
+    }
+  },
+
+  /** Status of the user's latest request, or null if they never asked. */
+  getMyRequestStatus: async (): Promise<CheckinRequestStatus | null> =>
+    (await withMessage(checkinApi.getMyRequest())).request?.status ?? null,
 };
