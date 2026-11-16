@@ -64,6 +64,12 @@ describe('check-in requests (HTTP)', () => {
     expect(service.create).toHaveBeenCalledWith('u1');
   });
 
+  it.each(['RECEPTION', 'ADMIN'])('refuses a request from %s with 403', async (role) => {
+    await http().post('/api/checkin/requests').set('X-Test-Role', role).expect(403);
+
+    expect(service.create).not.toHaveBeenCalled();
+  });
+
   it('GET /api/checkin/requests/current wraps the latest request', async () => {
     service.getLatest.mockResolvedValue(null);
 

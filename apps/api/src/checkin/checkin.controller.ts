@@ -11,7 +11,10 @@ import { Throttle } from '@nestjs/throttler';
 import { checkinSchema, type CheckinInput } from '@gym-checkin/shared';
 import type { AuthUser } from '../auth/auth-user.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { Role } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { RolesGuard } from '../auth/roles.guard.js';
 import { UserThrottlerGuard } from '../common/user-throttler.guard.js';
 import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { CheckinService } from './checkin.service.js';
@@ -20,8 +23,10 @@ import { CheckinService } from './checkin.service.js';
 export const CHECKIN_RATE_LIMIT = { limit: 10, ttl: 60_000 };
 
 @Controller()
-// JWT first: the throttler counts per user, so it needs req.user
-@UseGuards(JwtAuthGuard, UserThrottlerGuard)
+// JWT first: the throttler counts per user, so it needs req.user.
+// Students only: staff run the gym, they don't train in it through the app
+@UseGuards(JwtAuthGuard, RolesGuard, UserThrottlerGuard)
+@Roles(Role.STUDENT)
 export class CheckinController {
   constructor(private checkinService: CheckinService) {}
 
