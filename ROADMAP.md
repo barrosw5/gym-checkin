@@ -291,7 +291,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
 - [x] `docker compose up`: API, web e PostgreSQL local com um só comando
 - [x] Teste ponta a ponta do fluxo principal (Playwright), também no CI
-- [ ] README final: problema, diagrama, screenshots/GIF e instruções com `docker compose up`
+- [x] README final: problema, diagrama, screenshots (geradas com `pnpm screenshots`) e instruções com `docker compose up`
 
 ### Fase 8: Piloto na residência (opcional)
 
