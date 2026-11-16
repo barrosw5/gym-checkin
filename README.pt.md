@@ -13,7 +13,7 @@ Contas públicas de demonstração (não podem mudar a password; a conta de admi
 | Estudante | `joaosilva` | `estudante-demo` | pedir entrada, ler o QR, sair (no telemóvel) |
 | Receção | `rececao` | `rececao-demo` | aceitar pedidos, fechar sessões, abrir o ecrã do QR (no PC) |
 
-Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md).
+Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md). Proteção de dados e decisões de segurança: [docs/seguranca-e-privacidade.md](docs/seguranca-e-privacidade.md).
 
 ## Destaques
 

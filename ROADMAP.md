@@ -284,7 +284,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 ### Fase 7: Polimento e GitHub
 
-- [ ] RGPD e decisões de segurança em `docs/`
+- [x] RGPD e decisões de segurança em `docs/`
 - [ ] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
 - [ ] Vitest no frontend, a começar pela lógica das estatísticas
 - [ ] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)

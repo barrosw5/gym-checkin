@@ -13,7 +13,7 @@ Public demo accounts (they cannot change their password; the admin account is pr
 | Student | `joaosilva` | `estudante-demo` | ask to enter, scan the QR, leave (on a phone) |
 | Reception | `rececao` | `rececao-demo` | accept requests, close sessions, open the QR screen (on a PC) |
 
-Full plan and phase status: [ROADMAP.md](ROADMAP.md) (in Portuguese).
+Full plan and phase status: [ROADMAP.md](ROADMAP.md) (in Portuguese). Data protection and security decisions: [docs/security-and-privacy.md](docs/security-and-privacy.md).
 
 ## Highlights
 
