@@ -75,7 +75,7 @@ jobs:
   docker:
     # Proves `docker compose up` works for whoever clones the repo: builds the
     # image, starts the app with a real PostgreSQL and uses it from outside
-    name: Docker (compose up)
+    name: Docker (compose up, e2e)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -90,6 +90,21 @@ jobs:
             -d '{"username":"joaosilva","password":"estudante-demo"}' http://localhost:3000/api/auth/login
           curl --fail --silent --cookie cookies.txt 'http://localhost:3000/api/stats/summary?range=month' \
             | node -e "let s='';process.stdin.on('data',(d)=>(s+=d)).on('end',()=>{const v=JSON.parse(s).duration.visits;console.log('visits:',v);process.exit(v>0?0:1)})"
+      # End-to-end: a real browser runs the main flow against this same app
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Playwright
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Student asks, reception accepts, student leaves (Playwright)
+        working-directory: apps/web
+        env:
+          E2E_BASE_URL: http://localhost:3000
+        run: pnpm e2e
       - name: Logs (on failure)
         if: failure()
         run: docker compose logs

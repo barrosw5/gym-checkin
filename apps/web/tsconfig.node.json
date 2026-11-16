@@ -19,5 +19,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  // Node-side TypeScript: build config and the end-to-end tests (type-checked by tsc -b)
+  "include": ["vite.config.ts", "playwright.config.ts", "e2e"]
 }
