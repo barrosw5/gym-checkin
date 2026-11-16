@@ -281,7 +281,6 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Cálculo de ocupação por intervalos (por exemplo de 15 em 15 minutos)
 - [x] Heatmap por dia da semana e hora, horas de pico, duração média
 - [x] Ecrã "melhor altura para ir"
-- [ ] Extras: "vou às 18h", previsão simples com base no histórico
 
 ### Fase 7: Polimento e GitHub
 
