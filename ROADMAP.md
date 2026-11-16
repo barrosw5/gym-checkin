@@ -269,8 +269,8 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
 - [x] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com Tailwind em vez de estilos inline
 - [x] Identidade visual do PIO XII (ver passos abaixo)
-- [ ] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os residentes o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
-- [ ] Acessibilidade (contraste WCAG AA, teclado, labels, botões com área de toque adequada)
+- [x] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os residentes o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
+- [x] Acessibilidade (contraste WCAG AA, teclado, labels, botões com área de toque adequada)
 
 **Identidade visual do PIO XII (passos, por ordem):**
 
