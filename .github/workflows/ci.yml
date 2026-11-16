@@ -46,6 +46,8 @@ jobs:
       - run: pnpm build
 
   web:
+    # The name is a required check in branch protection: renaming it would
+    # leave PRs waiting for a check that never comes (tests run here anyway)
     name: Web (lint, build)
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -65,6 +67,46 @@ jobs:
       # The web app imports the compiled shared package (dist/), so build it first
       - run: pnpm --filter @gym-checkin/shared build
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
       # A broken story (bad import, wrong props) fails here, not in a demo
       - run: pnpm build-storybook --quiet
+
+  docker:
+    # Proves `docker compose up` works for whoever clones the repo: builds the
+    # image, starts the app with a real PostgreSQL and uses it from outside
+    name: Docker (compose up, e2e)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      # --wait: returns once both healthchecks pass (migrations and seeds done)
+      - run: docker compose up --build --detach --wait
+      - name: The web app is served
+        run: curl --fail --silent http://localhost:3000/ | grep -q '<div id="root">'
+      - name: A README account logs in and sees the demo statistics
+        run: |
+          curl --fail --silent --cookie-jar cookies.txt -H 'Content-Type: application/json' \
+            -d '{"username":"joaosilva","password":"estudante-demo"}' http://localhost:3000/api/auth/login
+          curl --fail --silent --cookie cookies.txt 'http://localhost:3000/api/stats/summary?range=month' \
+            | node -e "let s='';process.stdin.on('data',(d)=>(s+=d)).on('end',()=>{const v=JSON.parse(s).duration.visits;console.log('visits:',v);process.exit(v>0?0:1)})"
+      # End-to-end: a real browser runs the main flow against this same app
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Playwright
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Student asks, reception accepts, student leaves (Playwright)
+        working-directory: apps/web
+        env:
+          E2E_BASE_URL: http://localhost:3000
+        run: pnpm e2e
+      - name: Logs (on failure)
+        if: failure()
+        run: docker compose logs
+      - if: always()
+        run: docker compose down --volumes

@@ -1,0 +1,12 @@
+# Built inside the image: never copy local installs or builds (they may be
+# for Windows, and they make the build context huge)
+**/node_modules
+**/dist
+**/storybook-static
+**/tsconfig*.tsbuildinfo
+**/coverage
+# Secrets stay out of the image
+**/.env
+**/.env.*
+!**/.env.example
+.git

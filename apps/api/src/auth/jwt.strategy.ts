@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { AuthService } from './auth.service.js';
 
 import type { AuthUser, JwtPayload } from './auth-user.js';
+import { AUTH_COOKIE } from './auth.constants.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.cookies?.Authentication;
+          return request?.cookies?.[AUTH_COOKIE];
         },
       ]),
       ignoreExpiration: false,

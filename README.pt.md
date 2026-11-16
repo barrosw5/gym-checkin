@@ -2,47 +2,83 @@
 
 [English](README.md) · **Português**
 
-Sistema de registo de entradas e saídas no ginásio da residência universitária PIO XII: o estudante regista a entrada e a saída no telemóvel e toda a gente vê quantas pessoas estão no ginásio em tempo real.
+Uma app de check-in para o ginásio da residência PIO XII: sabe quão cheio está o ginásio antes de desceres, e entra e sai pelo telemóvel.
 
-**Demo:** <https://gym-checkin-pjyi.onrender.com> (só dados falsos; a primeira resposta pode demorar se o serviço estiver a acordar)
+**Demo:** <https://gym-checkin-pjyi.onrender.com> (dados falsos; o primeiro carregamento pode demorar uns segundos)
 
-Contas públicas de demonstração (não podem mudar a password; a conta de admin é privada):
+| Role | Username | Password |
+| --- | --- | --- |
+| Estudante | `joaosilva` | `estudante-demo` |
+| Receção | `rececao` | `rececao-demo` |
 
-| Papel | Username | Password | Experimenta |
-| --- | --- | --- | --- |
-| Estudante | `joaosilva` | `estudante-demo` | pedir entrada, ler o QR, sair (no telemóvel) |
-| Receção | `rececao` | `rececao-demo` | aceitar pedidos, fechar sessões, abrir o ecrã do QR (no PC) |
+| Estudante (telemóvel) | Estatísticas (telemóvel) |
+| --- | --- |
+| <img src="docs/screenshots/student-phone.png" alt="Início do estudante: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Estatísticas: hoje sobre o dia típico, duração das visitas, heatmap dia da semana por hora" width="300"> |
 
-Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md).
+| Balcão da receção (PC) | Ecrã do QR na receção |
+| --- | --- |
+| <img src="docs/screenshots/reception-desk.png" alt="Receção: ocupação, pedidos de entrada, visitas de hoje numa linha do tempo" width="420"> | <img src="docs/screenshots/qr-screen.png" alt="Código QR rotativo em ecrã inteiro" width="420"> |
 
-## Destaques
+## Porquê
 
-- **Estatísticas ponderadas pelo tempo.** A ocupação é a média por intervalo de 15 minutos, pesada pelo tempo que cada pessoa lá esteve: sair às 18:01 soma 1/15 de pessoa às 18:00, não uma inteira. Dia típico, heatmap dia da semana × hora e duração média/mediana das visitas, para hoje, 7, 30 ou 90 dias.
-- **Hora local bem feita.** As estatísticas agrupam pela hora de Lisboa sem biblioteca de datas, e os dias da mudança de hora (23 ou 25 horas) estão cobertos por testes.
-- **Hoje vs um dia típico.** A ocupação de hoje é uma linha em degraus exata (um degrau em cada entrada e saída), desenhada por cima do dia típico do período escolhido, mais as horas com menos gente que ainda faltam hoje, pelo histórico desse dia da semana.
-- **Privacidade desde o desenho.** Os estudantes só veem agregados: a consulta à base de dados lê as horas de entrada e saída, nunca quem. A receção, que já vê os nomes, tem também o dia de hoje numa linha do tempo, com uma barra por visita.
-- **Leve no telemóvel.** A biblioteca de gráficos só é carregada quando alguém abre as estatísticas, por isso as páginas do check-in continuam pequenas.
+Para usar o ginásio da residência é preciso ir buscar a chave à receção e preencher uma folha em papel. O ginásio é pequeno e não há forma de saber quantas pessoas lá estão antes de descer. A folha em papel também não serve para estatísticas.
 
-## Stack
+## O que faz
 
-React + Vite (`apps/web`), NestJS + Prisma (`apps/api`), PostgreSQL na Neon, monorepo com pnpm.
+- **Vês quantas pessoas estão no ginásio agora**, em tempo real, no telemóvel.
+- **Entras** lendo o QR do ecrã da receção, ou pedindo à receção que te aceite. Uma foto do QR não funciona a partir do quarto: o código muda a cada 30 segundos.
+- **Sais** com um toque. Quem se esquece de sair é fechado automaticamente.
+- **Vês quando está mais calmo**: um dia típico, as horas com mais gente em cada dia da semana e a melhor altura para ir hoje.
+- **A receção** aceita pedidos, vê quem está lá dentro e as visitas de hoje numa linha do tempo, e corrige horas erradas.
+- **Funciona como uma app** no telemóvel (instalável), em português e inglês.
 
-## Correr localmente
+## Para quem programa
 
-Requisitos: Node 24 (ver `.node-version`) e pnpm (versão em `packageManager` no `package.json`).
+- **Regras na base de dados:** "uma visita aberta por pessoa" é um índice único, seguro mesmo com dois pedidos ao mesmo tempo.
+- **Estatísticas justas:** cada visita conta pelo tempo que a pessoa esteve mesmo lá dentro, na hora de Lisboa, incluindo os dias da mudança de hora.
+- **Privacidade desde o desenho:** os estudantes só veem contagens, nunca quem lá esteve ([segurança e privacidade](docs/seguranca-e-privacidade.md)).
+- **Testado de ponta a ponta:** cada pull request arranca a app inteira em Docker e um browser faz o fluxo principal.
+- **Acessível:** áreas de toque grandes, contraste WCAG AA, navegação por teclado, uma story no Storybook para cada parte do ecrã.
+
+```mermaid
+flowchart LR
+  phone["Telemóvel do estudante"] --> app
+  desk["PC da receção"] --> app
+  screen["Ecrã do QR"] -. lido pelo .-> phone
+  app["API NestJS + app React"] --> db[("PostgreSQL")]
+```
+
+React + Vite + Tailwind, NestJS + Prisma, PostgreSQL, schemas zod partilhados pelos dois, monorepo com pnpm.
+
+## Experimentar no teu computador
+
+Com o [Docker](https://docs.docker.com/get-docker/):
+
+```bash
+docker compose up
+```
+
+Abre <http://localhost:3000> e entra com as contas acima (admin local: `admin` / `admin-local-only`). Vem com 90 dias de visitas falsas, por isso as estatísticas aparecem cheias.
+
+## Desenvolvimento
+
+Requisitos: Node 24 e pnpm.
 
 ```bash
 pnpm install
-pnpm --filter @gym-checkin/shared build   # a API e o web importam o resultado compilado
-cp apps/api/.env.example apps/api/.env   # preencher DATABASE_URL, JWT_SECRET e SEED_*
-pnpm --filter api db:seed                # cria/atualiza os utilizadores de teste
-pnpm --filter api start:dev              # API em http://localhost:3000/api
-pnpm --filter web dev                    # site em http://localhost:5173
+pnpm --filter @gym-checkin/shared build
+cp apps/api/.env.example apps/api/.env   # preencher DATABASE_URL, JWT_SECRET, QR_SECRET, SEED_*
+pnpm --filter api exec prisma migrate deploy
+pnpm --filter api db:seed                # as contas acima
+pnpm --filter api db:seed-demo           # opcional: 90 dias de visitas falsas
+pnpm --filter api start:dev              # API: http://localhost:3000/api
+pnpm --filter web dev                    # app: http://localhost:5173
 ```
 
-## Ambientes
+Verificações: `pnpm lint`, `pnpm test` e `pnpm build` em cada pacote, `pnpm storybook` e `pnpm e2e` em `apps/web`. O CI corre-as em cada pull request.
 
-| Ambiente | Onde corre | Base de dados |
-| --- | --- | --- |
-| Desenvolvimento | máquina local | Neon, branch `development` |
-| Demo | Render (deploy automático a cada merge na `main`) | Neon, branch `production` |
+## Documentação
+
+- [Documentação da API](https://gym-checkin-pjyi.onrender.com/api/docs) (interativa)
+- [Segurança e privacidade](docs/seguranca-e-privacidade.md)
+- [Roadmap](ROADMAP.md)

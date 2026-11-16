@@ -21,8 +21,10 @@ export default function StatsHeatmap({ heatmap, todayWeekday }: StatsHeatmapProp
   const max = Math.max(0, ...heatmap.flat().map((v) => v ?? 0));
 
   return (
-    // Scrolls sideways on narrow phones instead of squeezing 24 columns
-    <div className="-mx-1 overflow-x-auto px-1">
+    // Scrolls sideways on narrow phones instead of squeezing 24 columns.
+    // relative: the cells' sr-only text is position:absolute, and only a
+    // positioned scroll box clips it (without it the whole page scrolled sideways)
+    <div className="relative -mx-1 overflow-x-auto px-1">
       <table className="w-full min-w-[520px] table-fixed border-separate border-spacing-0.5 text-xs">
         <thead>
           <tr>

@@ -1,3 +1,5 @@
+import { ApiZodBody, ApiZodQuery } from '../common/api-docs.js';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -23,6 +25,8 @@ import { RolesGuard } from '../auth/roles.guard.js';
 import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AdminSessionsService } from './admin-sessions.service.js';
 
+@ApiTags('reception')
+@ApiCookieAuth()
 @Controller('admin/sessions')
 // Individual sessions are personal data: reception/admin only (CLAUDE.md)
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -31,11 +35,13 @@ export class AdminSessionsController {
   constructor(private sessions: AdminSessionsService) {}
 
   // ?open=true, or ?from=...&to=... (ISO instants with offset)
+  @ApiZodQuery(sessionsQuerySchema)
   @Get()
   list(@Query(new ZodValidationPipe(sessionsQuerySchema)) query: SessionsQuery) {
     return this.sessions.list(query);
   }
 
+  @ApiZodBody(sessionCorrectionSchema)
   @Patch(':id')
   correct(
     @Param('id', ParseUUIDPipe) id: string,

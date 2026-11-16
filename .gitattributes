@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Shell scripts run inside Linux containers: always LF, even on a Windows
+# checkout (a CRLF entrypoint.sh fails with "set: Illegal option -")
+*.sh text eol=lf

@@ -24,7 +24,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **The stack is decided.** Do not reopen decisions already taken (NestJS, React + Vite SPA, Prisma, Neon, SSE, Vitest). **Ask before adding any new dependency.**
 - Before considering a task done, run:
   - `apps/api`: `pnpm lint`, `pnpm test` and `pnpm build` (Vitest does not type-check; only the build catches type errors, same as CI)
-  - `apps/web`: `pnpm lint`, `pnpm build` and `pnpm build-storybook`
+  - `apps/web`: `pnpm lint`, `pnpm test`, `pnpm build` and `pnpm build-storybook`
 
 ## Business Rules and Security
 

@@ -1,3 +1,5 @@
+import { ApiZodBody } from '../common/api-docs.js';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -22,6 +24,8 @@ import { CheckinService } from './checkin.service.js';
 /** 10 per minute per user: generous for real use, stops scripted spam. */
 export const CHECKIN_RATE_LIMIT = { limit: 10, ttl: 60_000 };
 
+@ApiTags('checkin')
+@ApiCookieAuth()
 @Controller()
 // JWT first: the throttler counts per user, so it needs req.user.
 // Students only: staff run the gym, they don't train in it through the app
@@ -32,6 +36,7 @@ export class CheckinController {
 
   // 201 Created (Nest's default for POST): a new session resource is created
   @Throttle({ default: CHECKIN_RATE_LIMIT })
+  @ApiZodBody(checkinSchema)
   @Post('checkin')
   checkIn(
     @CurrentUser() user: AuthUser,

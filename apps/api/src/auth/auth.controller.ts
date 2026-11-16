@@ -24,6 +24,9 @@ import { CurrentUser } from './current-user.decorator.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { Throttle } from '@nestjs/throttler';
 import { LoginThrottlerGuard } from './login-throttler.guard.js';
+import { AUTH_COOKIE } from './auth.constants.js';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiZodBody } from '../common/api-docs.js';
 
 /** 5 attempts per minute per (IP, username): enough for typos, not for guessing. */
 export const LOGIN_RATE_LIMIT = { limit: 5, ttl: 60_000 };
@@ -31,6 +34,7 @@ export const LOGIN_RATE_LIMIT = { limit: 5, ttl: 60_000 };
 /** Same budget as login: it also checks a password (brute-force target). */
 export const PASSWORD_CHANGE_RATE_LIMIT = { limit: 5, ttl: 60_000 };
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -42,6 +46,7 @@ export class AuthController {
   // Throttle first: limit attempts before any validation or bcrypt work
   @UseGuards(LoginThrottlerGuard)
   @Throttle({ default: LOGIN_RATE_LIMIT })
+  @ApiZodBody(loginSchema)
   @Post('login')
   async login(
     // Validated before this method runs: invalid bodies get a 400
@@ -60,6 +65,8 @@ export class AuthController {
   // JWT first: the throttler counts per user, so it needs req.user
   @UseGuards(JwtAuthGuard, UserThrottlerGuard)
   @Throttle({ default: PASSWORD_CHANGE_RATE_LIMIT })
+  @ApiCookieAuth()
+  @ApiZodBody(changePasswordSchema)
   @Post('password')
   async changePassword(
     @CurrentUser() current: AuthUser,
@@ -83,7 +90,7 @@ export class AuthController {
     user: Parameters<AuthService['login']>[0],
   ) {
     const token = await this.authService.login(user);
-    res.cookie('Authentication', token.access_token, {
+    res.cookie(AUTH_COOKIE, token.access_token, {
       httpOnly: true, // JS cannot read it
       // HTTPS only in production (localhost dev runs on plain HTTP)
       secure: this.config.get('NODE_ENV') === 'production',
@@ -92,15 +99,17 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiCookieAuth()
   @Get('me')
   async getMe(@CurrentUser() user: AuthUser) {
     return this.authService.getProfile(user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiCookieAuth()
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('Authentication');
+    res.clearCookie(AUTH_COOKIE);
     return { message: 'Logout successful' };
   }
 }

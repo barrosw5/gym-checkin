@@ -1,3 +1,4 @@
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -23,6 +24,8 @@ import { OccupancyService } from './occupancy.service.js';
  */
 export const HEARTBEAT_MS = 25_000;
 
+@ApiTags('gym')
+@ApiCookieAuth()
 @Controller('gym')
 // Residents only: the occupancy is not for the whole internet
 @UseGuards(JwtAuthGuard)

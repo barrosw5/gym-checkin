@@ -1,3 +1,4 @@
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import type { AuthUser } from '../auth/auth-user.js';
@@ -11,6 +12,8 @@ import { CHECKIN_RATE_LIMIT } from './checkin.controller.js';
 import { CheckinRequestService } from './checkin-request.service.js';
 
 /** The student's side of method B (students only, like check-in). */
+@ApiTags('checkin')
+@ApiCookieAuth()
 @Controller('checkin/requests')
 @UseGuards(JwtAuthGuard, RolesGuard, UserThrottlerGuard)
 @Roles(Role.STUDENT)

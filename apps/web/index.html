@@ -2,9 +2,20 @@
 <html lang="pt-PT">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ginásio PIO XII</title>
+    <meta name="description" content="Entrada e saída do ginásio da residência PIO XII, e quanta gente está lá agora." />
+
+    <!-- Tab icon: SVG stays sharp at any size -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Installable app (PWA). No service worker on purpose: live occupancy
+         must never come from an old cache -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- iOS ignores the manifest icons: it needs its own PNG -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ginásio" />
+    <!-- Browser bar colour on Android: the white header -->
+    <meta name="theme-color" content="#ffffff" />
   </head>
   <body>
     <div id="root"></div>

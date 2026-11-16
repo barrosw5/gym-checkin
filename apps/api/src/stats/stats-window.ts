@@ -7,7 +7,7 @@ const DAYS: Record<StatsRange, number> = { today: 1, week: 7, month: 30, quarter
 const SLOT_MS = SLOT_MINUTES * 60_000;
 
 /** The UTC offset of a time zone at an instant, in ms (Lisbon: 0 or +1 h). */
-function offsetAt(instant: number, timeZone: string): number {
+export function offsetAt(instant: number, timeZone: string): number {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone,
     year: 'numeric',
