@@ -24,7 +24,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **The stack is decided.** Do not reopen decisions already taken (NestJS, React + Vite SPA, Prisma, Neon, SSE, Vitest). **Ask before adding any new dependency.**
 - Before considering a task done, run:
   - `apps/api`: `pnpm lint`, `pnpm test` and `pnpm build` (Vitest does not type-check; only the build catches type errors, same as CI)
-  - `apps/web`: `pnpm lint` and `pnpm build`
+  - `apps/web`: `pnpm lint`, `pnpm build` and `pnpm build-storybook`
 
 ## Business Rules and Security
 
@@ -66,6 +66,14 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 - `core/api/`: pure HTTP calls using `fetch` or `axios` (e.g. `authApi.ts`). No React state.
 - `core/types/`: shared TypeScript interfaces and types.
 - `core/utils/`: pure presentation helpers (e.g. `formatTime`), no state and no API. The only `core/` folder components may import directly; services are reached only through the component's hook.
+
+### Styling, views and Storybook
+
+- **Tailwind** for all styling; no inline `style={{}}` except truly dynamic values (e.g. a bar width). Brand colours (from the PIO XII symbol: `navy`, `gold`, `ember`, `sky`) are tokens in `src/index.css` (`@theme`), defined once; text/background pairs must pass WCAG AA.
+- **Mobile first:** design for the phone, then widen with `sm:`/`md:`. Touch targets at least 44 px (`min-h-11`).
+- `components/ui/`: reusable building blocks (`Button`, `Card`, `Alert`, `TextField`, `PageLayout`) that only take props.
+- **View split:** a feature component (e.g. `CheckinButton`) only calls its hook and renders `XView` (e.g. `CheckinPanelView`) with props. Views hold no data hooks (only `useTranslation()` and local form state), so they render the same in the app and in Storybook.
+- **Every view and UI component ships with a `.stories.tsx` next to it**, one story per state (loading, empty, error, success...). Stories can be switched PT/EN in the toolbar and are checked by the a11y addon.
 
 ### Text and languages (i18n)
 

@@ -66,3 +66,5 @@ jobs:
       - run: pnpm --filter @gym-checkin/shared build
       - run: pnpm lint
       - run: pnpm build
+      # A broken story (bad import, wrong props) fails here, not in a demo
+      - run: pnpm build-storybook --quiet

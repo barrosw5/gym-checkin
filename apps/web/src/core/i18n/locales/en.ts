@@ -17,6 +17,9 @@ export const en: Messages = {
     goHome: "Go to home",
     openQrScreen: "Open the QR screen",
   },
+  layout: {
+    appName: "Gym",
+  },
   language: {
     label: "Language",
     pt: "Português",

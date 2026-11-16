@@ -1,5 +1,6 @@
 import { useAuth } from "../hooks/useAuth";
 import { useTranslation } from "../hooks/useTranslation";
+import Button from "./ui/Button";
 
 /** Log out, shared by every role's home page. */
 export default function LogoutButton() {
@@ -7,11 +8,8 @@ export default function LogoutButton() {
   const { t } = useTranslation();
 
   return (
-    <button
-      onClick={logout}
-      style={{ padding: "10px", backgroundColor: "#e53e3e", color: "white", border: "none", cursor: "pointer" }}
-    >
+    <Button variant="secondary" onClick={logout}>
       {t("auth.logout")}
-    </button>
+    </Button>
   );
 }

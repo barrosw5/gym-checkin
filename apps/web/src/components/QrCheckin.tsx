@@ -3,6 +3,7 @@ import { formatTime } from "../core/utils/format";
 import { useQrCheckin } from "../hooks/useQrCheckin";
 import { useTranslation } from "../hooks/useTranslation";
 import CheckinButton from "./CheckinButton";
+import PageLayout from "./ui/PageLayout";
 
 /** Landing page of the reception QR (/c/<token>), built for phones. */
 export default function QrCheckin() {
@@ -10,7 +11,8 @@ export default function QrCheckin() {
   const { t, tm, languageTag } = useTranslation();
 
   return (
-    <main style={{ maxWidth: "480px", margin: "0 auto", padding: "40px 16px", fontFamily: "sans-serif", textAlign: "center" }}>
+    <PageLayout>
+      <div className="text-center">
       {state.status === "working" && <p>{t("qrCheckin.working")}</p>}
 
       {state.status === "checked-in" && (
@@ -41,6 +43,7 @@ export default function QrCheckin() {
       )}
 
       {state.status !== "working" && <Link to="/dashboard">{t("common.goHome")}</Link>}
-    </main>
+      </div>
+    </PageLayout>
   );
 }

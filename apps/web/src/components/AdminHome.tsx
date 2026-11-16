@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
 import { useTranslation } from "../hooks/useTranslation";
 import AccountActions from "./AccountActions";
+import PageLayout from "./ui/PageLayout";
 import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
 import SessionsToday from "./SessionsToday";
@@ -13,12 +14,14 @@ export default function AdminHome() {
   const { t } = useTranslation();
 
   return (
-    <main style={{ maxWidth: "800px", margin: "40px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
-      <h1>{t("admin.title")}</h1>
-      <p>{t("common.hello", { name: user.name })}</p>
+    <PageLayout width="wide" title={t("admin.title")} subtitle={t("common.hello", { name: user.name })}>
       <p>
         {/* New tab: the screen stays open full screen on the reception PC */}
-        <Link to="/reception/screen" target="_blank">
+        <Link
+          to="/reception/screen"
+          target="_blank"
+          className="font-semibold text-navy-700 underline underline-offset-4"
+        >
           {t("common.openQrScreen")}
         </Link>
       </p>
@@ -27,6 +30,6 @@ export default function AdminHome() {
       <SessionsToday />
       <UsersAdmin />
       <AccountActions />
-    </main>
+    </PageLayout>
   );
 }
