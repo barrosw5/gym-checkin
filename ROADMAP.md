@@ -247,7 +247,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 - [x] Geração e validação do token por janelas de tempo
 - [x] Página `/reception/screen` com o QR a renovar
-- [ ] Página `/c/<token>` com o botão Entrar/Sair
+- [x] Página `/c/<token>`: entra logo ao abrir o link (depois do login, se for preciso); se já estiver dentro, oferece Sair
 - [x] Rate limiting e testes (token expirado, token futuro, reutilização)
 
 ### Fase 4: Painel de receção (método B)

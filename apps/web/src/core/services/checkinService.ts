@@ -26,6 +26,20 @@ async function withMessage<T>(request: Promise<T>): Promise<T> {
   }
 }
 
+/** Outcome of scanning the reception QR. Errors are thrown with a message. */
+export type QrCheckinResult =
+  | { status: "checked-in"; session: OpenSession }
+  // Scanned while already inside (e.g. on the way out): not an error
+  | { status: "already-in" };
+
+function qrErrorMessage(err: unknown): string {
+  // 403 here means the token is too old (the login took a while) or forged
+  if (err instanceof HttpError && err.status === 403) {
+    return "O código expirou. Volta a ler o QR no ecrã da receção.";
+  }
+  return errorMessage(err);
+}
+
 export const checkinService = {
   getOpenSession: async (): Promise<OpenSession | null> => {
     const { session } = await withMessage(checkinApi.getCurrent());
@@ -33,8 +47,22 @@ export const checkinService = {
   },
 
   // SIMPLE is the only method until Phase 3 (QR) adds a token to the request
+  // Dashboard button: the SIMPLE method (no proof of presence)
   checkIn: async (): Promise<OpenSession> =>
-    toOpenSession(await withMessage(checkinApi.checkIn("SIMPLE"))),
+    toOpenSession(await withMessage(checkinApi.checkIn({ method: "SIMPLE" }))),
+
+  /** Check-in from the QR link: proof of presence is the token. */
+  checkInWithQr: async (token: string): Promise<QrCheckinResult> => {
+    try {
+      const dto = await checkinApi.checkIn({ method: "SCREEN_QR", token });
+      return { status: "checked-in", session: toOpenSession(dto) };
+    } catch (err) {
+      if (err instanceof HttpError && err.status === 409) {
+        return { status: "already-in" };
+      }
+      throw new Error(qrErrorMessage(err), { cause: err });
+    }
+  },
 
   checkOut: async (): Promise<void> => withMessage(checkinApi.checkOut()),
 };
