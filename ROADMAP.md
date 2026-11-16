@@ -288,7 +288,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
 - [x] Vitest no frontend, a começar pela lógica das estatísticas
 - [x] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)
-- [ ] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
+- [x] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
 - [ ] `docker compose up`: API, web e PostgreSQL local com um só comando
 - [ ] Teste ponta a ponta do fluxo principal (Playwright), também no CI
 - [ ] README final: problema, diagrama, screenshots/GIF e instruções com `docker compose up`
