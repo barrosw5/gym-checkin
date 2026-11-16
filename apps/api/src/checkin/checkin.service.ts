@@ -36,6 +36,12 @@ export interface CheckinResult {
   method: SessionMethod;
 }
 
+/** A session still in progress (no user data). */
+export interface OpenSession {
+  id: string;
+  entryAt: Date;
+}
+
 /** Closed session as returned to the client (no user data). */
 export interface CheckoutResult {
   id: string;
@@ -86,15 +92,20 @@ export class CheckinService {
     }
   }
 
+  /** The user's open session, or null when they are not in the gym. */
+  getOpenSession(userId: string): Promise<OpenSession | null> {
+    return this.prisma.session.findFirst({
+      where: { userId, exitAt: null },
+      select: { id: true, entryAt: true },
+    });
+  }
+
   /**
    * Closes the user's open session. No token: leaving proves nothing and
    * nobody gains from a fake checkout (see CLAUDE.md).
    */
   async checkOut(userId: string): Promise<CheckoutResult> {
-    const open = await this.prisma.session.findFirst({
-      where: { userId, exitAt: null },
-      select: { id: true, entryAt: true },
-    });
+    const open = await this.getOpenSession(userId);
     if (!open) {
       throw new ConflictException('You are not checked in');
     }

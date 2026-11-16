@@ -16,8 +16,10 @@ describe('CheckinController (HTTP)', () => {
   let app: NestExpressApplication;
   const checkIn = vi.fn();
   const checkOut = vi.fn();
+  const getOpenSession = vi.fn();
 
   beforeEach(async () => {
+    getOpenSession.mockReset();
     checkIn.mockReset();
     checkIn.mockResolvedValue({ id: 's1', method: 'SIMPLE' });
     checkOut.mockReset();
@@ -26,7 +28,7 @@ describe('CheckinController (HTTP)', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }])],
       controllers: [CheckinController],
-      providers: [{ provide: CheckinService, useValue: { checkIn, checkOut } }],
+      providers: [{ provide: CheckinService, useValue: { checkIn, checkOut, getOpenSession } }],
     })
       .overrideGuard(JwtAuthGuard)
       .useValue({
@@ -52,6 +54,30 @@ describe('CheckinController (HTTP)', () => {
       .post('/api/checkin')
       .set('X-Test-User', user)
       .send(body);
+
+  describe('GET /api/checkin/current', () => {
+    const getCurrent = (user = 'u1') =>
+      request(app.getHttpServer())
+        .get('/api/checkin/current')
+        .set('X-Test-User', user);
+
+    it("returns the logged-in user's open session", async () => {
+      getOpenSession.mockResolvedValue({ id: 's1' });
+
+      const res = await getCurrent('u1').expect(200);
+
+      expect(res.body).toEqual({ session: { id: 's1' } });
+      expect(getOpenSession).toHaveBeenCalledWith('u1');
+    });
+
+    it('returns { session: null } when not in the gym', async () => {
+      getOpenSession.mockResolvedValue(null);
+
+      const res = await getCurrent().expect(200);
+
+      expect(res.body).toEqual({ session: null });
+    });
+  });
 
   describe('POST /api/checkout', () => {
     const postCheckout = (user = 'u1') =>
