@@ -1,58 +1,91 @@
+import type { CheckinMethodName } from "@gym-checkin/shared";
 import { useCallback, useEffect, useState } from "react";
 import { checkinService } from "../core/services/checkinService";
 import type { OpenSession } from "../core/types/checkin";
 
+/** While waiting for reception: the student's screen asks every 2 s. */
+const REQUEST_POLL_MS = 2_000;
+
 type CheckinState =
   | { status: "loading" }
   | { status: "in"; session: OpenSession }
-  | { status: "out" }
+  | { status: "out"; methods: CheckinMethodName[] }
+  // Method B: a pending request, waiting for reception
+  | { status: "waiting" }
   | { status: "error" };
 
-const fromSession = (session: OpenSession | null): CheckinState =>
-  session ? { status: "in", session } : { status: "out" };
+const DECISION_MESSAGES = {
+  REJECTED: "A receção recusou o pedido.",
+  EXPIRED: "Ninguém respondeu a tempo. Pede outra vez.",
+} as const;
 
 /**
- * Whether the user is in the gym, plus the action to toggle it.
- * The API is the source of truth: after any failed action the state is
- * reloaded instead of guessed (e.g. a 409 because another tab checked out).
+ * Whether the user is in the gym, and the actions available. The API is the
+ * source of truth: the state is (re)loaded from it instead of guessed.
  */
 export const useCheckin = () => {
   const [state, setState] = useState<CheckinState>({ status: "loading" });
-  // Disables the button while a request is in flight (no double taps)
+  // Disables the buttons while a request is in flight (no double taps)
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
+  const load = useCallback(async (): Promise<CheckinState> => {
+    const [session, methods, request] = await Promise.all([
+      checkinService.getOpenSession(),
+      checkinService.getEnabledMethods(),
+      checkinService.getMyRequestStatus(),
+    ]);
+    if (session) return { status: "in", session };
+    // A pending request survives a page reload: keep waiting for it
+    if (request === "PENDING") return { status: "waiting" };
+    return { status: "out", methods };
+  }, []);
+
   const reload = useCallback(async () => {
     try {
-      setState(fromSession(await checkinService.getOpenSession()));
+      setState(await load());
     } catch {
       setState({ status: "error" });
     }
-  }, []);
+  }, [load]);
 
   useEffect(() => {
     // Ignore the answer if the component unmounted meanwhile
     let cancelled = false;
-    checkinService
-      .getOpenSession()
-      .then((session) => !cancelled && setState(fromSession(session)))
+    load()
+      .then((next) => !cancelled && setState(next))
       .catch(() => !cancelled && setState({ status: "error" }));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [load]);
 
-  const toggle = async () => {
-    if (state.status !== "in" && state.status !== "out") return;
+  // Poll the request only while waiting; stops on any other state
+  useEffect(() => {
+    if (state.status !== "waiting") return;
+    const timer = setInterval(async () => {
+      try {
+        const status = await checkinService.getMyRequestStatus();
+        if (status === "PENDING") return;
+        if (status === "REJECTED" || status === "EXPIRED") {
+          setMessage(DECISION_MESSAGES[status]);
+        }
+        await reload();
+      } catch {
+        // Network hiccup: try again on the next tick
+      }
+    }, REQUEST_POLL_MS);
+    return () => clearInterval(timer);
+  }, [state.status, reload]);
+
+  /** Runs an action; on failure shows its message and reloads the state. */
+  const run = async (action: () => Promise<CheckinState | void>) => {
     setBusy(true);
     setMessage("");
     try {
-      if (state.status === "in") {
-        await checkinService.checkOut();
-        setState({ status: "out" });
-      } else {
-        setState(fromSession(await checkinService.checkIn()));
-      }
+      const next = await action();
+      if (next) setState(next);
+      else await reload();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Erro inesperado.");
       await reload();
@@ -61,5 +94,26 @@ export const useCheckin = () => {
     }
   };
 
-  return { state, busy, message, toggle, reload };
+  return {
+    state,
+    busy,
+    message,
+    reload,
+    /** SIMPLE: straight in (no proof of presence). */
+    enter: () =>
+      run(async () => ({
+        status: "in",
+        session: await checkinService.checkIn(),
+      })),
+    /** RECEPTION_APPROVAL: ask and wait. */
+    requestEntry: () =>
+      run(async () => {
+        await checkinService.requestEntry();
+        return { status: "waiting" };
+      }),
+    leave: () =>
+      run(async () => {
+        await checkinService.checkOut();
+      }),
+  };
 };

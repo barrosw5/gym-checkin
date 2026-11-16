@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
+import PendingRequests from "./PendingRequests";
 
-/** Placeholder for the reception panel (Phase 3/4): proves the role guard. */
+/** Reception panel (staff PC): requests to approve and the QR screen link. */
 export default function ReceptionHome() {
   const user = useAuthenticatedUser();
 
@@ -17,6 +18,8 @@ export default function ReceptionHome() {
           Abrir o ecrã do QR
         </Link>
       </p>
+      {/* Here, not on the QR screen: that one faces students (names, GDPR) */}
+      <PendingRequests />
       <Link to="/dashboard">Voltar ao início</Link>
     </div>
   );
