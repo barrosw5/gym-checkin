@@ -29,3 +29,7 @@ export const Staff: Story = {
 };
 /** While an update is saving, both actions are disabled. */
 export const Busy: Story = { args: { busy: true } };
+/** A long username with no spaces must wrap, not overflow (check at 360 px). */
+export const LongUsername: Story = {
+  args: { user: { ...student, name: "Maria Inês Albuquerque", username: "maria.ines.albuquerque.santos" } },
+};
