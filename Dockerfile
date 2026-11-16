@@ -24,7 +24,10 @@ COPY packages/shared/package.json packages/shared/
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
+# prisma.config.ts requires DATABASE_URL even for `prisma generate`, which
+# only reads the schema and never connects. A placeholder for this command
+# only (same as the CI API job): the real URL comes from compose.yaml at runtime
+RUN DATABASE_URL=postgresql://build:build@localhost:5432/build pnpm build
 
 ENV NODE_ENV=production
 EXPOSE 3000
