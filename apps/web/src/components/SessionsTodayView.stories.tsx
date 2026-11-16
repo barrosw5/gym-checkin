@@ -8,6 +8,7 @@ const meta = {
   title: "Reception/SessionsToday",
   component: SessionsTodayView,
   args: {
+    now: at("18:40:00"),
     sessions: [
       { id: "s1", name: "Ana Ferreira", room: "214", entryAt: at("18:05:00"), exitAt: null, closedBy: null },
       { id: "s2", name: "Rui Costa", room: "102", entryAt: at("17:20:00"), exitAt: at("18:31:00"), closedBy: "USER" },

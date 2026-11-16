@@ -5,6 +5,7 @@ import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
 import QrScreenLink from "./QrScreenLink";
 import SessionsToday from "./SessionsToday";
+import StatsLink from "./StatsLink";
 import UsersAdmin from "./UsersAdmin";
 import PageLayout from "./ui/PageLayout";
 
@@ -19,6 +20,7 @@ export default function AdminHome() {
         <div className="flex flex-col gap-4">
           <OccupancyCounter />
           <QrScreenLink />
+          <StatsLink />
         </div>
         <div className="flex flex-col gap-4">
           <PendingRequests />

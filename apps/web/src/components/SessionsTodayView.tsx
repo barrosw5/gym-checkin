@@ -10,9 +10,13 @@ import Button from "./ui/Button";
 import Card from "./ui/Card";
 import { ICON } from "./ui/icon";
 import KeyTag from "./ui/KeyTag";
+import SegmentedControl from "./ui/SegmentedControl";
+import TodayTimeline from "./TodayTimeline";
 
 export interface SessionsTodayViewProps {
   sessions: AdminSession[] | null;
+  /** When the list was loaded: open visits run up to here on the timeline. */
+  now: Date;
   failed: boolean;
   busyId: string | null;
   message: Translatable | null;
@@ -25,6 +29,7 @@ export interface SessionsTodayViewProps {
 /** Reception: who came today, close a session (key returned), fix wrong times. */
 export default function SessionsTodayView({
   sessions,
+  now,
   failed,
   busyId,
   message,
@@ -35,6 +40,7 @@ export default function SessionsTodayView({
   const { t, tm, languageTag } = useTranslation();
   // Which row has its correction form open: UI state of this list only
   const [editing, setEditing] = useState<string | null>(null);
+  const [view, setView] = useState<"list" | "timeline">("list");
   const inside = sessions?.filter((s) => !s.exitAt).length ?? 0;
 
   return (
@@ -51,6 +57,21 @@ export default function SessionsTodayView({
       {sessions?.length === 0 && <p className="text-sm text-slate-500">{t("sessions.none")}</p>}
 
       {sessions && sessions.length > 0 && (
+        <SegmentedControl
+          label={t("sessions.view")}
+          options={[
+            { value: "list", label: t("sessions.viewList") },
+            { value: "timeline", label: t("sessions.viewTimeline") },
+          ]}
+          value={view}
+          onChange={setView}
+          className="mb-4"
+        />
+      )}
+
+      {sessions && sessions.length > 0 && view === "timeline" && <TodayTimeline sessions={sessions} now={now} />}
+
+      {sessions && sessions.length > 0 && view === "list" && (
         <ul className="-my-3 divide-y divide-slate-900/[0.06]">
           {sessions.map((s) => (
             <li key={s.id} className="py-3">

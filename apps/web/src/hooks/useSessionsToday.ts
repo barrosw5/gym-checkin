@@ -11,6 +11,8 @@ import { toTranslatable, type Translatable } from "../core/i18n/types";
  */
 export const useSessionsToday = () => {
   const [sessions, setSessions] = useState<AdminSession[] | null>(null);
+  // When the list was read: the timeline draws open visits up to here
+  const [loadedAt, setLoadedAt] = useState(() => new Date());
   const [failed, setFailed] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState<Translatable | null>(null);
@@ -18,6 +20,7 @@ export const useSessionsToday = () => {
   const reload = useCallback(async () => {
     try {
       setSessions(await sessionsTodayService.listToday());
+      setLoadedAt(new Date());
       setFailed(false);
     } catch {
       setFailed(true);
@@ -54,6 +57,7 @@ export const useSessionsToday = () => {
 
   return {
     sessions,
+    loadedAt,
     failed,
     busyId,
     message,
