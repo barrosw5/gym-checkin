@@ -72,3 +72,75 @@ export function seededRandom(seed: number): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/** How one fake resident uses the gym. */
+export interface DemoHabit {
+  /** Local hours they usually arrive at (repeat an hour to favour it). */
+  hours: readonly number[];
+  /** Chance of a visit on a weekday and on a weekend day. */
+  weekday: number;
+  weekend: number;
+}
+
+/** A few believable residents: the mix makes the morning and evening peaks. */
+export const DEMO_HABITS: readonly DemoHabit[] = [
+  { hours: [7, 7, 8], weekday: 0.7, weekend: 0.2 }, // before classes
+  { hours: [18, 19, 19, 20], weekday: 0.6, weekend: 0.3 }, // after classes
+  { hours: [12, 13, 17], weekday: 0.4, weekend: 0.2 }, // lunch or late afternoon
+  { hours: [20, 21, 21, 22], weekday: 0.5, weekend: 0.4 }, // night owl
+  { hours: [10, 11, 16], weekday: 0.15, weekend: 0.6 }, // mostly weekends
+];
+
+export interface DemoVisitOptions {
+  /** One habit per fake resident (their ids come from the database). */
+  residents: readonly { userId: string; habit: DemoHabit }[];
+  /** Visits end before this instant: none is still open. */
+  now: Date;
+  days: number;
+  autoCloseHours: number;
+  /** Turns a local calendar day into its local midnight (UTC instant). */
+  localMidnight: (year: number, month: number, day: number) => number;
+  /** Today's local date. */
+  today: { year: number; month: number; day: number };
+  random: () => number;
+}
+
+/**
+ * 90 days of visits for the statistics demo: each resident follows a habit,
+ * weekends are quieter and later, about 1 in 20 visits is a forgotten key
+ * (closed AUTO). Times are local (Lisbon), so the peaks land on 7-9h and
+ * 18-21h in the charts. Only closed visits, and today only up to now.
+ */
+export function buildDemoVisits(opts: DemoVisitOptions): Prisma.SessionCreateManyInput[] {
+  const { residents, now, days, autoCloseHours, localMidnight, today, random } = opts;
+  const visits: Prisma.SessionCreateManyInput[] = [];
+
+  for (let daysAgo = days - 1; daysAgo >= 0; daysAgo--) {
+    // Calendar arithmetic in UTC (no time zone): only the date matters here
+    const date = new Date(Date.UTC(today.year, today.month - 1, today.day - daysAgo));
+    const weekend = date.getUTCDay() === 0 || date.getUTCDay() === 6;
+    const midnight = localMidnight(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+
+    for (const { userId, habit } of residents) {
+      if (random() >= (weekend ? habit.weekend : habit.weekday)) continue;
+
+      const hour = habit.hours[Math.floor(random() * habit.hours.length)];
+      const entryAt = new Date(midnight + (hour * 60 + Math.floor(random() * 60)) * MINUTE_MS);
+      const forgotKey = random() < 0.05;
+      const minutes = forgotKey ? autoCloseHours * 60 : 25 + Math.floor(random() * 66); // 25-90 min
+      const exitAt = new Date(entryAt.getTime() + minutes * MINUTE_MS);
+      // Today: only visits already over (an open one would be "in the gym now")
+      if (exitAt >= now) continue;
+
+      visits.push({
+        userId,
+        entryAt,
+        exitAt,
+        // Mostly the screen QR, some approved by reception
+        method: random() < 0.8 ? SessionMethod.SCREEN_QR : SessionMethod.RECEPTION_APPROVAL,
+        closedBy: forgotKey ? ClosedBy.AUTO : ClosedBy.USER,
+      });
+    }
+  }
+  return visits;
+}
