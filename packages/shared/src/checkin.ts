@@ -9,11 +9,18 @@ export const CHECKIN_METHODS = ['SIMPLE', 'SCREEN_QR', 'RECEPTION_APPROVAL'] as 
 export type CheckinMethodName = (typeof CHECKIN_METHODS)[number];
 
 /**
- * Body of POST /api/checkin. Only the method for now; the QR method
- * (Phase 3) will add its `token` here.
+ * Body of POST /api/checkin. Each method declares the proof it needs:
+ * SCREEN_QR must send the token read from the reception screen.
+ * Discriminated union: `{ method: 'SCREEN_QR' }` without a token is a 400.
  */
-export const checkinSchema = z.object({
-  method: z.enum(CHECKIN_METHODS),
-});
+export const checkinSchema = z.discriminatedUnion('method', [
+  z.object({ method: z.literal('SIMPLE') }),
+  z.object({
+    method: z.literal('SCREEN_QR'),
+    // base64url, bounded: never hash or compare arbitrarily large input
+    token: z.string().regex(/^[A-Za-z0-9_-]{1,64}$/, 'Invalid QR token'),
+  }),
+  z.object({ method: z.literal('RECEPTION_APPROVAL') }),
+]);
 
 export type CheckinInput = z.infer<typeof checkinSchema>;
