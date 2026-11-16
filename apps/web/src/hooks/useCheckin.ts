@@ -99,12 +99,6 @@ export const useCheckin = () => {
     busy,
     message,
     reload,
-    /** SIMPLE: straight in (no proof of presence). */
-    enter: () =>
-      run(async () => ({
-        status: "in",
-        session: await checkinService.checkIn(),
-      })),
     /** RECEPTION_APPROVAL: ask and wait. */
     requestEntry: () =>
       run(async () => {

@@ -22,7 +22,6 @@ import {
 // Record over the enum: adding a CheckinMethod without saying how its
 // sessions are recorded is a compile error, not a runtime surprise
 const SESSION_METHOD: Record<CheckinMethod, SessionMethod> = {
-  SIMPLE: SessionMethod.SIMPLE,
   SCREEN_QR: SessionMethod.SCREEN_QR,
   RECEPTION_APPROVAL: SessionMethod.RECEPTION_APPROVAL,
 };
@@ -72,7 +71,7 @@ export class CheckinService {
       throw new ForbiddenException('Check-in method not available');
     }
 
-    // Method-specific proof of presence (no-op for SIMPLE)
+    // Method-specific proof of presence (e.g. a fresh QR token)
     await strategy.verify({ userId, input });
 
     let session: CheckinResult;

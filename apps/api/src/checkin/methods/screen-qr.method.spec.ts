@@ -35,7 +35,10 @@ describe('ScreenQrCheckinMethod', () => {
 
   it("rejects another method's input (no token at all)", async () => {
     await expect(
-      method.verify({ userId: 'u1', input: { method: 'SIMPLE' } }),
+      method.verify({
+        userId: 'u1',
+        input: { method: 'RECEPTION_APPROVAL' },
+      }),
     ).rejects.toThrow(ForbiddenException);
     expect(isValid).not.toHaveBeenCalled();
   });

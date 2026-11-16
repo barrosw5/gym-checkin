@@ -16,8 +16,7 @@ const buttonStyle = (color: string, busy: boolean): CSSProperties => ({
 });
 
 export default function CheckinButton() {
-  const { state, busy, message, reload, enter, requestEntry, leave } =
-    useCheckin();
+  const { state, busy, message, reload, requestEntry, leave } = useCheckin();
 
   if (state.status === "loading") {
     return <p>A verificar se estás no ginásio...</p>;
@@ -70,18 +69,9 @@ export default function CheckinButton() {
                 {busy ? "Aguarda..." : "Pedir entrada à receção"}
               </button>
             )}
-            {state.methods.includes("SIMPLE") && (
-              <button
-                onClick={enter}
-                disabled={busy}
-                style={buttonStyle("#38a169", busy)}
-              >
-                {busy ? "Aguarda..." : "Entrar no ginásio"}
-              </button>
-            )}
           </div>
           {state.methods.includes("SCREEN_QR") && (
-            <p>Também podes ler o QR no ecrã da receção.</p>
+            <p>Ou lê o QR no ecrã da receção para entrares logo.</p>
           )}
         </>
       )}

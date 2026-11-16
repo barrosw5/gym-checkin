@@ -51,10 +51,6 @@ export const checkinService = {
     return session ? toOpenSession(session) : null;
   },
 
-  // Dashboard button: the SIMPLE method (no proof of presence)
-  checkIn: async (): Promise<OpenSession> =>
-    toOpenSession(await withMessage(checkinApi.checkIn({ method: "SIMPLE" }))),
-
   /** Check-in from the QR link: proof of presence is the token. */
   checkInWithQr: async (token: string): Promise<QrCheckinResult> => {
     try {

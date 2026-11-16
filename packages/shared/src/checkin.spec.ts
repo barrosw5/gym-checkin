@@ -3,7 +3,6 @@ import { checkinSchema } from './checkin.js';
 
 describe('checkinSchema', () => {
   it.each([
-    { method: 'SIMPLE' },
     { method: 'SCREEN_QR', token: 'abc_DEF-123' },
     { method: 'RECEPTION_APPROVAL' },
   ])('accepts %o', (body) => {
@@ -13,8 +12,9 @@ describe('checkinSchema', () => {
   it.each([
     ['missing method', {}],
     ['unknown method', { method: 'TELEPORT' }],
-    ['lowercase method', { method: 'simple' }],
+    ['lowercase method', { method: 'screen_qr', token: 'abc' }],
     ['MANUAL (admin correction, not a check-in method)', { method: 'MANUAL' }],
+    ['SIMPLE (removed: no proof of presence)', { method: 'SIMPLE' }],
     ['SCREEN_QR without a token', { method: 'SCREEN_QR' }],
     ['SCREEN_QR with an empty token', { method: 'SCREEN_QR', token: '' }],
     ['SCREEN_QR with a non-base64url token', { method: 'SCREEN_QR', token: 'a b/c' }],
@@ -25,10 +25,11 @@ describe('checkinSchema', () => {
 
   it('strips unknown fields (no mass assignment)', () => {
     const result = checkinSchema.parse({
-      method: 'SIMPLE',
+      method: 'SCREEN_QR',
+      token: 'abc',
       userId: 'someone-else',
     });
 
-    expect(result).toEqual({ method: 'SIMPLE' });
+    expect(result).toEqual({ method: 'SCREEN_QR', token: 'abc' });
   });
 });
