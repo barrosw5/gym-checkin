@@ -237,9 +237,9 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [x] Módulo `checkin/`: interface `CheckinMethod` (Strategy) + método `SIMPLE` + `POST /checkin` (409 com sessão aberta, 403 com método desativado, rate limit)
 - [x] `POST /checkout` (409 sem sessão aberta)
 - [x] Botão "Entrar / Sair" no dashboard (frontend)
-- [ ] `GET /gym/occupancy` e contador "7/10" no frontend
-- [ ] Auto-close das sessões esquecidas (tarefa periódica, `closedBy: AUTO`)
-- [ ] Contador de ocupação em tempo real (SSE), ligado ao check-in, checkout e auto-close
+- [x] `GET /gym/occupancy` e contador "7/10" no frontend
+- [x] Auto-close das sessões esquecidas (tarefa periódica, `closedBy: AUTO`)
+- [x] Contador de ocupação em tempo real (SSE), ligado ao check-in, checkout e auto-close
 
 > No fim desta fase já tens um sistema utilizável, só falta a verificação de presença.
 
@@ -271,7 +271,8 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado, antes 
 - [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
 - [ ] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com CSS em vez de estilos inline
 - [ ] Identidade visual do PIO XII (ver passos abaixo)
-- [ ] Acessibilidade (contraste WCAG AA, teclado, labels) e boa experiência no telemóvel
+- [ ] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os residentes o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
+- [ ] Acessibilidade (contraste WCAG AA, teclado, labels, botões com área de toque adequada)
 
 **Identidade visual do PIO XII (passos, por ordem):**
 
