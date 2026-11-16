@@ -2,6 +2,7 @@ import { MIN_PASSWORD_LENGTH } from "@gym-checkin/shared";
 import { useState } from "react";
 import { useChangePassword } from "../hooks/useChangePassword";
 import { useTranslation } from "../hooks/useTranslation";
+import PageLayout from "./ui/PageLayout";
 
 const inputStyle = { display: "block", width: "100%", padding: "8px", boxSizing: "border-box" } as const;
 
@@ -15,8 +16,7 @@ export default function ChangePasswordForm() {
   const mismatch = confirm !== "" && confirm !== next;
 
   return (
-    <main style={{ maxWidth: "400px", margin: "50px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
-      <h1>{t("password.title")}</h1>
+    <PageLayout title={t("password.title")}>
 
       {done ? (
         <div role="status">
@@ -95,6 +95,6 @@ export default function ChangePasswordForm() {
           </form>
         </>
       )}
-    </main>
+    </PageLayout>
   );
 }

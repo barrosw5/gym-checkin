@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  occupancyService,
-  type OccupancyView,
-} from "../core/services/occupancyService";
+import { occupancyService } from "../core/services/occupancyService";
+import type { OccupancyView } from "../core/types/occupancy";
 
 /**
  * Live gym occupancy over SSE. `stale` is true while the connection is

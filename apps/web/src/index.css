@@ -1,16 +1,61 @@
+@import "tailwindcss";
+
 /*
- * Minimal neutral base. Replaced by Tailwind (Phase 5, step 2), where the
- * colours and spacing become design tokens defined in one place.
+ * Design tokens: the colours of the PIO XII symbol, defined once.
+ * Each becomes a Tailwind utility (bg-navy-700, text-gold-400...), so a
+ * colour change here restyles the whole app. Text/background pairs used in
+ * the components are checked for WCAG AA contrast (4.5:1).
  */
-:root {
-  /* Light only for now: the components still use fixed light colours */
-  color-scheme: light;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-  color: #1a202c;
-  background: #ffffff;
+@theme {
+  /* Navy: the outer ring of the symbol. Main brand colour */
+  --color-navy-50: #eef1fb;
+  --color-navy-100: #d9def5;
+  --color-navy-200: #b3bdea;
+  --color-navy-300: #8494d8;
+  --color-navy-400: #5568c3;
+  --color-navy-500: #3447ad;
+  --color-navy-600: #26389a;
+  --color-navy-700: #1f2e85;
+  --color-navy-800: #1a2669;
+  --color-navy-900: #141d4f;
+  --color-navy-950: #0c1233;
+
+  /* Gold: the lettering. Accent (counters, highlights, keyboard focus) */
+  --color-gold-50: #fdf7ec;
+  --color-gold-100: #f9e9cb;
+  --color-gold-200: #f3d293;
+  --color-gold-300: #ecb95c;
+  --color-gold-400: #e4a541;
+  --color-gold-500: #d48c25;
+  --color-gold-600: #b46f1b;
+  --color-gold-700: #8f5419;
+
+  /* Orange: the band of the shield. Warnings and "leave the gym" */
+  --color-ember-100: #fde8cc;
+  --color-ember-500: #f7941d;
+  --color-ember-700: #b45309;
+
+  /* Sky: the field of the shield. Informative states */
+  --color-sky-50: #f0f9ff;
+  --color-sky-100: #dbf2fb;
+  --color-sky-500: #33b5e5;
+  --color-sky-800: #075985;
+
+  --font-sans: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-body {
-  margin: 0;
+@layer base {
+  :root {
+    /* Light only for now: dark mode is a later Phase 5 step */
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-slate-900 antialiased;
+  }
+
+  /* One visible focus ring everywhere (keyboard users), in the brand gold */
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-gold-400;
+  }
 }

@@ -7,7 +7,7 @@ import { toTranslatable, type Translatable } from "../core/i18n/types";
 /** While waiting for reception: the student's screen asks every 2 s. */
 const REQUEST_POLL_MS = 2_000;
 
-type CheckinState =
+export type CheckinState =
   | { status: "loading" }
   | { status: "in"; session: OpenSession }
   | { status: "out"; methods: CheckinMethodName[] }

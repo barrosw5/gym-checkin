@@ -18,6 +18,9 @@ export const pt = {
     goHome: "Ir para o início",
     openQrScreen: "Abrir o ecrã do QR",
   },
+  layout: {
+    appName: "Ginásio",
+  },
   language: {
     label: "Língua",
     pt: "Português",
