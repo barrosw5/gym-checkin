@@ -3,6 +3,10 @@ import type { MessageKey } from "../core/i18n/types";
 import type { Role } from "../core/types/user";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useTranslation } from "../hooks/useTranslation";
+import Alert from "./ui/Alert";
+import Button from "./ui/Button";
+import Card from "./ui/Card";
+import PageLayout from "./ui/PageLayout";
 
 interface ProtectedRouteProps {
   /** Roles allowed in. Omit to allow any logged-in user. */
@@ -22,17 +26,25 @@ export default function ProtectedRoute({ roles, deniedMessage = "route.denied" }
   const { t } = useTranslation();
 
   if (state.status === "loading") {
-    return <p style={{ textAlign: "center" }}>{t("common.loading")}</p>;
+    return (
+      <PageLayout>
+        <p className="text-sm text-slate-500">{t("common.loading")}</p>
+      </PageLayout>
+    );
   }
 
   if (state.status === "error") {
     return (
-      <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
-        <p>{t("route.serverDown")}</p>
-        <button onClick={retry} style={{ padding: "10px" }}>
-          {t("common.retry")}
-        </button>
-      </div>
+      <PageLayout>
+        <Card>
+          <div className="flex flex-col gap-4">
+            <Alert tone="error">{t("route.serverDown")}</Alert>
+            <Button variant="secondary" onClick={retry}>
+              {t("common.retry")}
+            </Button>
+          </div>
+        </Card>
+      </PageLayout>
     );
   }
 
@@ -43,11 +55,16 @@ export default function ProtectedRoute({ roles, deniedMessage = "route.denied" }
 
   if (roles && !roles.includes(state.user.role)) {
     return (
-      <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
-        <h2>{t("route.deniedTitle")}</h2>
-        <p>{t(deniedMessage)}</p>
-        <Link to="/">{t("route.goToMyHome")}</Link>
-      </div>
+      <PageLayout title={t("route.deniedTitle")}>
+        <Card>
+          <div className="flex flex-col items-start gap-4">
+            <p className="text-slate-600">{t(deniedMessage)}</p>
+            <Link to="/" className="inline-flex h-11 items-center font-medium text-navy-700 hover:text-navy-900">
+              {t("route.goToMyHome")}
+            </Link>
+          </div>
+        </Card>
+      </PageLayout>
     );
   }
 

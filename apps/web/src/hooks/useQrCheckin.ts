@@ -6,7 +6,7 @@ import {
   type QrCheckinResult,
 } from "../core/services/checkinService";
 
-type QrCheckinState =
+export type QrCheckinState =
   | { status: "working" }
   | QrCheckinResult
   | { status: "error"; message: Translatable };

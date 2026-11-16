@@ -1,6 +1,8 @@
+import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTranslation } from "../hooks/useTranslation";
 import Button from "./ui/Button";
+import { ICON } from "./ui/icon";
 
 /** Log out, shared by every role's home page. */
 export default function LogoutButton() {
@@ -9,6 +11,7 @@ export default function LogoutButton() {
 
   return (
     <Button variant="secondary" onClick={logout}>
+      <LogOut {...ICON} />
       {t("auth.logout")}
     </Button>
   );

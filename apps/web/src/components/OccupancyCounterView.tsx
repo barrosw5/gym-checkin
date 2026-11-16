@@ -1,7 +1,9 @@
+import { WifiOff } from "lucide-react";
 import type { OccupancyView } from "../core/types/occupancy";
 import { cn } from "../core/utils/cn";
 import { useTranslation } from "../hooks/useTranslation";
 import Card from "./ui/Card";
+import { ICON } from "./ui/icon";
 
 export interface OccupancyCounterViewProps {
   /** null while the first value is loading. */
@@ -10,42 +12,77 @@ export interface OccupancyCounterViewProps {
   stale: boolean;
 }
 
-/** "3/10 people in the gym now", with a bar that turns red when full. */
+/** Up to this capacity every place is drawn; above it, a single bar. */
+const MAX_DRAWN_PLACES = 24;
+
+/**
+ * The screen's moment: one block per place in the gym, like the hooks on
+ * the reception key board. Taken places are navy; all turn ember when full.
+ */
 export default function OccupancyCounterView({ occupancy, stale }: OccupancyCounterViewProps) {
   const { t } = useTranslation();
 
   if (!occupancy) {
     return (
       <Card>
-        <p className="text-slate-600">{t("occupancy.loading")}</p>
+        <p className="text-sm text-slate-500">{t("occupancy.loading")}</p>
       </Card>
     );
   }
 
   const { count, capacity, isFull } = occupancy;
-  const percent = Math.min(100, Math.round((count / capacity) * 100));
+  const taken = isFull ? "bg-ember-700" : "bg-navy-700";
 
   return (
     <Card>
       {/* aria-live: screen readers announce the new count when it changes */}
       <div aria-live="polite">
-        <p className="text-sm font-semibold uppercase tracking-wide text-slate-600">
-          {t("occupancy.label")}
-        </p>
-        <p className={cn("mt-1 text-5xl font-black", isFull ? "text-red-700" : "text-navy-900")}>
-          {count}
-          <span className="text-2xl font-bold text-slate-500">/{capacity}</span>
-        </p>
-        {/* Decorative: the numbers above already say it */}
-        <div aria-hidden="true" className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className={cn("h-full rounded-full transition-all", isFull ? "bg-red-700" : "bg-gold-400")}
-            style={{ width: `${percent}%` }}
-          />
+        <div className="flex items-baseline justify-between gap-4">
+          <p className="text-sm text-slate-600">{t("occupancy.label")}</p>
+          {isFull && <p className="text-sm font-medium text-ember-700">{t("occupancy.full")}</p>}
         </div>
-        {isFull && <p className="mt-2 font-semibold text-red-700">{t("occupancy.full")}</p>}
+        <p className="mt-1 text-5xl font-medium tracking-tight text-slate-900 tabular-nums">
+          {count}
+          <span className="text-2xl text-slate-400">/{capacity}</span>
+        </p>
+
+        {capacity <= MAX_DRAWN_PLACES ? (
+          <div
+            role="img"
+            aria-label={t("occupancy.places", { count, capacity })}
+            className="mt-4 flex gap-1"
+          >
+            {Array.from({ length: capacity }, (_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "h-8 flex-1 rounded-md transition-colors duration-300 ease-(--ease-out)",
+                  i < count ? taken : "bg-slate-100 ring-1 ring-inset ring-slate-900/[0.06]",
+                )}
+              />
+            ))}
+          </div>
+        ) : (
+          <div
+            role="img"
+            aria-label={t("occupancy.places", { count, capacity })}
+            className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100"
+          >
+            {/* scaleX instead of width: animates on the GPU, never re-lays out */}
+            <div
+              className={cn("h-full origin-left rounded-full transition-transform duration-300 ease-(--ease-out)", taken)}
+              style={{ transform: `scaleX(${Math.min(1, count / capacity)})` }}
+            />
+          </div>
+        )}
       </div>
-      {stale && <p className="mt-2 text-sm text-slate-600">{t("common.reconnecting")}</p>}
+
+      {stale && (
+        <p className="mt-3 flex items-center gap-2 text-sm text-slate-500">
+          <WifiOff {...ICON} />
+          {t("common.reconnecting")}
+        </p>
+      )}
     </Card>
   );
 }

@@ -4,29 +4,32 @@ import { cn } from "../../core/utils/cn";
 export interface CardProps {
   /** Section heading; also labels the section for screen readers. */
   title?: ReactNode;
-  /** Right side of the heading row (e.g. a count or an action). */
-  action?: ReactNode;
+  /** Quiet text or an action on the right of the heading (e.g. a count). */
+  meta?: ReactNode;
   className?: string;
   children: ReactNode;
 }
 
-/** A white block on the grey page: one topic per card. */
-export default function Card({ title, action, className, children }: CardProps) {
+/** One topic per card: white surface, hairline, small neutral shadow. */
+export default function Card({ title, meta, className, children }: CardProps) {
   const titleId = useId();
 
   return (
     <section
       aria-labelledby={title ? titleId : undefined}
-      className={cn("rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-6", className)}
+      className={cn(
+        "rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] ring-1 ring-slate-900/[0.08] sm:p-6",
+        className,
+      )}
     >
-      {(title || action) && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+      {(title || meta) && (
+        <div className="mb-4 flex items-baseline justify-between gap-4">
           {title && (
-            <h2 id={titleId} className="text-lg font-bold text-navy-900">
+            <h2 id={titleId} className="text-base font-medium text-slate-900">
               {title}
             </h2>
           )}
-          {action}
+          {meta && <div className="text-sm text-slate-500 tabular-nums">{meta}</div>}
         </div>
       )}
       {children}
