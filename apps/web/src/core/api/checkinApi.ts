@@ -1,4 +1,4 @@
-import { API_PREFIX, type CheckinMethodName } from "@gym-checkin/shared";
+import { API_PREFIX, type CheckinInput } from "@gym-checkin/shared";
 import type { OpenSessionDto } from "../types/checkin";
 import { toHttpError } from "./httpError";
 
@@ -12,11 +12,12 @@ export const checkinApi = {
     return response.json();
   },
 
-  checkIn: async (method: CheckinMethodName): Promise<OpenSessionDto> => {
+  // The shared schema type: the body always matches what the API validates
+  checkIn: async (body: CheckinInput): Promise<OpenSessionDto> => {
     const response = await fetch(`${BASE_URL}/checkin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ method }),
+      body: JSON.stringify(body),
     });
     if (!response.ok) throw await toHttpError(response);
     return response.json();
