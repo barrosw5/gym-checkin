@@ -46,6 +46,8 @@ jobs:
       - run: pnpm build
 
   web:
+    # The name is a required check in branch protection: renaming it would
+    # leave PRs waiting for a check that never comes (tests run here anyway)
     name: Web (lint, build)
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -65,6 +67,7 @@ jobs:
       # The web app imports the compiled shared package (dist/), so build it first
       - run: pnpm --filter @gym-checkin/shared build
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
       # A broken story (bad import, wrong props) fails here, not in a demo
       - run: pnpm build-storybook --quiet
