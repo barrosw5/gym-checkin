@@ -25,8 +25,9 @@ const WEEKDAYS: Record<string, number> = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 
  * Average occupancy per weekday and 15-minute interval, between `from` and
  * `to` (UTC instants; `from` must fall on a 15-minute boundary).
  *
- * A person counts in an interval if they were inside at any moment of it:
- * [entryAt, exitAt) overlaps [start, start + 15 min).
+ * Time-weighted: a visit counts by the share of the interval it covers, so
+ * leaving at 18:01 adds 1/15 to the 18:00 interval, not a whole person. The
+ * result is the average number of people inside during the interval.
  *
  * The intervals are walked in UTC and only then named in local time, so the
  * daylight saving changes need no special case: on the spring day 01:00 to
@@ -43,14 +44,19 @@ export function averageOccupancyBySlot(
   const total = Math.floor((to.getTime() - start) / SLOT_MS);
   if (total <= 0) return [];
 
-  // People per interval of the window (a difference array would also do; at
-  // a few thousand intervals and visits the plain loop is clearer)
+  // Average people per interval of the window
   const people = Array.from({ length: total }, () => 0);
   for (const { entryAt, exitAt } of sessions) {
-    const first = Math.max(0, Math.floor((entryAt.getTime() - start) / SLOT_MS));
-    // ceil - 1: leaving exactly at 18:15 does not count in the 18:15 interval
-    const last = Math.min(total - 1, Math.ceil((exitAt.getTime() - start) / SLOT_MS) - 1);
-    for (let i = first; i <= last; i++) people[i]++;
+    const entry = entryAt.getTime();
+    const exit = exitAt.getTime();
+    const first = Math.max(0, Math.floor((entry - start) / SLOT_MS));
+    // ceil - 1: leaving exactly at 18:15 does not touch the 18:15 interval
+    const last = Math.min(total - 1, Math.ceil((exit - start) / SLOT_MS) - 1);
+    for (let i = first; i <= last; i++) {
+      const slotStart = start + i * SLOT_MS;
+      const inside = Math.min(exit, slotStart + SLOT_MS) - Math.max(entry, slotStart);
+      people[i] += inside / SLOT_MS;
+    }
   }
 
   // One formatter for the whole loop: creating it is the expensive part

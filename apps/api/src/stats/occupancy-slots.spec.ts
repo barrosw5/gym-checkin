@@ -12,11 +12,15 @@ const MONDAY = at('2026-01-05T00:00:00Z');
 const TUESDAY = at('2026-01-06T00:00:00Z');
 
 describe('averageOccupancyBySlot', () => {
-  it('counts a visit in every 15-minute interval it touches', () => {
+  it('counts a visit by the share of each interval it covers', () => {
     const result = averageOccupancyBySlot([span('2026-01-05T18:05:00Z', '2026-01-05T18:40:00Z')], MONDAY, TUESDAY, TZ);
 
-    // 18:00, 18:15 and 18:30 are slots 72, 73 and 74
-    expect([71, 72, 73, 74, 75].map((s) => find(result, 1, s))).toEqual([0, 1, 1, 1, 0]);
+    // 18:00, 18:15 and 18:30 are slots 72, 73 and 74: 10, 15 and 10 minutes inside
+    expect(find(result, 1, 71)).toBe(0);
+    expect(find(result, 1, 72)).toBeCloseTo(10 / 15);
+    expect(find(result, 1, 73)).toBe(1);
+    expect(find(result, 1, 74)).toBeCloseTo(10 / 15);
+    expect(find(result, 1, 75)).toBe(0);
   });
 
   it('does not count a visit in the interval where it ends exactly', () => {
@@ -34,9 +38,9 @@ describe('averageOccupancyBySlot', () => {
       TZ,
     );
 
-    expect(find(result, 7, 95)).toBe(1); // Sunday 23:45
-    expect(find(result, 1, 0)).toBe(1); // Monday 00:00
-    expect(find(result, 1, 1)).toBe(1); // Monday 00:15
+    expect(find(result, 7, 95)).toBeCloseTo(10 / 15); // Sunday 23:45, 10 minutes
+    expect(find(result, 1, 0)).toBe(1); // Monday 00:00, the whole interval
+    expect(find(result, 1, 1)).toBeCloseTo(5 / 15); // Monday 00:15, 5 minutes
     expect(find(result, 1, 2)).toBe(0);
   });
 
@@ -49,7 +53,8 @@ describe('averageOccupancyBySlot', () => {
       TZ,
     );
 
-    expect(find(result, 1, 72)).toBe(1); // (2 + 0) / 2
+    // First Monday: 1 + 10/15 people on average; second Monday: 0
+    expect(find(result, 1, 72)).toBeCloseTo((1 + 10 / 15) / 2);
   });
 
   it('only counts the part of a visit inside the window', () => {
