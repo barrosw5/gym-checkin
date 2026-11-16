@@ -15,6 +15,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **Ask before big changes.** For anything that touches several files or changes the architecture, propose a short plan first.
 - **Act as a senior reviewer.** Point out issues a senior engineer would flag (security, naming, missing tests, edge cases), even outside the scope of the request.
 - Update the checkboxes in ROADMAP.md when a roadmap item is done.
+- **Who runs what.** Claude runs the automated checks itself (lint, tests, build, `prisma generate`, building `packages/shared`, migrations/seed on the `development` database) and reports the results. The user does the manual tests (locally or on the deployed demo), the commits and the PRs: Claude hands over the manual test commands with the expected output, the files to stage, and the commit/PR titles and descriptions.
 
 ## General Conventions
 

@@ -19,6 +19,8 @@ const uniqueViolation = () =>
 
 describe('CheckinService', () => {
   const create = vi.fn();
+  const findFirst = vi.fn();
+  const updateMany = vi.fn();
   const getSettings = vi.fn();
   const verify = vi.fn();
   const simple: CheckinMethodStrategy = { method: 'SIMPLE', verify };
@@ -29,7 +31,7 @@ describe('CheckinService', () => {
     getSettings.mockResolvedValue({ enabledMethods: ['SIMPLE'] });
     verify.mockResolvedValue(undefined);
     service = new CheckinService(
-      { session: { create } } as unknown as PrismaService,
+      { session: { create, findFirst, updateMany } } as unknown as PrismaService,
       { get: getSettings } as unknown as SettingsService,
       [simple],
     );
@@ -94,6 +96,40 @@ describe('CheckinService', () => {
     await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toBe(
       error,
     );
+  });
+
+  describe('checkOut', () => {
+    const entryAt = new Date('2026-11-16T18:00:00Z');
+
+    it('closes the open session as closed by the user', async () => {
+      findFirst.mockResolvedValue({ id: 's1', entryAt });
+      updateMany.mockResolvedValue({ count: 1 });
+
+      const result = await service.checkOut('u1');
+
+      expect(result).toEqual({ id: 's1', entryAt, exitAt: expect.any(Date) });
+      expect(findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'u1', exitAt: null } }),
+      );
+      expect(updateMany).toHaveBeenCalledWith({
+        where: { id: 's1', exitAt: null },
+        data: { exitAt: result.exitAt, closedBy: 'USER' },
+      });
+    });
+
+    it('returns 409 when the user has no open session', async () => {
+      findFirst.mockResolvedValue(null);
+
+      await expect(service.checkOut('u1')).rejects.toThrow(ConflictException);
+      expect(updateMany).not.toHaveBeenCalled();
+    });
+
+    it('returns 409 when the session was closed meanwhile (double tap, auto-close)', async () => {
+      findFirst.mockResolvedValue({ id: 's1', entryAt });
+      updateMany.mockResolvedValue({ count: 0 });
+
+      await expect(service.checkOut('u1')).rejects.toThrow(ConflictException);
+    });
   });
 });
 

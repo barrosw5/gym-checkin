@@ -230,7 +230,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 - [x] Migração da `Settings`: linha única `global` criada pela migração (não depende do seed) e `enabledMethods` como enum `CheckinMethod`
 - [x] Módulo `checkin/`: interface `CheckinMethod` (Strategy) + método `SIMPLE` + `POST /checkin` (409 com sessão aberta, 403 com método desativado, rate limit)
-- [ ] `POST /checkout` (409 sem sessão aberta)
+- [x] `POST /checkout` (409 sem sessão aberta)
 - [ ] Botão "Entrar / Sair" no dashboard (frontend)
 - [ ] `GET /gym/occupancy` e contador "7/10" no frontend
 - [ ] Auto-close das sessões esquecidas (tarefa periódica, `closedBy: AUTO`)
