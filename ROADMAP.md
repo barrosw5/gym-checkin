@@ -257,6 +257,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [x] Correção manual de sessões e gestão de utilizadores (import CSV)
 - [x] Remover o método `SIMPLE` (sem prova de presença): ficam só o QR e a aprovação da receção; as sessões antigas `SIMPLE` mantêm-se no histórico
 - [x] Separar os papéis: só os estudantes entram no ginásio; a receção aceita pedidos, fecha/corrige sessões e abre o ecrã do QR; o admin faz o mesmo e gere as contas. Cada papel tem a sua página inicial
+- [x] Mudar a password (obrigatório depois de uma password temporária; termina as sessões noutros dispositivos); contas de demonstração públicas não a podem mudar
 
 ### Fase 5: Interface e identidade visual
 

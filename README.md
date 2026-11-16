@@ -6,6 +6,13 @@ Gym check-in system for the PIO XII student residence: students check in and out
 
 **Demo:** <https://gym-checkin-pjyi.onrender.com> (fake data only; the first response may be slow while the service wakes up)
 
+Public demo accounts (they cannot change their password; the admin account is private):
+
+| Role | Username | Password | Try |
+| --- | --- | --- | --- |
+| Student | `joaosilva` | `estudante-demo` | ask to enter, scan the QR, leave (on a phone) |
+| Reception | `rececao` | `rececao-demo` | accept requests, close sessions, open the QR screen (on a PC) |
+
 Full plan and phase status: [ROADMAP.md](ROADMAP.md) (in Portuguese).
 
 ## Stack
