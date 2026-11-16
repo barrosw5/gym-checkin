@@ -284,11 +284,14 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 ### Fase 7: Polimento e GitHub
 
-- [ ] PWA (instalável)
-- [ ] README com problema, diagrama, screenshots/GIF e instruções com `docker compose up`
-- [ ] Documentação da API (OpenAPI/Swagger)
-- [ ] Secção de RGPD e decisões de segurança em `docs/`
-- [ ] Teste ponta a ponta do fluxo principal (Playwright)
+- [ ] RGPD e decisões de segurança em `docs/`
+- [ ] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
+- [ ] Vitest no frontend, a começar pela lógica das estatísticas
+- [ ] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)
+- [ ] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
+- [ ] `docker compose up`: API, web e PostgreSQL local com um só comando
+- [ ] Teste ponta a ponta do fluxo principal (Playwright), também no CI
+- [ ] README final: problema, diagrama, screenshots/GIF e instruções com `docker compose up`
 
 ### Fase 8: Piloto na residência (opcional)
 
