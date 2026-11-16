@@ -9,6 +9,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CHECKIN_RATE_LIMIT, CheckinController } from './checkin.controller.js';
 import { CheckinService } from './checkin.service.js';
 
+const QR = { method: 'SCREEN_QR', token: 't' };
+
 // Real HTTP stack (validation pipe, throttler, status codes) with the
 // service mocked. JwtAuthGuard is replaced by one that logs in the user
 // named in the X-Test-User header (the real guard has its own tests).
@@ -21,7 +23,7 @@ describe('CheckinController (HTTP)', () => {
   beforeEach(async () => {
     getOpenSession.mockReset();
     checkIn.mockReset();
-    checkIn.mockResolvedValue({ id: 's1', method: 'SIMPLE' });
+    checkIn.mockResolvedValue({ id: 's1', method: 'SCREEN_QR' });
     checkOut.mockReset();
     checkOut.mockResolvedValue({ id: 's1' });
 
@@ -108,15 +110,15 @@ describe('CheckinController (HTTP)', () => {
   });
 
   it('returns 201 with the new session', async () => {
-    const res = await post({ method: 'SIMPLE' }).expect(201);
+    const res = await post(QR).expect(201);
 
-    expect(res.body).toEqual({ id: 's1', method: 'SIMPLE' });
+    expect(res.body).toEqual({ id: 's1', method: 'SCREEN_QR' });
   });
 
   it('checks in the logged-in user, ignoring any userId in the body', async () => {
-    await post({ method: 'SIMPLE', userId: 'someone-else' }, 'u1').expect(201);
+    await post({ ...QR, userId: 'someone-else' }, 'u1').expect(201);
 
-    expect(checkIn).toHaveBeenCalledWith('u1', { method: 'SIMPLE' });
+    expect(checkIn).toHaveBeenCalledWith('u1', QR);
   });
 
   it('rejects an invalid body with 400 before reaching the service', async () => {
@@ -134,16 +136,16 @@ describe('CheckinController (HTTP)', () => {
   it('passes the 409 from the service through', async () => {
     checkIn.mockRejectedValue(new ConflictException());
 
-    await post({ method: 'SIMPLE' }).expect(409);
+    await post(QR).expect(409);
   });
 
   it(`returns 429 after ${CHECKIN_RATE_LIMIT.limit} requests from the same user`, async () => {
     for (let i = 0; i < CHECKIN_RATE_LIMIT.limit; i++) {
-      await post({ method: 'SIMPLE' }).expect(201);
+      await post(QR).expect(201);
     }
 
-    await post({ method: 'SIMPLE' }).expect(429);
+    await post(QR).expect(429);
     // Another resident (same IP in the residence) is not affected
-    await post({ method: 'SIMPLE' }, 'u2').expect(201);
+    await post(QR, 'u2').expect(201);
   });
 });

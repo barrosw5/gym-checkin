@@ -16,15 +16,15 @@ enum Role {
 enum SessionMethod {
   SCREEN_QR
   RECEPTION_APPROVAL
+  // Removed check-in method (no proof of presence); kept for old sessions
   SIMPLE
   MANUAL
 }
 
 // Ways a student can open a session (Strategy pattern in the API).
 // Separate from SessionMethod: MANUAL is an admin correction, never something
-// the residence can "enable".
+// the residence can "enable", and SIMPLE only remains there for old sessions.
 enum CheckinMethod {
-  SIMPLE
   SCREEN_QR
   RECEPTION_APPROVAL
 }
@@ -91,6 +91,6 @@ model Settings {
   id              String          @id @default("global")
   capacity        Int             @default(10)
   autoCloseHours  Int             @default(2)
-  enabledMethods  CheckinMethod[] @default([SIMPLE])
+  enabledMethods  CheckinMethod[] @default([SCREEN_QR, RECEPTION_APPROVAL])
   qrWindowSeconds Int             @default(30)
 }

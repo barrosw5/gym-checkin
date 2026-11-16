@@ -12,6 +12,8 @@ import type { SettingsService } from '../settings/settings.service.js';
 import type { CheckinMethodStrategy } from './checkin-method.strategy.js';
 import { CheckinService } from './checkin.service.js';
 
+const QR = { method: 'SCREEN_QR', token: 't' } as const;
+
 const uniqueViolation = () =>
   new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
     code: 'P2002',
@@ -25,54 +27,56 @@ describe('CheckinService', () => {
   const getSettings = vi.fn();
   const verify = vi.fn();
   const notifyChanged = vi.fn();
-  const simple: CheckinMethodStrategy = { method: 'SIMPLE', verify };
+  const qr: CheckinMethodStrategy = { method: 'SCREEN_QR', verify };
   let service: CheckinService;
 
   beforeEach(() => {
     vi.resetAllMocks();
-    getSettings.mockResolvedValue({ enabledMethods: ['SIMPLE'] });
+    getSettings.mockResolvedValue({ enabledMethods: ['SCREEN_QR'] });
     verify.mockResolvedValue(undefined);
     service = new CheckinService(
       { session: { create, findFirst, updateMany } } as unknown as PrismaService,
       { get: getSettings } as unknown as SettingsService,
       { notifyChanged } as unknown as OccupancyService,
-      [simple],
+      [qr],
     );
   });
 
   it('opens a session with the method used', async () => {
-    const session = { id: 's1', entryAt: new Date(), method: 'SIMPLE' };
+    const session = { id: 's1', entryAt: new Date(), method: 'SCREEN_QR' };
     create.mockResolvedValue(session);
 
-    await expect(service.checkIn('u1', { method: 'SIMPLE' })).resolves.toBe(
+    await expect(service.checkIn('u1', QR)).resolves.toBe(
       session,
     );
     expect(verify).toHaveBeenCalledWith({
       userId: 'u1',
-      input: { method: 'SIMPLE' },
+      input: QR,
     });
     expect(create).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { userId: 'u1', method: 'SIMPLE' } }),
+      expect.objectContaining({ data: { userId: 'u1', method: 'SCREEN_QR' } }),
     );
     // The live counter (SSE) must hear about it
     expect(notifyChanged).toHaveBeenCalledOnce();
   });
 
   it('rejects a method disabled in Settings with 403', async () => {
-    getSettings.mockResolvedValue({ enabledMethods: ['SCREEN_QR'] });
+    getSettings.mockResolvedValue({ enabledMethods: ['RECEPTION_APPROVAL'] });
 
-    await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toThrow(
+    await expect(service.checkIn('u1', QR)).rejects.toThrow(
       ForbiddenException,
     );
     expect(verify).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
   });
 
-  it('rejects an enabled method that has no implementation yet with 403', async () => {
-    getSettings.mockResolvedValue({ enabledMethods: ['SIMPLE', 'SCREEN_QR'] });
+  it('rejects an enabled method without a strategy with 403 (approval uses /checkin/requests)', async () => {
+    getSettings.mockResolvedValue({
+      enabledMethods: ['SCREEN_QR', 'RECEPTION_APPROVAL'],
+    });
 
     await expect(
-      service.checkIn('u1', { method: 'SCREEN_QR' }),
+      service.checkIn('u1', { method: 'RECEPTION_APPROVAL' }),
     ).rejects.toThrow(ForbiddenException);
     expect(create).not.toHaveBeenCalled();
   });
@@ -80,7 +84,7 @@ describe('CheckinService', () => {
   it('does not open a session when the method rejects the attempt', async () => {
     verify.mockRejectedValue(new UnauthorizedException('Expired token'));
 
-    await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toThrow(
+    await expect(service.checkIn('u1', QR)).rejects.toThrow(
       'Expired token',
     );
     expect(create).not.toHaveBeenCalled();
@@ -89,7 +93,7 @@ describe('CheckinService', () => {
   it('returns 409 when the user already has an open session', async () => {
     create.mockRejectedValue(uniqueViolation());
 
-    await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toThrow(
+    await expect(service.checkIn('u1', QR)).rejects.toThrow(
       ConflictException,
     );
     expect(notifyChanged).not.toHaveBeenCalled();
@@ -99,7 +103,7 @@ describe('CheckinService', () => {
     const error = new Error('connection lost');
     create.mockRejectedValue(error);
 
-    await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toBe(
+    await expect(service.checkIn('u1', QR)).rejects.toBe(
       error,
     );
   });

@@ -4,7 +4,7 @@ import { z } from 'zod';
  * Ways a student can check in. Mirrors the Prisma enum `CheckinMethod`
  * (the API has a test that fails if the two drift apart).
  */
-export const CHECKIN_METHODS = ['SIMPLE', 'SCREEN_QR', 'RECEPTION_APPROVAL'] as const;
+export const CHECKIN_METHODS = ['SCREEN_QR', 'RECEPTION_APPROVAL'] as const;
 
 export type CheckinMethodName = (typeof CHECKIN_METHODS)[number];
 
@@ -14,7 +14,6 @@ export type CheckinMethodName = (typeof CHECKIN_METHODS)[number];
  * Discriminated union: `{ method: 'SCREEN_QR' }` without a token is a 400.
  */
 export const checkinSchema = z.discriminatedUnion('method', [
-  z.object({ method: z.literal('SIMPLE') }),
   z.object({
     method: z.literal('SCREEN_QR'),
     // base64url, bounded: never hash or compare arbitrarily large input
