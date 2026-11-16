@@ -29,6 +29,14 @@ enum CheckinMethod {
   RECEPTION_APPROVAL
 }
 
+// Lifecycle of a check-in request (method B). Only PENDING can change.
+enum CheckinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
 enum ClosedBy {
   USER
   RECEPTION
@@ -37,34 +45,42 @@ enum ClosedBy {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  name         String
-  room         String
-  username     String    @unique
-  passwordHash String
-  role         Role      @default(STUDENT)
-  active       Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  sessions     Session[]
+  id              String           @id @default(uuid())
+  name            String
+  room            String
+  username        String           @unique
+  passwordHash    String
+  role            Role             @default(STUDENT)
+  active          Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  sessions        Session[]
+  // Two relations to CheckinRequest, so each needs a name
+  checkinRequests CheckinRequest[] @relation("RequestedBy")
+  decidedRequests CheckinRequest[] @relation("DecidedBy")
 }
 
 model Session {
-  id        String        @id @default(uuid())
-  userId    String
-  user      User          @relation(fields: [userId], references: [id])
-  entryAt   DateTime      @default(now())
-  exitAt    DateTime?
-  method    SessionMethod
-  closedBy  ClosedBy?
+  id       String        @id @default(uuid())
+  userId   String
+  user     User          @relation(fields: [userId], references: [id])
+  entryAt  DateTime      @default(now())
+  exitAt   DateTime?
+  method   SessionMethod
+  closedBy ClosedBy?
 }
 
+// A student asking reception to let them in (method B, ROADMAP 5.2).
+// "One PENDING per user" is a partial unique index in the migration.
 model CheckinRequest {
-  id          String   @id @default(uuid())
+  id          String               @id @default(uuid())
   userId      String
-  createdAt   DateTime @default(now())
+  user        User                 @relation("RequestedBy", fields: [userId], references: [id])
+  createdAt   DateTime             @default(now())
   expiresAt   DateTime
-  status      String   @default("PENDING")
+  status      CheckinRequestStatus @default(PENDING)
+  // Who at reception approved/rejected it (null while PENDING or EXPIRED)
   decidedById String?
+  decidedBy   User?                @relation("DecidedBy", fields: [decidedById], references: [id])
   decidedAt   DateTime?
 }
 
