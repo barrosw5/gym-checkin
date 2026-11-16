@@ -11,6 +11,7 @@ import {
   SessionMethod,
 } from '@prisma/client';
 import type { CheckinInput } from '@gym-checkin/shared';
+import { OccupancyService } from '../gym/occupancy.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { SettingsService } from '../settings/settings.service.js';
 import {
@@ -56,6 +57,7 @@ export class CheckinService {
   constructor(
     private prisma: PrismaService,
     private settings: SettingsService,
+    private occupancy: OccupancyService,
     @Inject(CHECKIN_METHOD_STRATEGIES) strategies: CheckinMethodStrategy[],
   ) {
     this.strategies = new Map(strategies.map((s) => [s.method, s]));
@@ -73,8 +75,9 @@ export class CheckinService {
     // Method-specific proof of presence (no-op for SIMPLE)
     await strategy.verify({ userId, input });
 
+    let session: CheckinResult;
     try {
-      return await this.prisma.session.create({
+      session = await this.prisma.session.create({
         data: { userId, method: SESSION_METHOD[input.method] },
         select: { id: true, entryAt: true, method: true },
       });
@@ -90,6 +93,8 @@ export class CheckinService {
       }
       throw err;
     }
+    this.occupancy.notifyChanged();
+    return session;
   }
 
   /** The user's open session, or null when they are not in the gym. */
@@ -121,6 +126,7 @@ export class CheckinService {
     if (count === 0) {
       throw new ConflictException('You are not checked in');
     }
+    this.occupancy.notifyChanged();
     return { ...open, exitAt };
   }
 }

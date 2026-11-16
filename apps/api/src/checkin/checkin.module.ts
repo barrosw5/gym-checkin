@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { GymModule } from '../gym/gym.module.js';
 import { SettingsModule } from '../settings/settings.module.js';
+import { AutoCloseService } from './auto-close.service.js';
 import {
   CHECKIN_METHOD_STRATEGIES,
   type CheckinMethodStrategy,
@@ -12,12 +14,14 @@ import { SimpleCheckinMethod } from './methods/simple.method.js';
 @Module({
   imports: [
     SettingsModule,
+    GymModule,
     // Same setup as AuthModule: per-route limits, in-memory storage
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
   ],
   controllers: [CheckinController],
   providers: [
     CheckinService,
+    AutoCloseService,
     SimpleCheckinMethod,
     // To add a method (QR, reception approval): register its class above
     // and add it to `inject`. CheckinService and other methods stay untouched.

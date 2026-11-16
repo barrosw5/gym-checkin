@@ -7,6 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
 import { AuthModule } from './auth/auth.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
+import { GymModule } from './gym/gym.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
@@ -21,6 +22,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     PrismaModule,
     AuthModule,
     CheckinModule,
+    GymModule,
   ],
   controllers: [HealthController],
 })

@@ -7,6 +7,7 @@ import { CheckinMethod, Prisma } from '@prisma/client';
 import { CHECKIN_METHODS } from '@gym-checkin/shared';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PrismaService } from '../prisma/prisma.service.js';
+import type { OccupancyService } from '../gym/occupancy.service.js';
 import type { SettingsService } from '../settings/settings.service.js';
 import type { CheckinMethodStrategy } from './checkin-method.strategy.js';
 import { CheckinService } from './checkin.service.js';
@@ -23,6 +24,7 @@ describe('CheckinService', () => {
   const updateMany = vi.fn();
   const getSettings = vi.fn();
   const verify = vi.fn();
+  const notifyChanged = vi.fn();
   const simple: CheckinMethodStrategy = { method: 'SIMPLE', verify };
   let service: CheckinService;
 
@@ -33,6 +35,7 @@ describe('CheckinService', () => {
     service = new CheckinService(
       { session: { create, findFirst, updateMany } } as unknown as PrismaService,
       { get: getSettings } as unknown as SettingsService,
+      { notifyChanged } as unknown as OccupancyService,
       [simple],
     );
   });
@@ -51,6 +54,8 @@ describe('CheckinService', () => {
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({ data: { userId: 'u1', method: 'SIMPLE' } }),
     );
+    // The live counter (SSE) must hear about it
+    expect(notifyChanged).toHaveBeenCalledOnce();
   });
 
   it('rejects a method disabled in Settings with 403', async () => {
@@ -87,6 +92,7 @@ describe('CheckinService', () => {
     await expect(service.checkIn('u1', { method: 'SIMPLE' })).rejects.toThrow(
       ConflictException,
     );
+    expect(notifyChanged).not.toHaveBeenCalled();
   });
 
   it('rethrows unexpected database errors (500, not a fake 409)', async () => {
@@ -133,6 +139,7 @@ describe('CheckinService', () => {
         where: { id: 's1', exitAt: null },
         data: { exitAt: result.exitAt, closedBy: 'USER' },
       });
+      expect(notifyChanged).toHaveBeenCalledOnce();
     });
 
     it('returns 409 when the user has no open session', async () => {
@@ -147,6 +154,7 @@ describe('CheckinService', () => {
       updateMany.mockResolvedValue({ count: 0 });
 
       await expect(service.checkOut('u1')).rejects.toThrow(ConflictException);
+      expect(notifyChanged).not.toHaveBeenCalled();
     });
   });
 });
