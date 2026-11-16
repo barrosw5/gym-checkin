@@ -276,8 +276,8 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 - [ ] Obter o símbolo da residência (de preferência **SVG**; se só houver PNG, o maior possível com fundo transparente) e confirmar que se pode usar (pedir autorização à direção, é um logótipo institucional)
 - [ ] Guardar os ficheiros: logótipo usado nos componentes em `apps/web/src/assets/brand/pio-logo.svg` (importado no código, o Vite otimiza); ícone do separador em `apps/web/public/favicon.svg` (referenciado em `index.html`); para a PWA, ícones PNG 192×192 e 512×512 em `apps/web/public/icons/`
-- [ ] Extrair as cores do símbolo e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
-- [ ] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
+- [x] Extrair as cores do símbolo e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
+- [x] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
 - [ ] Usar o logótipo no ecrã de login, no cabeçalho e no ecrã do QR da receção
 
 ### Fase 6: Estatísticas
