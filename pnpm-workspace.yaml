@@ -2,6 +2,9 @@ packages:
     - "apps/*"
     - "packages/*"
 allowBuilds:
+  # Telemetry pulled in by swagger-ui-dist (@nestjs/swagger): its install
+  # script only reports usage to Scarf, so it never runs (privacy, no need)
+  '@scarf/scarf': false
   '@prisma/client': false
   '@prisma/engines': true
   bcrypt: true
