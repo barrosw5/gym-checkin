@@ -8,8 +8,8 @@ const meta = {
   // The layout is the whole page: no Storybook padding around it
   parameters: { layout: "fullscreen" },
   args: {
-    title: "Bem-vindo, João Silva!",
-    subtitle: "Quarto: 501",
+    title: "Hoje no ginásio",
+    subtitle: "Sessão de João Silva",
     children: (
       <>
         <Card title="Um cartão">Conteúdo</Card>
@@ -26,6 +26,6 @@ type Story = StoryObj<typeof meta>;
 export const Narrow: Story = {};
 
 /** Reception/admin desks on a PC. */
-export const Wide: Story = { args: { width: "wide", title: "Painel da receção", subtitle: "Olá, Maria Receção." } };
+export const Wide: Story = { args: { width: "wide", title: "Painel da receção", subtitle: "Sessão de Maria Receção" } };
 
 export const OnPhone: Story = { globals: { viewport: { value: "mobile1" } } };

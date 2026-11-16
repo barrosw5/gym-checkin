@@ -27,7 +27,7 @@ export default function PageLayout({ title, subtitle, width = "narrow", children
       <header className="border-b border-slate-900/[0.08] bg-white">
         <div className={cn("mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6", WIDTHS[width])}>
           <div className="flex items-center gap-2.5">
-            {/* Flat roundel in the crest navy; the real symbol needs the direction's approval */}
+            {/* Flat roundel in the crest navy: the brand mark (no logo file, by decision) */}
             <span
               aria-hidden="true"
               className="grid size-8 place-items-center rounded-full bg-navy-700 text-[11px] font-semibold text-white"
