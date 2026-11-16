@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { checkinSchema, type CheckinInput } from '@gym-checkin/shared';
 import type { AuthUser } from '../auth/auth-user.js';
@@ -27,5 +34,13 @@ export class CheckinController {
     // The user comes from the cookie, never from the body: no one can
     // check in someone else
     return this.checkinService.checkIn(user.userId, body);
+  }
+
+  // 200, not 201: it updates an existing session instead of creating one
+  @Throttle({ default: CHECKIN_RATE_LIMIT })
+  @HttpCode(HttpStatus.OK)
+  @Post('checkout')
+  checkOut(@CurrentUser() user: AuthUser) {
+    return this.checkinService.checkOut(user.userId);
   }
 }

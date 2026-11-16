@@ -4,7 +4,12 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { type CheckinMethod, Prisma, SessionMethod } from '@prisma/client';
+import {
+  type CheckinMethod,
+  ClosedBy,
+  Prisma,
+  SessionMethod,
+} from '@prisma/client';
 import type { CheckinInput } from '@gym-checkin/shared';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { SettingsService } from '../settings/settings.service.js';
@@ -29,6 +34,13 @@ export interface CheckinResult {
   id: string;
   entryAt: Date;
   method: SessionMethod;
+}
+
+/** Closed session as returned to the client (no user data). */
+export interface CheckoutResult {
+  id: string;
+  entryAt: Date;
+  exitAt: Date;
 }
 
 @Injectable()
@@ -72,5 +84,32 @@ export class CheckinService {
       }
       throw err;
     }
+  }
+
+  /**
+   * Closes the user's open session. No token: leaving proves nothing and
+   * nobody gains from a fake checkout (see CLAUDE.md).
+   */
+  async checkOut(userId: string): Promise<CheckoutResult> {
+    const open = await this.prisma.session.findFirst({
+      where: { userId, exitAt: null },
+      select: { id: true, entryAt: true },
+    });
+    if (!open) {
+      throw new ConflictException('You are not checked in');
+    }
+
+    const exitAt = new Date();
+    // Conditional update ("only if still open"): if a double tap or the
+    // auto-close job closed it between the read and here, count is 0 and
+    // the first close wins instead of being overwritten
+    const { count } = await this.prisma.session.updateMany({
+      where: { id: open.id, exitAt: null },
+      data: { exitAt, closedBy: ClosedBy.USER },
+    });
+    if (count === 0) {
+      throw new ConflictException('You are not checked in');
+    }
+    return { ...open, exitAt };
   }
 }

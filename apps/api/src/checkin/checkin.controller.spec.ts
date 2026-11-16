@@ -12,18 +12,21 @@ import { CheckinService } from './checkin.service.js';
 // Real HTTP stack (validation pipe, throttler, status codes) with the
 // service mocked. JwtAuthGuard is replaced by one that logs in the user
 // named in the X-Test-User header (the real guard has its own tests).
-describe('POST /api/checkin', () => {
+describe('CheckinController (HTTP)', () => {
   let app: NestExpressApplication;
   const checkIn = vi.fn();
+  const checkOut = vi.fn();
 
   beforeEach(async () => {
     checkIn.mockReset();
     checkIn.mockResolvedValue({ id: 's1', method: 'SIMPLE' });
+    checkOut.mockReset();
+    checkOut.mockResolvedValue({ id: 's1' });
 
     const moduleRef = await Test.createTestingModule({
       imports: [ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }])],
       controllers: [CheckinController],
-      providers: [{ provide: CheckinService, useValue: { checkIn } }],
+      providers: [{ provide: CheckinService, useValue: { checkIn, checkOut } }],
     })
       .overrideGuard(JwtAuthGuard)
       .useValue({
@@ -49,6 +52,34 @@ describe('POST /api/checkin', () => {
       .post('/api/checkin')
       .set('X-Test-User', user)
       .send(body);
+
+  describe('POST /api/checkout', () => {
+    const postCheckout = (user = 'u1') =>
+      request(app.getHttpServer())
+        .post('/api/checkout')
+        .set('X-Test-User', user);
+
+    it('returns 200 (not 201) and closes the logged-in user session', async () => {
+      const res = await postCheckout('u1').expect(200);
+
+      expect(res.body).toEqual({ id: 's1' });
+      expect(checkOut).toHaveBeenCalledWith('u1');
+    });
+
+    it('passes the 409 (no open session) from the service through', async () => {
+      checkOut.mockRejectedValue(new ConflictException());
+
+      await postCheckout().expect(409);
+    });
+
+    it(`returns 429 after ${CHECKIN_RATE_LIMIT.limit} requests from the same user`, async () => {
+      for (let i = 0; i < CHECKIN_RATE_LIMIT.limit; i++) {
+        await postCheckout().expect(200);
+      }
+
+      await postCheckout().expect(429);
+    });
+  });
 
   it('returns 201 with the new session', async () => {
     const res = await post({ method: 'SIMPLE' }).expect(201);
