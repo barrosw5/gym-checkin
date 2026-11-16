@@ -4,8 +4,8 @@ import { useTranslation } from "../../hooks/useTranslation";
 import LanguagePicker from "../LanguagePicker";
 
 export interface PageLayoutProps {
-  /** Page heading (h1): names the context, never a greeting. */
-  title?: ReactNode;
+  /** Page heading (h1) and browser tab title: names the context, never a greeting. */
+  title?: string;
   /** One quiet line or row under the title (e.g. the user and their room). */
   subtitle?: ReactNode;
   /**
@@ -24,6 +24,10 @@ export default function PageLayout({ title, subtitle, width = "narrow", children
 
   return (
     <div className="min-h-svh">
+      {/* React 19 moves <title> into <head>. A title per page is how screen
+          reader users know where they are (WCAG 2.4.2); one fixed title for
+          every route would not tell them that the page changed */}
+      <title>{title ? t("layout.documentTitle", { page: title }) : t("layout.documentTitleHome")}</title>
       <header className="border-b border-slate-900/[0.08] bg-white">
         <div className={cn("mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6", WIDTHS[width])}>
           <div className="flex items-center gap-2.5">

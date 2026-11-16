@@ -19,6 +19,8 @@ export const en: Messages = {
   },
   layout: {
     appName: "Gym",
+    documentTitle: "{page} · PIO XII Gym",
+    documentTitleHome: "PIO XII Gym",
   },
   language: {
     label: "Language",
