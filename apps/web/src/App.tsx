@@ -2,9 +2,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/page";
 import DashboardPage from "./pages/dashboard/page";
 import QrCheckinPage from "./pages/checkin/page";
+import AdminPage from "./pages/admin/page";
 import ReceptionPage from "./pages/reception/page";
 import ReceptionScreenPage from "./pages/reception/screen/page";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RoleHome from "./components/RoleHome";
 
 function App() {
   return (
@@ -12,9 +14,23 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Any logged-in user */}
+        {/* Any logged-in user: "/" picks the home page for their role */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<RoleHome />} />
+        </Route>
+
+        {/* Students only (same rule as @Roles(STUDENT) in the API) */}
+        <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+        </Route>
+        <Route
+          element={
+            <ProtectedRoute
+              roles={["STUDENT"]}
+              deniedMessage="Só os estudantes podem entrar no ginásio."
+            />
+          }
+        >
           {/* Link inside the reception QR; login (if needed) comes back here */}
           <Route path="/c/:token" element={<QrCheckinPage />} />
         </Route>
@@ -25,8 +41,12 @@ function App() {
           <Route path="/reception/screen" element={<ReceptionScreenPage />} />
         </Route>
 
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        {/* Admin only: everything reception does, plus accounts */}
+        <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
+          <Route path="/admin" element={<AdminPage />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

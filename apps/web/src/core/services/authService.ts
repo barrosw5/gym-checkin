@@ -1,7 +1,16 @@
 import { loginSchema } from "@gym-checkin/shared";
 import { authApi } from "../api/authApi";
 import { HttpError } from "../api/httpError";
-import type { User } from "../types/user";
+import type { Role, User } from "../types/user";
+
+/** Each role's home: students train, staff run the gym (no check-in). */
+const HOME_BY_ROLE: Record<Role, string> = {
+  STUDENT: "/dashboard",
+  RECEPTION: "/reception",
+  ADMIN: "/admin",
+};
+
+export const homePathFor = (role: Role): string => HOME_BY_ROLE[role];
 
 /** Turns a failed login into a message the user can act on. */
 function loginErrorMessage(err: unknown): string {

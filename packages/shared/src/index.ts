@@ -9,3 +9,19 @@ export type { LoginInput } from './auth.js';
 export { CHECKIN_METHODS, checkinSchema } from './checkin.js';
 export type { CheckinInput, CheckinMethodName } from './checkin.js';
 export type { Occupancy } from './gym.js';
+export {
+  MAX_IMPORT_ROWS,
+  USERNAME_PATTERN,
+  importedUserSchema,
+  sessionCorrectionSchema,
+  sessionsQuerySchema,
+  userImportSchema,
+  userUpdateSchema,
+} from './admin.js';
+export type {
+  ImportedUser,
+  SessionCorrection,
+  SessionsQuery,
+  UserImportInput,
+  UserUpdate,
+} from './admin.js';

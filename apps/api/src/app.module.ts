@@ -5,6 +5,7 @@ import { validateEnv } from './config/env.validation.js';
 import { HealthController } from './health/health.controller.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
+import { AdminModule } from './admin/admin.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
 import { GymModule } from './gym/gym.module.js';
@@ -23,6 +24,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     AuthModule,
     CheckinModule,
     GymModule,
+    AdminModule,
   ],
   controllers: [HealthController],
 })

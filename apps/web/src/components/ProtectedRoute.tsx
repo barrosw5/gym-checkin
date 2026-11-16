@@ -5,6 +5,8 @@ import type { Role } from "../core/types/user";
 interface ProtectedRouteProps {
   /** Roles allowed in. Omit to allow any logged-in user. */
   roles?: Role[];
+  /** Shown to logged-in users whose role is not allowed. */
+  deniedMessage?: string;
 }
 
 /**
@@ -12,7 +14,10 @@ interface ProtectedRouteProps {
  * The real protection is the API (JwtAuthGuard + RolesGuard), because
  * anyone can change the JS running in their own browser.
  */
-export default function ProtectedRoute({ roles }: ProtectedRouteProps) {
+export default function ProtectedRoute({
+  roles,
+  deniedMessage = "A tua conta não tem acesso a esta página.",
+}: ProtectedRouteProps) {
   const { state, retry } = useCurrentUser();
   const location = useLocation();
 
@@ -40,8 +45,8 @@ export default function ProtectedRoute({ roles }: ProtectedRouteProps) {
     return (
       <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
         <h2>Sem permissão</h2>
-        <p>A tua conta não tem acesso a esta página.</p>
-        <Link to="/dashboard">Voltar ao início</Link>
+        <p>{deniedMessage}</p>
+        <Link to="/">Ir para o meu início</Link>
       </div>
     );
   }

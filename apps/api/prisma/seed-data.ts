@@ -21,7 +21,7 @@ export interface FakeSessionOptions {
 
 /**
  * Builds closed sessions spread over the past `days` days, for demo data and
- * for testing statistics later (Phase 5).
+ * for testing statistics later (Phase 6).
  *
  * Every session is closed (exitAt set): an open one would collide with the
  * `one_open_session_per_user` index and would show up as "in the gym now".

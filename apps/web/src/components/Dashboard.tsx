@@ -1,16 +1,18 @@
-import { Link } from "react-router-dom";
 import { useDashboard } from "../hooks/useDashboard";
 import CheckinButton from "./CheckinButton";
+import LogoutButton from "./LogoutButton";
 import OccupancyCounter from "./OccupancyCounter";
 
+/** Student home: how full the gym is, and the way in/out. */
 export default function Dashboard() {
-  const { user, isStaff, logout } = useDashboard();
+  const { user } = useDashboard();
 
   return (
     <div
       style={{
         maxWidth: "600px",
         margin: "50px auto",
+        padding: "0 16px",
         fontFamily: "sans-serif",
       }}
     >
@@ -18,31 +20,10 @@ export default function Dashboard() {
       <p>
         <strong>Quarto:</strong> {user.room}
       </p>
-      <p>
-        <strong>Role:</strong> {user.role}
-      </p>
-      {isStaff && (
-        <p>
-          <Link to="/reception">Painel da receção</Link>
-        </p>
-      )}
 
       <OccupancyCounter />
       <CheckinButton />
-
-      <button
-        onClick={logout}
-        style={{
-          marginTop: "20px",
-          padding: "10px",
-          backgroundColor: "#e53e3e",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Terminar sessão
-      </button>
+      <LogoutButton />
     </div>
   );
 }

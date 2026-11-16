@@ -36,7 +36,10 @@ describe('CheckinController (HTTP)', () => {
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
           const req = ctx.switchToHttp().getRequest();
-          req.user = { userId: req.headers['x-test-user'], role: 'STUDENT' };
+          req.user = {
+            userId: req.headers['x-test-user'],
+            role: req.headers['x-test-role'] ?? 'STUDENT',
+          };
           return true;
         },
       })
@@ -119,6 +122,23 @@ describe('CheckinController (HTTP)', () => {
     await post({ ...QR, userId: 'someone-else' }, 'u1').expect(201);
 
     expect(checkIn).toHaveBeenCalledWith('u1', QR);
+  });
+
+  it.each(['RECEPTION', 'ADMIN'])('refuses %s with 403: staff do not check in', async (role) => {
+    await request(app.getHttpServer())
+      .post('/api/checkin')
+      .set('X-Test-User', 'staff')
+      .set('X-Test-Role', role)
+      .send(QR)
+      .expect(403);
+    await request(app.getHttpServer())
+      .post('/api/checkout')
+      .set('X-Test-User', 'staff')
+      .set('X-Test-Role', role)
+      .expect(403);
+
+    expect(checkIn).not.toHaveBeenCalled();
+    expect(checkOut).not.toHaveBeenCalled();
   });
 
   it('rejects an invalid body with 400 before reaching the service', async () => {
