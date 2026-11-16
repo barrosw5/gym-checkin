@@ -285,7 +285,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 ### Fase 7: Polimento e GitHub
 
 - [x] RGPD e decisões de segurança em `docs/`
-- [ ] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
+- [x] Seed com 90 dias de visitas falsas (só `development` e demo, nunca dados reais)
 - [ ] Vitest no frontend, a começar pela lógica das estatísticas
 - [ ] Documentação da API (Swagger em `/api/docs`, schemas gerados a partir do zod)
 - [ ] PWA instalável (manifest e ícones, sem modo offline: dados antigos em cache seriam enganadores)
@@ -294,6 +294,14 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [ ] README final: problema, diagrama, screenshots/GIF e instruções com `docker compose up`
 
 ### Fase 8: Piloto na residência (opcional)
+
+Antes de haver dados reais (obrigações do RGPD, ver [docs/seguranca-e-privacidade.md](docs/seguranca-e-privacidade.md)):
+
+- [ ] Retenção: apagar ou anonimizar as visitas com mais de 12 meses
+- [ ] Apagar uma conta a pedido (anonimizando as suas visitas, para manter as estatísticas)
+- [ ] Cada estudante vê o seu próprio histórico de visitas (`GET /me/sessions`)
+
+O piloto:
 
 - [ ] Apresentar uma demonstração à direção/receção
 - [ ] Testar com um grupo pequeno de residentes
