@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDashboard } from "../hooks/useDashboard";
 import CheckinButton from "./CheckinButton";
+import OccupancyCounter from "./OccupancyCounter";
 
 export default function Dashboard() {
   const { user, isStaff, logout } = useDashboard();
@@ -26,6 +27,7 @@ export default function Dashboard() {
         </p>
       )}
 
+      <OccupancyCounter />
       <CheckinButton />
 
       <button

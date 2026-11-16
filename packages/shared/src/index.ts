@@ -8,3 +8,4 @@ export { loginSchema } from './auth.js';
 export type { LoginInput } from './auth.js';
 export { CHECKIN_METHODS, checkinSchema } from './checkin.js';
 export type { CheckinInput, CheckinMethodName } from './checkin.js';
+export type { Occupancy } from './gym.js';
