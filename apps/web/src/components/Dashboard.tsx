@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useDashboard } from "../hooks/useDashboard";
+import CheckinButton from "./CheckinButton";
 
 export default function Dashboard() {
   const { user, isStaff, logout } = useDashboard();
@@ -25,6 +26,8 @@ export default function Dashboard() {
         </p>
       )}
 
+      <CheckinButton />
+
       <button
         onClick={logout}
         style={{
@@ -36,7 +39,7 @@ export default function Dashboard() {
           cursor: "pointer",
         }}
       >
-        Sair (Logout)
+        Terminar sessão
       </button>
     </div>
   );
