@@ -186,6 +186,11 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 *   `core/api/`: chamadas HTTP puras usando `fetch` ou `axios` (ex: `authApi.ts`). Sem estado React.
 *   `core/types/`: interfaces e tipos TypeScript partilhados.
 
+### Nomes dos ficheiros
+*   Hooks: `useX.ts` (ex: `useDashboard.ts`, `useCheckin.ts`). Só os hooks começam por `use` (o React reserva esse prefixo).
+*   Services: o mesmo nome do hook que os usa, sem o `use`: `xService.ts` (ex: `useCheckin` → `checkinService.ts`). Um hook pode reutilizar o service de outro (ex: `useCurrentUser` usa `authService`).
+*   API: `xApi.ts` (ex: `checkinApi.ts`). Componentes: `PascalCase.tsx` (ex: `CheckinButton.tsx`).
+
 ## 12. Roadmap por fases
 
 ### Fase 0: Preparação
@@ -258,14 +263,15 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [ ] Ecrã "melhor altura para ir"
 - [ ] Extras: "vou às 18h", previsão simples com base no histórico
 
-### Fase 6: Polimento e GitHub
+### Fase 6: Interface e identidade visual
 
+Uma fase só para o frontend ficar bonito, consistente e bem documentado, antes do polimento final.
+
+- [ ] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
+- [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
+- [ ] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com CSS em vez de estilos inline
 - [ ] Identidade visual do PIO XII (ver passos abaixo)
-- [ ] PWA (instalável) e boa experiência no telemóvel
-- [ ] README com problema, diagrama, screenshots/GIF e instruções com `docker compose up`
-- [ ] Documentação da API (OpenAPI/Swagger)
-- [ ] Secção de RGPD e decisões de segurança em `docs/`
-- [ ] Teste ponta a ponta do fluxo principal (Playwright)
+- [ ] Acessibilidade (contraste WCAG AA, teclado, labels) e boa experiência no telemóvel
 
 **Identidade visual do PIO XII (passos, por ordem):**
 
@@ -275,7 +281,15 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [ ] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
 - [ ] Usar o logótipo no ecrã de login, no cabeçalho e no ecrã do QR da receção
 
-### Fase 7: Piloto na residência (opcional)
+### Fase 7: Polimento e GitHub
+
+- [ ] PWA (instalável)
+- [ ] README com problema, diagrama, screenshots/GIF e instruções com `docker compose up`
+- [ ] Documentação da API (OpenAPI/Swagger)
+- [ ] Secção de RGPD e decisões de segurança em `docs/`
+- [ ] Teste ponta a ponta do fluxo principal (Playwright)
+
+### Fase 8: Piloto na residência (opcional)
 
 - [ ] Apresentar uma demonstração à direção/receção
 - [ ] Testar com um grupo pequeno de residentes
