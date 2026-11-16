@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
+import { useTranslation } from "../hooks/useTranslation";
 import AccountActions from "./AccountActions";
 import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
@@ -9,15 +10,16 @@ import UsersAdmin from "./UsersAdmin";
 /** Admin panel: everything reception does, plus accounts. No check-in. */
 export default function AdminHome() {
   const user = useAuthenticatedUser();
+  const { t } = useTranslation();
 
   return (
     <main style={{ maxWidth: "800px", margin: "40px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
-      <h1>Painel de administração</h1>
-      <p>Olá, {user.name}.</p>
+      <h1>{t("admin.title")}</h1>
+      <p>{t("common.hello", { name: user.name })}</p>
       <p>
         {/* New tab: the screen stays open full screen on the reception PC */}
         <Link to="/reception/screen" target="_blank">
-          Abrir o ecrã do QR
+          {t("common.openQrScreen")}
         </Link>
       </p>
       <OccupancyCounter />

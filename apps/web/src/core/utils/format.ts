@@ -1,19 +1,32 @@
 // Pure presentation helpers: no state, no API. Components may import them
 // directly (unlike services, which they only reach through their hook).
 
-// Created once and reused: building an Intl formatter is relatively costly
-const time = new Intl.DateTimeFormat("pt-PT", { hour: "2-digit", minute: "2-digit" });
-const timeWithSeconds = new Intl.DateTimeFormat("pt-PT", {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-});
+// One formatter per (language, options), created once and reused: building
+// an Intl formatter is relatively costly and these run on every render
+const cache = new Map<string, Intl.DateTimeFormat>();
+const formatter = (languageTag: string, withSeconds: boolean) => {
+  const id = `${languageTag}|${withSeconds}`;
+  let f = cache.get(id);
+  if (!f) {
+    f = new Intl.DateTimeFormat(languageTag, {
+      hour: "2-digit",
+      minute: "2-digit",
+      ...(withSeconds && { second: "2-digit" }),
+      // 24 h in every language: a gym timetable, not a 9-to-5 clock
+      hourCycle: "h23",
+    });
+    cache.set(id, f);
+  }
+  return f;
+};
 
-/** "18:05" */
-export const formatTime = (date: Date): string => time.format(date);
+/** "18:05". languageTag comes from useTranslation() (e.g. "pt-PT"). */
+export const formatTime = (date: Date, languageTag: string): string =>
+  formatter(languageTag, false).format(date);
 
 /** "18:05:42": when seconds matter (e.g. the order requests came in). */
-export const formatTimeWithSeconds = (date: Date): string => timeWithSeconds.format(date);
+export const formatTimeWithSeconds = (date: Date, languageTag: string): string =>
+  formatter(languageTag, true).format(date);
 
 /** "YYYY-MM-DDTHH:mm" in local time: the format of <input type="datetime-local">. */
 export const toLocalInput = (date: Date): string => {

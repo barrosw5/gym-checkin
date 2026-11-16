@@ -1,36 +1,38 @@
 import { useState } from "react";
 import { formatTime } from "../core/utils/format";
 import { useSessionsToday } from "../hooks/useSessionsToday";
+import { useTranslation } from "../hooks/useTranslation";
 import SessionCorrectionForm from "./SessionCorrectionForm";
 
 /** Reception panel: who came today, close a session, fix wrong times. */
 export default function SessionsToday() {
-  const { sessions, failed, busyId, message, reload, closeNow, correctTimes } =
-    useSessionsToday();
+  const { sessions, failed, busyId, message, reload, closeNow, correctTimes } = useSessionsToday();
+  const { t, tm, languageTag } = useTranslation();
   const [editing, setEditing] = useState<string | null>(null);
 
   return (
     <section aria-labelledby="today-title" style={{ margin: "30px 0" }}>
-      <h2 id="today-title">Sessões de hoje</h2>
+      <h2 id="today-title">{t("sessions.title")}</h2>
 
       {failed && (
         <p>
-          Não foi possível carregar. <button onClick={reload}>Tentar outra vez</button>
+          {t("common.loadFailed")} <button onClick={reload}>{t("common.retry")}</button>
         </p>
       )}
-      {sessions === null && !failed && <p>A carregar...</p>}
-      {sessions?.length === 0 && <p>Ainda ninguém veio ao ginásio hoje.</p>}
+      {sessions === null && !failed && <p>{t("common.loading")}</p>}
+      {sessions?.length === 0 && <p>{t("sessions.none")}</p>}
 
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {sessions?.map((s) => (
           <li key={s.id} style={{ padding: "12px 0", borderBottom: "1px solid #e2e8f0" }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
               <span style={{ flex: "1 1 200px" }}>
-                <strong>{s.name}</strong> · Quarto {s.room}
+                <strong>{s.name}</strong> · {t("common.room", { room: s.room })}
                 <br />
                 <small>
-                  {formatTime(s.entryAt)} → {s.exitAt ? formatTime(s.exitAt) : "dentro agora"}
-                  {s.closedBy === "AUTO" && " (fechada automaticamente)"}
+                  {formatTime(s.entryAt, languageTag)} →{" "}
+                  {s.exitAt ? formatTime(s.exitAt, languageTag) : t("sessions.insideNow")}
+                  {s.closedBy === "AUTO" && ` ${t("sessions.autoClosed")}`}
                 </small>
               </span>
               {!s.exitAt && (
@@ -39,7 +41,7 @@ export default function SessionsToday() {
                   disabled={busyId === s.id}
                   style={{ padding: "10px 16px", background: "#dd6b20", color: "white", border: "none" }}
                 >
-                  Fechar (entregou a chave)
+                  {t("sessions.close")}
                 </button>
               )}
               <button
@@ -47,7 +49,7 @@ export default function SessionsToday() {
                 aria-expanded={editing === s.id}
                 style={{ padding: "10px 16px" }}
               >
-                Corrigir
+                {t("sessions.correct")}
               </button>
             </div>
             {editing === s.id && (
@@ -65,7 +67,7 @@ export default function SessionsToday() {
 
       {message && (
         <p role="alert" style={{ color: "#c53030" }}>
-          {message}
+          {tm(message)}
         </p>
       )}
     </section>

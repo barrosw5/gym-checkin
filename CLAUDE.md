@@ -67,6 +67,12 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 - `core/types/`: shared TypeScript interfaces and types.
 - `core/utils/`: pure presentation helpers (e.g. `formatTime`), no state and no API. The only `core/` folder components may import directly; services are reached only through the component's hook.
 
+### Text and languages (i18n)
+
+- **No fixed user-visible text in components, hooks or services.** Every sentence lives in `core/i18n/locales/pt.ts` (source of truth) and `en.ts` (typed as `Messages`: missing, extra or misspelled keys fail the build). Components call `t("some.key", params)` from `useTranslation()`.
+- Services throw `TranslatableError(key, params)` instead of `Error("sentence")`; hooks keep it as a `Translatable` (`toTranslatable(err)`); components show it with `tm(message)`.
+- Dates and times are formatted in the active language (`formatTime(date, languageTag)`).
+
 ### File naming
 
 - Hooks: `useX.ts` (e.g. `useDashboard.ts`). Only hooks start with `use` (React reserves the prefix; the react-hooks lint rules apply to it).

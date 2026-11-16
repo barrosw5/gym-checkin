@@ -264,6 +264,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem antes das estatísticas, para os ecrãs novos (gráficos) já nascerem com a base visual.
 
+- [x] Português e inglês (i18n): seletor de língua e todo o texto em ficheiros de língua, sem frases fixas nos componentes
 - [x] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
 - [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
 - [ ] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com CSS em vez de estilos inline

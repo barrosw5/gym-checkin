@@ -1,5 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { useReceptionScreen } from "../hooks/useReceptionScreen";
+import { useTranslation } from "../hooks/useTranslation";
+import LanguagePicker from "./LanguagePicker";
 import OccupancyCounter from "./OccupancyCounter";
 
 /**
@@ -8,6 +10,7 @@ import OccupancyCounter from "./OccupancyCounter";
  */
 export default function ReceptionScreen() {
   const { qrUrl, stale } = useReceptionScreen();
+  const { t } = useTranslation();
 
   return (
     <main
@@ -24,10 +27,10 @@ export default function ReceptionScreen() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ margin: 0 }}>Entrar no ginásio</h1>
-      <p style={{ margin: 0, fontSize: "1.3rem" }}>
-        Aponta a câmara do telemóvel para o código
-      </p>
+      {/* Staff picks the language the screen shows to students */}
+      <LanguagePicker />
+      <h1 style={{ margin: 0 }}>{t("receptionScreen.title")}</h1>
+      <p style={{ margin: 0, fontSize: "1.3rem" }}>{t("receptionScreen.instruction")}</p>
 
       {qrUrl ? (
         <QRCodeSVG
@@ -37,18 +40,18 @@ export default function ReceptionScreen() {
           bgColor="#ffffff"
           fgColor="#000000"
           marginSize={4}
-          title="Código QR para entrar no ginásio"
+          title={t("receptionScreen.qrTitle")}
           size={512}
           // Fits any screen, portrait or landscape (the SVG scales cleanly)
           style={{ width: "min(80vw, 65vh)", height: "auto" }}
         />
       ) : (
-        <p>A gerar o código...</p>
+        <p>{t("receptionScreen.generating")}</p>
       )}
 
       {stale && (
         <p role="alert" style={{ margin: 0, color: "#c53030" }}>
-          Sem ligação ao servidor, a tentar outra vez...
+          {t("receptionScreen.offline")}
         </p>
       )}
 

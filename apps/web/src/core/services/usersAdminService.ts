@@ -1,46 +1,47 @@
 import type { UserUpdate } from "@gym-checkin/shared";
 import { adminUsersApi } from "../api/adminUsersApi";
 import { HttpError } from "../api/httpError";
-import type { AdminUser, ImportError, ImportResult } from "../types/adminUsers";
+import { TranslatableError, type MessageKey, type Translatable } from "../i18n/types";
+import type { AdminUser, ImportErrorDto, ImportResult } from "../types/adminUsers";
 
-const isImportErrors = (value: unknown): value is ImportError[] =>
+const isImportErrors = (value: unknown): value is ImportErrorDto[] =>
   Array.isArray(value) &&
   value.every((e) => typeof e?.line === "number" && typeof e?.message === "string");
 
-// The API's per-line import messages, in the language the admin reads.
-// Unknown messages pass through unchanged rather than being hidden.
-const IMPORT_MESSAGES: [RegExp, (m: RegExpMatchArray) => string][] = [
-  [/^Expected 3 columns/, () => "Tem de ter 3 colunas: nome;quarto;username"],
-  [/^Name is required$/, () => "Falta o nome"],
-  [/^Room is required$/, () => "Falta o quarto"],
-  [/^Username: /, () => "Username com 3 a 30 caracteres: letras minúsculas, números, . _ -"],
-  [/^Username "(.+)" repeats line (\d+)$/, (m) => `O username "${m[1]}" repete a linha ${m[2]}`],
-  [/^Username "(.+)" already exists$/, (m) => `O username "${m[1]}" já existe`],
-  [/^At most (\d+) users per import$/, (m) => `No máximo ${m[1]} utilizadores por importação`],
-  [/^No users in the file$/, () => "O ficheiro não tem utilizadores"],
+// The API's per-line import messages (English, stable) mapped to message
+// keys. Unknown messages are still shown (as-is) rather than hidden.
+const IMPORT_MESSAGES: [RegExp, (m: RegExpMatchArray) => Translatable][] = [
+  [/^Expected 3 columns/, () => ({ key: "errors.import.columns" })],
+  [/^Name is required$/, () => ({ key: "errors.import.nameRequired" })],
+  [/^Room is required$/, () => ({ key: "errors.import.roomRequired" })],
+  [/^Username: /, () => ({ key: "errors.import.username" })],
+  [
+    /^Username "(.+)" repeats line (\d+)$/,
+    (m) => ({ key: "errors.import.repeats", params: { username: m[1], line: m[2] } }),
+  ],
+  [/^Username "(.+)" already exists$/, (m) => ({ key: "errors.import.exists", params: { username: m[1] } })],
+  [/^At most (\d+) users per import$/, (m) => ({ key: "errors.import.maxRows", params: { max: m[1] } })],
+  [/^No users in the file$/, () => ({ key: "errors.import.empty" })],
 ];
 
 /** One line may carry several messages joined by "; " (zod issues). */
-const translateImportMessage = (message: string): string =>
-  message
-    .split("; ")
-    .map((part) => {
-      for (const [pattern, translate] of IMPORT_MESSAGES) {
-        const match = part.match(pattern);
-        if (match) return translate(match);
-      }
-      return part;
-    })
-    .join("; ");
+const toImportMessages = (message: string): Translatable[] =>
+  message.split("; ").map((part) => {
+    for (const [pattern, toMessage] of IMPORT_MESSAGES) {
+      const match = part.match(pattern);
+      if (match) return toMessage(match);
+    }
+    return { key: "errors.import.other", params: { message: part } };
+  });
 
-function errorMessage(err: unknown): string {
+function errorKey(err: unknown): MessageKey {
   if (err instanceof HttpError) {
     if (err.message === "You cannot deactivate your own account") {
-      return "Não podes desativar a tua própria conta.";
+      return "errors.users.cannotDeactivateSelf";
     }
-    if (err.status === 409) return "Um username foi criado entretanto. Tenta outra vez.";
+    if (err.status === 409) return "errors.users.usernameTaken";
   }
-  return "Não foi possível concluir. Tenta outra vez.";
+  return "errors.unexpected";
 }
 
 export const usersAdminService = {
@@ -57,10 +58,10 @@ export const usersAdminService = {
       if (err instanceof HttpError && err.status === 400 && isImportErrors(err.errors)) {
         return {
           ok: false,
-          errors: err.errors.map((e) => ({ ...e, message: translateImportMessage(e.message) })),
+          errors: err.errors.map((e) => ({ line: e.line, messages: toImportMessages(e.message) })),
         };
       }
-      throw new Error(errorMessage(err), { cause: err });
+      throw new TranslatableError(errorKey(err), undefined, { cause: err });
     }
   },
 
@@ -68,7 +69,7 @@ export const usersAdminService = {
     try {
       return await adminUsersApi.update(id, body);
     } catch (err) {
-      throw new Error(errorMessage(err), { cause: err });
+      throw new TranslatableError(errorKey(err), undefined, { cause: err });
     }
   },
 };

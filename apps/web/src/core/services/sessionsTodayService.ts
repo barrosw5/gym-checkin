@@ -1,6 +1,7 @@
 import type { SessionCorrection } from "@gym-checkin/shared";
 import { adminSessionsApi } from "../api/adminSessionsApi";
 import { HttpError } from "../api/httpError";
+import { TranslatableError, type MessageKey } from "../i18n/types";
 import type { AdminSession, AdminSessionDto } from "../types/adminSessions";
 
 const toSession = (dto: AdminSessionDto): AdminSession => ({
@@ -12,26 +13,26 @@ const toSession = (dto: AdminSessionDto): AdminSession => ({
   room: dto.user.room,
 });
 
-// The API's 400 messages, in the language reception reads
-const MESSAGES: Record<string, string> = {
-  "The exit must be after the entry": "A saída tem de ser depois da entrada.",
-  "Times cannot be in the future": "As horas não podem estar no futuro.",
+// The API's 400 messages (English, stable) mapped to message keys
+const API_MESSAGES: Record<string, MessageKey> = {
+  "The exit must be after the entry": "errors.sessions.exitBeforeEntry",
+  "Times cannot be in the future": "errors.sessions.future",
 };
 
-function errorMessage(err: unknown): string {
+function errorKey(err: unknown): MessageKey {
   if (err instanceof HttpError) {
-    if (MESSAGES[err.message]) return MESSAGES[err.message];
-    if (err.status === 409) return "A sessão mudou entretanto. A lista foi atualizada.";
-    if (err.status === 404) return "Esta sessão já não existe.";
+    if (API_MESSAGES[err.message]) return API_MESSAGES[err.message];
+    if (err.status === 409) return "errors.sessions.changed";
+    if (err.status === 404) return "errors.sessions.gone";
   }
-  return "Não foi possível guardar. Tenta outra vez.";
+  return "errors.sessions.saveFailed";
 }
 
 async function correct(id: string, body: SessionCorrection): Promise<void> {
   try {
     await adminSessionsApi.correct(id, body);
   } catch (err) {
-    throw new Error(errorMessage(err), { cause: err });
+    throw new TranslatableError(errorKey(err), undefined, { cause: err });
   }
 }
 

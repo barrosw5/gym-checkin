@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toTranslatable, type Translatable } from "../core/i18n/types";
 import {
   checkinService,
   type QrCheckinResult,
@@ -8,7 +9,7 @@ import {
 type QrCheckinState =
   | { status: "working" }
   | QrCheckinResult
-  | { status: "error"; message: string };
+  | { status: "error"; message: Translatable };
 
 /**
  * Checks in as soon as the QR link opens: scanning *is* the intent, so no
@@ -28,10 +29,7 @@ export const useQrCheckin = () => {
       .checkInWithQr(token)
       .then(setState)
       .catch((err: unknown) =>
-        setState({
-          status: "error",
-          message: err instanceof Error ? err.message : "Erro inesperado.",
-        }),
+        setState({ status: "error", message: toTranslatable(err) }),
       );
   }, [token]);
 

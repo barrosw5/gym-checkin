@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { usersAdminService } from "../core/services/usersAdminService";
 import type { AdminUser, ImportResult } from "../core/types/adminUsers";
+import { toTranslatable, type Translatable } from "../core/i18n/types";
 
 /** Admin page: residents' accounts and the CSV import. */
 export const useUsersAdmin = () => {
@@ -8,7 +9,7 @@ export const useUsersAdmin = () => {
   const [failed, setFailed] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<Translatable | null>(null);
 
   const reload = useCallback(async () => {
     try {
@@ -33,11 +34,11 @@ export const useUsersAdmin = () => {
 
   const run = async (action: () => Promise<void>) => {
     setBusy(true);
-    setMessage("");
+    setMessage(null);
     try {
       await action();
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Erro inesperado.");
+      setMessage(toTranslatable(err));
     } finally {
       setBusy(false);
     }

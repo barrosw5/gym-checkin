@@ -2,6 +2,7 @@ import type { CheckinMethodName } from "@gym-checkin/shared";
 import { useCallback, useEffect, useState } from "react";
 import { checkinService } from "../core/services/checkinService";
 import type { OpenSession } from "../core/types/checkin";
+import { toTranslatable, type Translatable } from "../core/i18n/types";
 
 /** While waiting for reception: the student's screen asks every 2 s. */
 const REQUEST_POLL_MS = 2_000;
@@ -15,9 +16,9 @@ type CheckinState =
   | { status: "error" };
 
 const DECISION_MESSAGES = {
-  REJECTED: "A receção recusou o pedido.",
-  EXPIRED: "Ninguém respondeu a tempo. Pede outra vez.",
-} as const;
+  REJECTED: { key: "errors.checkin.rejected" },
+  EXPIRED: { key: "errors.checkin.expired" },
+} as const satisfies Record<string, Translatable>;
 
 /**
  * Whether the user is in the gym, and the actions available. The API is the
@@ -27,7 +28,7 @@ export const useCheckin = () => {
   const [state, setState] = useState<CheckinState>({ status: "loading" });
   // Disables the buttons while a request is in flight (no double taps)
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<Translatable | null>(null);
 
   const load = useCallback(async (): Promise<CheckinState> => {
     const [session, methods, request] = await Promise.all([
@@ -81,13 +82,13 @@ export const useCheckin = () => {
   /** Runs an action; on failure shows its message and reloads the state. */
   const run = async (action: () => Promise<CheckinState | void>) => {
     setBusy(true);
-    setMessage("");
+    setMessage(null);
     try {
       const next = await action();
       if (next) setState(next);
       else await reload();
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Erro inesperado.");
+      setMessage(toTranslatable(err));
       await reload();
     } finally {
       setBusy(false);

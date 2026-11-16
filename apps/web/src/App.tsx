@@ -34,7 +34,7 @@ function App() {
           element={
             <ProtectedRoute
               roles={["STUDENT"]}
-              deniedMessage="Só os estudantes podem entrar no ginásio."
+              deniedMessage="route.studentsOnly"
             />
           }
         >

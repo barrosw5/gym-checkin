@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { AdminUser } from "../core/types/adminUsers";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface UserRowProps {
   user: AdminUser;
@@ -9,6 +10,7 @@ interface UserRowProps {
 
 /** Admin: one account, with its room and active/inactive toggle. */
 export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
+  const { t } = useTranslation();
   const [room, setRoom] = useState(user.room);
 
   return (
@@ -24,8 +26,8 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
       }}
     >
       <span style={{ flex: "1 1 220px" }}>
-        <strong>{user.name}</strong> · {user.username} · {user.role}
-        {!user.active && " · desativada"}
+        <strong>{user.name}</strong> · {user.username} · {t(`roles.${user.role}`)}
+        {!user.active && ` · ${t("users.deactivated")}`}
       </span>
       <form
         onSubmit={(e) => {
@@ -35,15 +37,15 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
         style={{ display: "flex", gap: "6px" }}
       >
         <label>
-          Quarto{" "}
+          {t("users.roomLabel")}{" "}
           <input value={room} onChange={(e) => setRoom(e.target.value)} size={6} required />
         </label>
         <button type="submit" disabled={busy || room.trim() === user.room}>
-          Guardar
+          {t("common.save")}
         </button>
       </form>
       <button onClick={() => onUpdate({ active: !user.active })} disabled={busy}>
-        {user.active ? "Desativar" : "Reativar"}
+        {user.active ? t("users.deactivate") : t("users.reactivate")}
       </button>
     </li>
   );
