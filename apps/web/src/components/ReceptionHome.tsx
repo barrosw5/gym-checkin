@@ -10,9 +10,12 @@ export default function ReceptionHome() {
       style={{ maxWidth: "600px", margin: "50px auto", fontFamily: "sans-serif" }}
     >
       <h1>Painel da receção</h1>
+      <p>Olá, {user.name}.</p>
       <p>
-        Olá, {user.name}. Aqui vão aparecer o QR do ecrã e os pedidos
-        pendentes.
+        {/* New tab: the screen stays open full screen on the reception PC */}
+        <Link to="/reception/screen" target="_blank">
+          Abrir o ecrã do QR
+        </Link>
       </p>
       <Link to="/dashboard">Voltar ao início</Link>
     </div>

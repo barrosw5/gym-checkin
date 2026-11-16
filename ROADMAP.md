@@ -246,7 +246,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 ### Fase 3: QR dinâmico (método A)
 
 - [x] Geração e validação do token por janelas de tempo
-- [ ] Página `/reception/screen` com o QR a renovar
+- [x] Página `/reception/screen` com o QR a renovar
 - [ ] Página `/c/<token>` com o botão Entrar/Sair
 - [x] Rate limiting e testes (token expirado, token futuro, reutilização)
 
