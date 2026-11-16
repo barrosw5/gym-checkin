@@ -19,6 +19,8 @@ const SEED_USERS = [
     room: '501',
     role: Role.STUDENT,
     passwordEnv: 'SEED_STUDENT_PASSWORD',
+    // Public demo account (README): cannot change its password
+    isDemo: true,
   },
   {
     username: 'rececao',
@@ -26,6 +28,7 @@ const SEED_USERS = [
     room: 'R/C',
     role: Role.RECEPTION,
     passwordEnv: 'SEED_RECEPTION_PASSWORD',
+    isDemo: true,
   },
   {
     username: 'admin',
@@ -33,6 +36,8 @@ const SEED_USERS = [
     room: 'N/A',
     role: Role.ADMIN,
     passwordEnv: 'SEED_ADMIN_PASSWORD',
+    // Private: an admin can deactivate accounts and import users
+    isDemo: false,
   },
 ] as const;
 
@@ -58,8 +63,14 @@ async function main() {
     const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
     await prisma.user.upsert({
       where: { username: user.username },
-      // Re-running the seed resets the password: this is how seed passwords are rotated
-      update: { passwordHash },
+      // Re-running the seed resets the password: this is how seed passwords
+      // are rotated. passwordChangedAt logs out devices with the old one
+      update: {
+        passwordHash,
+        isDemo: user.isDemo,
+        mustChangePassword: false,
+        passwordChangedAt: new Date(),
+      },
       create: { ...user, passwordHash },
     });
     // Never log the hash: only the username and role

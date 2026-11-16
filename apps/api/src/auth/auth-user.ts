@@ -5,6 +5,8 @@ export interface JwtPayload {
   sub: string;
   username: string;
   role: Role;
+  /** Issued at, in whole seconds (added by the JWT library when signing). */
+  iat?: number;
 }
 
 /**

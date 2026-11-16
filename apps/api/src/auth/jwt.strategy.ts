@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // Runs after the signature and expiry are verified. A valid signature is not
   // enough: the user may have been deactivated since the token was issued.
   async validate(payload: JwtPayload): Promise<AuthUser> {
-    const user = await this.authService.getActiveUser(payload.sub);
+    const user = await this.authService.getActiveUser(payload.sub, payload.iat);
     // Role from the DB, not from the token: role changes apply immediately
     return { userId: user.id, username: user.username, role: user.role };
   }

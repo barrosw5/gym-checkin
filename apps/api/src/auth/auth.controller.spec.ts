@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import type { Response } from 'express';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthController } from './auth.controller.js';
@@ -9,6 +9,7 @@ describe('AuthController', () => {
   const validateUser = vi.fn();
   const login = vi.fn();
   const getProfile = vi.fn();
+  const changePassword = vi.fn();
   const getConfig = vi.fn();
   let controller: AuthController;
   let res: {
@@ -19,10 +20,40 @@ describe('AuthController', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     controller = new AuthController(
-      { validateUser, login, getProfile } as unknown as AuthService,
+      { validateUser, login, getProfile, changePassword } as unknown as AuthService,
       { get: getConfig } as unknown as ConfigService,
     );
     res = { cookie: vi.fn(), clearCookie: vi.fn() };
+  });
+
+  describe('changePassword', () => {
+    const body = { currentPassword: 'old-password', newPassword: 'new-password-1' };
+    const me = { userId: 'u1', username: 'joao', role: 'STUDENT' as const };
+
+    it('changes it and gives this device a fresh cookie (older tokens die)', async () => {
+      const user = { id: 'u1', username: 'joao', role: 'STUDENT' };
+      changePassword.mockResolvedValue(user);
+      login.mockResolvedValue({ access_token: 'fresh-jwt' });
+
+      const result = await controller.changePassword(me, body, res as unknown as Response);
+
+      expect(changePassword).toHaveBeenCalledWith('u1', 'old-password', 'new-password-1');
+      expect(res.cookie).toHaveBeenCalledWith(
+        'Authentication',
+        'fresh-jwt',
+        expect.objectContaining({ httpOnly: true }),
+      );
+      expect(result).toEqual({ message: 'Password changed', user });
+    });
+
+    it('keeps the old cookie when the change is refused', async () => {
+      changePassword.mockRejectedValue(new ForbiddenException());
+
+      await expect(
+        controller.changePassword(me, body, res as unknown as Response),
+      ).rejects.toThrow(ForbiddenException);
+      expect(res.cookie).not.toHaveBeenCalled();
+    });
   });
 
   describe('login', () => {

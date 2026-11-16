@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
@@ -11,6 +15,7 @@ export type SafeUser = Omit<User, 'passwordHash'>;
 // One message for every failed login, so responses don't reveal
 // whether a username exists or an account is inactive (user enumeration)
 const INVALID_CREDENTIALS = 'Invalid credentials';
+const BCRYPT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
@@ -51,12 +56,56 @@ export class AuthService {
    * Called on every authenticated request, so a deactivated user is locked
    * out immediately instead of when their JWT expires.
    */
-  async getActiveUser(userId: string): Promise<SafeUser> {
+  async getActiveUser(userId: string, issuedAt?: number): Promise<SafeUser> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.active) {
       throw new UnauthorizedException('Session is no longer valid');
     }
+    // A token from before the last password change: another device (or a
+    // stolen cookie) is logged out the moment the password changes
+    if (
+      issuedAt !== undefined &&
+      user.passwordChangedAt &&
+      issuedAt * 1000 < user.passwordChangedAt.getTime()
+    ) {
+      throw new UnauthorizedException('Session is no longer valid');
+    }
     return toSafeUser(user);
+  }
+
+  /**
+   * Changes the password after checking the current one. Demo accounts are
+   * public, so they can't: a visitor would lock everyone else out.
+   */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    now = new Date(),
+  ): Promise<SafeUser> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.active) {
+      throw new UnauthorizedException('Session is no longer valid');
+    }
+    if (user.isDemo) {
+      throw new ForbiddenException('Demo accounts cannot change their password');
+    }
+    // 403, not 401: the session is fine, this one action is refused
+    if (!(await bcrypt.compare(currentPassword, user.passwordHash))) {
+      throw new ForbiddenException('Current password is incorrect');
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash: await bcrypt.hash(newPassword, BCRYPT_ROUNDS),
+        mustChangePassword: false,
+        // Rounded down to the second: JWT iat has second precision, so the
+        // token issued right after this (same device) is never "older"
+        passwordChangedAt: new Date(Math.floor(now.getTime() / 1000) * 1000),
+      },
+    });
+    return toSafeUser(updated);
   }
 
   async getProfile(userId: string): Promise<SafeUser> {

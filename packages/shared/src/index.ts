@@ -4,8 +4,8 @@
  */
 export const API_PREFIX = 'api';
 
-export { loginSchema } from './auth.js';
-export type { LoginInput } from './auth.js';
+export { MIN_PASSWORD_LENGTH, changePasswordSchema, loginSchema } from './auth.js';
+export type { ChangePasswordInput, LoginInput } from './auth.js';
 export { CHECKIN_METHODS, checkinSchema } from './checkin.js';
 export type { CheckinInput, CheckinMethodName } from './checkin.js';
 export type { Occupancy } from './gym.js';
