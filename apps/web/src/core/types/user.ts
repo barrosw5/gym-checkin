@@ -9,4 +9,8 @@ export interface User {
   role: Role;
   active: boolean;
   createdAt: string;
+  /** Public demo account: cannot change its password. */
+  isDemo: boolean;
+  /** Imported with a temporary password: must choose a new one first. */
+  mustChangePassword: boolean;
 }

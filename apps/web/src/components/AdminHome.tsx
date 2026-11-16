@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
-import LogoutButton from "./LogoutButton";
+import AccountActions from "./AccountActions";
 import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
 import SessionsToday from "./SessionsToday";
@@ -24,7 +24,7 @@ export default function AdminHome() {
       <PendingRequests />
       <SessionsToday />
       <UsersAdmin />
-      <LogoutButton />
+      <AccountActions />
     </main>
   );
 }

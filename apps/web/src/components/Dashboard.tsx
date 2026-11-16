@@ -1,6 +1,6 @@
 import { useDashboard } from "../hooks/useDashboard";
 import CheckinButton from "./CheckinButton";
-import LogoutButton from "./LogoutButton";
+import AccountActions from "./AccountActions";
 import OccupancyCounter from "./OccupancyCounter";
 
 /** Student home: how full the gym is, and the way in/out. */
@@ -23,7 +23,7 @@ export default function Dashboard() {
 
       <OccupancyCounter />
       <CheckinButton />
-      <LogoutButton />
+      <AccountActions />
     </div>
   );
 }
