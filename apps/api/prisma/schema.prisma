@@ -67,6 +67,10 @@ model Session {
   exitAt   DateTime?
   method   SessionMethod
   closedBy ClosedBy?
+
+  // Time-range queries (reception "today", statistics). CHECK constraints
+  // (exit after entry, closedBy set iff closed) live in the migrations.
+  @@index([entryAt])
 }
 
 // A student asking reception to let them in (method B, ROADMAP 5.2).
