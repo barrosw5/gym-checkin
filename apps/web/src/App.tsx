@@ -5,6 +5,7 @@ import QrCheckinPage from "./pages/checkin/page";
 import AdminPage from "./pages/admin/page";
 import ReceptionPage from "./pages/reception/page";
 import ReceptionScreenPage from "./pages/reception/screen/page";
+import ChangePasswordPage from "./pages/password/page";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleHome from "./components/RoleHome";
 
@@ -17,6 +18,12 @@ function App() {
         {/* Any logged-in user: "/" picks the home page for their role */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RoleHome />} />
+        </Route>
+
+        {/* Its own guard instance: leaving this page re-reads the user, so
+            the cleared mustChangePassword is seen right away */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/password" element={<ChangePasswordPage />} />
         </Route>
 
         {/* Students only (same rule as @Roles(STUDENT) in the API) */}

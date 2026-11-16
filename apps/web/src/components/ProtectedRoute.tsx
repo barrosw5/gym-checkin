@@ -51,5 +51,11 @@ export default function ProtectedRoute({
     );
   }
 
+  // Temporary password (imported account): choose a new one before anything
+  // else. UX only: the old password is random and was only seen by the admin
+  if (state.user.mustChangePassword && location.pathname !== "/password") {
+    return <Navigate to="/password" replace />;
+  }
+
   return <Outlet context={state.user} />;
 }

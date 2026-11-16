@@ -1,4 +1,4 @@
-import { API_PREFIX } from "@gym-checkin/shared";
+import { API_PREFIX, type ChangePasswordInput } from "@gym-checkin/shared";
 import type { User } from "../types/user";
 import { toHttpError } from "./httpError";
 
@@ -22,6 +22,15 @@ export const authApi = {
     const response = await fetch(`${AUTH_URL}/logout`, { method: "POST" });
     if (!response.ok) throw await toHttpError(response);
     return response.json();
+  },
+
+  changePassword: async (body: ChangePasswordInput): Promise<void> => {
+    const response = await fetch(`${AUTH_URL}/password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw await toHttpError(response);
   },
 
   getMe: async (): Promise<User> => {

@@ -6,6 +6,13 @@ Sistema de registo de entradas e saídas no ginásio da residência universitár
 
 **Demo:** <https://gym-checkin-pjyi.onrender.com> (só dados falsos; a primeira resposta pode demorar se o serviço estiver a acordar)
 
+Contas públicas de demonstração (não podem mudar a password; a conta de admin é privada):
+
+| Papel | Username | Password | Experimenta |
+| --- | --- | --- | --- |
+| Estudante | `joaosilva` | `estudante-demo` | pedir entrada, ler o QR, sair (no telemóvel) |
+| Receção | `rececao` | `rececao-demo` | aceitar pedidos, fechar sessões, abrir o ecrã do QR (no PC) |
+
 Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md).
 
 ## Stack

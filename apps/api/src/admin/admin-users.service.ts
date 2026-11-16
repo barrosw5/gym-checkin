@@ -77,6 +77,8 @@ export class AdminUsersService {
             room,
             username,
             role: Role.STUDENT,
+            // Temporary password: the web app asks for a new one first
+            mustChangePassword: true,
             passwordHash: await bcrypt.hash(temporaryPassword, BCRYPT_ROUNDS),
           },
           account: { name, username, temporaryPassword },

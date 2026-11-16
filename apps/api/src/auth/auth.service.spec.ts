@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import type { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -10,6 +10,7 @@ describe('AuthService', () => {
   let passwordHash: string;
 
   const findUnique = vi.fn();
+  const update = vi.fn();
   const sign = vi.fn();
   let service: AuthService;
 
@@ -21,7 +22,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     // Only the methods the service actually uses are mocked
-    const prisma = { user: { findUnique } } as unknown as PrismaService;
+    const prisma = { user: { findUnique, update } } as unknown as PrismaService;
     const jwt = { sign } as unknown as JwtService;
     service = new AuthService(prisma, jwt);
   });
@@ -162,6 +163,81 @@ describe('AuthService', () => {
       await expect(service.getProfile('u1')).rejects.toThrow(
         UnauthorizedException,
       );
+    });
+  });
+
+  describe('getActiveUser after a password change', () => {
+    const changedAt = new Date('2026-11-16T20:00:00Z');
+    const seconds = (d: Date) => d.getTime() / 1000;
+
+    beforeEach(() => {
+      findUnique.mockResolvedValue({
+        id: 'u1',
+        active: true,
+        passwordHash,
+        passwordChangedAt: changedAt,
+      });
+    });
+
+    it('rejects a token issued before the change (other devices are logged out)', async () => {
+      await expect(
+        service.getActiveUser('u1', seconds(changedAt) - 1),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('accepts a token issued in the same second or later', async () => {
+      await expect(service.getActiveUser('u1', seconds(changedAt))).resolves.toMatchObject({
+        id: 'u1',
+      });
+    });
+  });
+
+  describe('changePassword', () => {
+    const NOW = new Date('2026-11-16T20:00:00.750Z');
+    // Built per test: passwordHash only exists after beforeAll has run
+    let user: Record<string, unknown>;
+    beforeEach(() => {
+      user = { id: 'u1', active: true, isDemo: false, passwordHash };
+    });
+
+    it('stores a new hash, clears mustChangePassword and logs out older tokens', async () => {
+      findUnique.mockResolvedValue(user);
+      update.mockImplementation(({ data }) => ({ ...user, ...data }));
+
+      const result = await service.changePassword('u1', PASSWORD, 'brand-new-password', NOW);
+
+      const { data } = update.mock.calls[0][0];
+      await expect(bcrypt.compare('brand-new-password', data.passwordHash)).resolves.toBe(true);
+      expect(data.mustChangePassword).toBe(false);
+      // Rounded down to the second, like the JWT iat of the next token
+      expect(data.passwordChangedAt).toEqual(new Date('2026-11-16T20:00:00Z'));
+      expect(result).not.toHaveProperty('passwordHash');
+    });
+
+    it('refuses a wrong current password with 403 and changes nothing', async () => {
+      findUnique.mockResolvedValue(user);
+
+      await expect(
+        service.changePassword('u1', 'wrong-password', 'brand-new-password', NOW),
+      ).rejects.toThrow('Current password is incorrect');
+      expect(update).not.toHaveBeenCalled();
+    });
+
+    it('refuses public demo accounts (a visitor would lock everyone out)', async () => {
+      findUnique.mockResolvedValue({ ...user, isDemo: true });
+
+      await expect(
+        service.changePassword('u1', PASSWORD, 'brand-new-password', NOW),
+      ).rejects.toThrow(ForbiddenException);
+      expect(update).not.toHaveBeenCalled();
+    });
+
+    it('refuses a deactivated user with 401', async () => {
+      findUnique.mockResolvedValue({ ...user, active: false });
+
+      await expect(
+        service.changePassword('u1', PASSWORD, 'brand-new-password', NOW),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });

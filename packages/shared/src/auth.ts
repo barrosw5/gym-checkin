@@ -24,3 +24,27 @@ export const loginSchema = z.object({
 
 /** Derived from the schema, so the type and the validation never drift apart. */
 export type LoginInput = z.infer<typeof loginSchema>;
+
+/** Shortest new password: long enough to resist guessing, short enough to type on a phone. */
+export const MIN_PASSWORD_LENGTH = 10;
+
+const fitsBcrypt = (value: string) =>
+  new TextEncoder().encode(value).length <= BCRYPT_MAX_BYTES;
+
+/** Body of POST /api/auth/password. */
+export const changePasswordSchema = z
+  .object({
+    // Asked again even though the user is logged in: an unlocked phone left
+    // on a bench must not be enough to take over the account
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z
+      .string()
+      .min(MIN_PASSWORD_LENGTH, `At least ${MIN_PASSWORD_LENGTH} characters`)
+      .refine(fitsBcrypt, 'Password is too long'),
+  })
+  .refine((v) => v.newPassword !== v.currentPassword, {
+    message: 'The new password must be different',
+    path: ['newPassword'],
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
-import LogoutButton from "./LogoutButton";
+import AccountActions from "./AccountActions";
 import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
 import SessionsToday from "./SessionsToday";
@@ -23,7 +23,7 @@ export default function ReceptionHome() {
       {/* Here, not on the QR screen: that one faces students (names, GDPR) */}
       <PendingRequests />
       <SessionsToday />
-      <LogoutButton />
+      <AccountActions />
     </main>
   );
 }

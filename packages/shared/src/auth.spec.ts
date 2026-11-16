@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loginSchema } from './auth.js';
+import { changePasswordSchema, loginSchema } from './auth.js';
 
 describe('loginSchema', () => {
   it('accepts a valid body', () => {
@@ -47,5 +47,22 @@ describe('loginSchema', () => {
     });
 
     expect(result).not.toHaveProperty('role');
+  });
+});
+
+describe('changePasswordSchema', () => {
+  const valid = { currentPassword: 'old-password', newPassword: 'a-new-password' };
+
+  it('accepts a long enough, different new password', () => {
+    expect(changePasswordSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it.each([
+    ['a missing current password', { ...valid, currentPassword: '' }],
+    ['a short new password', { ...valid, newPassword: 'short' }],
+    ['the same password again', { currentPassword: 'same-password', newPassword: 'same-password' }],
+    ['a new password over 72 bytes (bcrypt limit)', { ...valid, newPassword: 'é'.repeat(37) }],
+  ])('rejects %s', (_case, body) => {
+    expect(changePasswordSchema.safeParse(body).success).toBe(false);
   });
 });

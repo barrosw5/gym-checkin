@@ -45,18 +45,26 @@ enum ClosedBy {
 }
 
 model User {
-  id              String           @id @default(uuid())
-  name            String
-  room            String
-  username        String           @unique
-  passwordHash    String
-  role            Role             @default(STUDENT)
-  active          Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  sessions        Session[]
+  id                 String           @id @default(uuid())
+  name               String
+  room               String
+  username           String           @unique
+  passwordHash       String
+  role               Role             @default(STUDENT)
+  active             Boolean          @default(true)
+  createdAt          DateTime         @default(now())
+  // Public demo account (credentials in the README): cannot change its
+  // password, so no visitor can lock the others out
+  isDemo             Boolean          @default(false)
+  // Set for imported accounts (temporary password): the web app asks for a
+  // new one before anything else
+  mustChangePassword Boolean          @default(false)
+  // Tokens issued before this instant are rejected (logs out other devices)
+  passwordChangedAt  DateTime?
+  sessions           Session[]
   // Two relations to CheckinRequest, so each needs a name
-  checkinRequests CheckinRequest[] @relation("RequestedBy")
-  decidedRequests CheckinRequest[] @relation("DecidedBy")
+  checkinRequests    CheckinRequest[] @relation("RequestedBy")
+  decidedRequests    CheckinRequest[] @relation("DecidedBy")
 }
 
 model Session {

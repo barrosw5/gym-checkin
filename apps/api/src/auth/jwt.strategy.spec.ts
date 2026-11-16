@@ -24,7 +24,15 @@ describe('JwtStrategy', () => {
     await expect(
       strategy.validate({ sub: 'u1', username: 'joao', role: 'STUDENT' }),
     ).rejects.toThrow(UnauthorizedException);
-    expect(getActiveUser).toHaveBeenCalledWith('u1');
+    expect(getActiveUser).toHaveBeenCalledWith('u1', undefined);
+  });
+
+  it('passes the token issue time on, so password changes can end old sessions', async () => {
+    getActiveUser.mockResolvedValue({ id: 'u1', username: 'joao', role: 'STUDENT' });
+
+    await strategy.validate({ sub: 'u1', username: 'joao', role: 'STUDENT', iat: 1_800_000_000 });
+
+    expect(getActiveUser).toHaveBeenCalledWith('u1', 1_800_000_000);
   });
 
   it('takes the role from the database, not from the token', async () => {
