@@ -156,8 +156,7 @@ Todas as rotas da API têm o prefixo `/api` (ex.: `POST /api/auth/login`). Os re
 
 ### Estatísticas (agregadas, sem dados pessoais)
 
-- `GET /stats/heatmap`
-- `GET /stats/hourly` e `GET /stats/duration`
+- `GET /stats/summary?range=today|week|month|quarter`: dia típico, heatmap, duração e a curva exata de hoje (um só pedido)
 
 ## 10. Estrutura do repositório
 
@@ -279,9 +278,9 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 ### Fase 6: Estatísticas
 
-- [ ] Cálculo de ocupação por intervalos (por exemplo de 15 em 15 minutos)
-- [ ] Heatmap por dia da semana e hora, horas de pico, duração média
-- [ ] Ecrã "melhor altura para ir"
+- [x] Cálculo de ocupação por intervalos (por exemplo de 15 em 15 minutos)
+- [x] Heatmap por dia da semana e hora, horas de pico, duração média
+- [x] Ecrã "melhor altura para ir"
 - [ ] Extras: "vou às 18h", previsão simples com base no histórico
 
 ### Fase 7: Polimento e GitHub

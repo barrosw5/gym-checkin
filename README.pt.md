@@ -15,6 +15,14 @@ Contas públicas de demonstração (não podem mudar a password; a conta de admi
 
 Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md).
 
+## Destaques
+
+- **Estatísticas ponderadas pelo tempo.** A ocupação é a média por intervalo de 15 minutos, pesada pelo tempo que cada pessoa lá esteve: sair às 18:01 soma 1/15 de pessoa às 18:00, não uma inteira. Dia típico, heatmap dia da semana × hora e duração média/mediana das visitas, para hoje, 7, 30 ou 90 dias.
+- **Hora local bem feita.** As estatísticas agrupam pela hora de Lisboa sem biblioteca de datas, e os dias da mudança de hora (23 ou 25 horas) estão cobertos por testes.
+- **Hoje vs um dia típico.** A ocupação de hoje é uma linha em degraus exata (um degrau em cada entrada e saída), desenhada por cima do dia típico do período escolhido, mais as horas com menos gente que ainda faltam hoje, pelo histórico desse dia da semana.
+- **Privacidade desde o desenho.** Os estudantes só veem agregados: a consulta à base de dados lê as horas de entrada e saída, nunca quem. A receção, que já vê os nomes, tem também o dia de hoje numa linha do tempo, com uma barra por visita.
+- **Leve no telemóvel.** A biblioteca de gráficos só é carregada quando alguém abre as estatísticas, por isso as páginas do check-in continuam pequenas.
+
 ## Stack
 
 React + Vite (`apps/web`), NestJS + Prisma (`apps/api`), PostgreSQL na Neon, monorepo com pnpm.

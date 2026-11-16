@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/page";
 import DashboardPage from "./pages/dashboard/page";
@@ -9,6 +10,10 @@ import ChangePasswordPage from "./pages/password/page";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleHome from "./components/RoleHome";
 
+// Its own chunk: the charts library loads only for whoever opens the
+// statistics, so the check-in pages stay light on a phone
+const StatsPage = lazy(() => import("./pages/stats/page"));
+
 function App() {
   return (
     <BrowserRouter>
@@ -18,6 +23,15 @@ function App() {
         {/* Any logged-in user: "/" picks the home page for their role */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RoleHome />} />
+          {/* Any role: only aggregates, never who was inside */}
+          <Route
+            path="/stats"
+            element={
+              <Suspense fallback={null}>
+                <StatsPage />
+              </Suspense>
+            }
+          />
         </Route>
 
         {/* Its own guard instance: leaving this page re-reads the user, so

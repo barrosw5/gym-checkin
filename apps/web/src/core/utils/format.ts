@@ -36,3 +36,20 @@ export const toLocalInput = (date: Date): string => {
     `T${pad(date.getHours())}:${pad(date.getMinutes())}`
   );
 };
+
+/** "1,4" / "1.4": averages with one decimal at most, in the active language. */
+export const formatNumber = (value: number, languageTag: string): string =>
+  new Intl.NumberFormat(languageTag, { maximumFractionDigits: 1 }).format(value);
+
+/** Short weekday name, 0 = Monday ("seg."/"Mon"), from Intl: no list to translate. */
+export const formatWeekday = (index: number, languageTag: string): string =>
+  // 1 January 2024 was a Monday; UTC so the date never shifts
+  new Intl.DateTimeFormat(languageTag, { weekday: "short", timeZone: "UTC" }).format(
+    new Date(Date.UTC(2024, 0, 1 + index)),
+  );
+
+/** "18:00" for a minute of the day (chart axes and tooltips). */
+export const formatMinute = (minute: number): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(Math.floor(minute / 60) % 24)}:${pad(Math.round(minute % 60))}`;
+};

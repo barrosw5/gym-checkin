@@ -3,6 +3,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import AccountActions from "./AccountActions";
 import CheckinButton from "./CheckinButton";
 import OccupancyCounter from "./OccupancyCounter";
+import StatsLink from "./StatsLink";
 import KeyTag from "./ui/KeyTag";
 import PageLayout from "./ui/PageLayout";
 
@@ -23,6 +24,7 @@ export default function Dashboard() {
     >
       <OccupancyCounter />
       <CheckinButton />
+      <StatsLink />
       <AccountActions />
     </PageLayout>
   );
