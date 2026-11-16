@@ -3,6 +3,7 @@ import { RESIDENCE_TIME_ZONE, type StatsRange, type StatsSummary } from '@gym-ch
 import { ClosedBy } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { heatmap, typicalDay, visitDuration } from './aggregate.js';
+import { occupancyCurve } from './occupancy-curve.js';
 import { averageOccupancyBySlot, type SessionSpan } from './occupancy-slots.js';
 import { statsWindow } from './stats-window.js';
 
@@ -16,8 +17,9 @@ export class StatsService {
 
     const rows = await this.prisma.session.findMany({
       where: {
-        // Every visit that overlaps the period, still open ones included
-        entryAt: { lt: to },
+        // Every visit that overlaps the period, still open ones included.
+        // now, not to: to is floored to 15 min, and today's curve needs the latest entries
+        entryAt: { lt: now },
         AND: [
           { OR: [{ exitAt: null }, { exitAt: { gt: from } }] },
           // Auto-closed visits are forgotten keys, not real times (CLAUDE.md).
@@ -43,6 +45,10 @@ export class StatsService {
       typicalDay: typicalDay(slots),
       heatmap: heatmap(slots),
       duration: visitDuration(finished),
+      today: occupancyCurve(spans, statsWindow('today', now, RESIDENCE_TIME_ZONE).from, now).map((p) => ({
+        at: p.at.toISOString(),
+        count: p.count,
+      })),
     };
   }
 }

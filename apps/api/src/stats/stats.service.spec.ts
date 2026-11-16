@@ -22,7 +22,7 @@ describe('StatsService.summary', () => {
 
     expect(findMany).toHaveBeenCalledWith({
       where: {
-        entryAt: { lt: at('2026-01-07T18:30:00Z') },
+        entryAt: { lt: NOW },
         AND: [
           { OR: [{ exitAt: null }, { exitAt: { gt: at('2026-01-07T00:00:00Z') } }] },
           { OR: [{ closedBy: null }, { closedBy: { not: ClosedBy.AUTO } }] },
@@ -55,6 +55,18 @@ describe('StatsService.summary', () => {
     expect(typicalDay[73]).toBe(1); // 18:15-18:30
     expect(typicalDay[74]).toBeNull(); // 18:30 has not happened yet
     expect(duration.visits).toBe(0); // not over: no duration yet
+  });
+
+  it('sends today as an exact step line, whatever the range', async () => {
+    findMany.mockResolvedValue([{ entryAt: at('2026-01-07T18:20:00Z'), exitAt: null }]);
+
+    const { today } = await service.summary('quarter', NOW);
+
+    expect(today).toEqual([
+      { at: '2026-01-07T00:00:00.000Z', count: 0 },
+      { at: '2026-01-07T18:20:00.000Z', count: 1 },
+      { at: '2026-01-07T18:30:00.000Z', count: 1 },
+    ]);
   });
 
   it('measures only finished visits that started in the period', async () => {

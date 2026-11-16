@@ -23,6 +23,12 @@ export interface VisitDuration {
   medianMinutes: number | null;
 }
 
+/** From this instant on, this many people were inside (one step of a step line). */
+export interface OccupancyPoint {
+  at: string;
+  count: number;
+}
+
 /**
  * GET /api/stats/summary: only aggregates (GDPR), never who was inside.
  * Averages are time-weighted: someone inside for 1 of 15 minutes adds 1/15.
@@ -40,4 +46,9 @@ export interface StatsSummary {
   /** Average people per weekday (Monday first) and hour: 7 rows of 24, null = no data. */
   heatmap: (number | null)[][];
   duration: VisitDuration;
+  /**
+   * Today, exact: a step line from local midnight to now (a point at every
+   * entry and exit). Always sent, whatever the range, to compare with the typical day.
+   */
+  today: OccupancyPoint[];
 }
