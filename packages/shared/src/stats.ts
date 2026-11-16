@@ -32,9 +32,12 @@ export interface StatsSummary {
   /** The period as ISO instants: from local midnight to now. */
   from: string;
   to: string;
-  /** Typical day: average people per 15-minute interval (96 values, local time). */
-  typicalDay: number[];
-  /** Average people per weekday (Monday first) and hour: 7 rows of 24. */
-  heatmap: number[][];
+  /**
+   * Typical day: average people per 15-minute interval (96 values, local
+   * time). null = no data yet (e.g. later today), not an empty gym.
+   */
+  typicalDay: (number | null)[];
+  /** Average people per weekday (Monday first) and hour: 7 rows of 24, null = no data. */
+  heatmap: (number | null)[][];
   duration: VisitDuration;
 }

@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
 import { GymModule } from './gym/gym.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { StatsModule } from './stats/stats.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     CheckinModule,
     GymModule,
     AdminModule,
+    StatsModule,
   ],
   controllers: [HealthController],
 })

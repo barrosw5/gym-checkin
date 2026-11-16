@@ -17,6 +17,8 @@ export interface SlotAverage {
   /** Interval of the day: 0 = 00:00-00:15 ... 95 = 23:45-24:00 (local time). */
   slot: number;
   average: number;
+  /** How many times this interval occurred in the window (weights when combining). */
+  times: number;
 }
 
 const WEEKDAYS: Record<string, number> = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
@@ -89,5 +91,6 @@ export function averageOccupancyBySlot(
       weekday: Math.floor(key / SLOTS_PER_DAY),
       slot: key % SLOTS_PER_DAY,
       average: sum / times,
+      times,
     }));
 }

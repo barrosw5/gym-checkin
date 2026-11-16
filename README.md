@@ -15,6 +15,12 @@ Public demo accounts (they cannot change their password; the admin account is pr
 
 Full plan and phase status: [ROADMAP.md](ROADMAP.md) (in Portuguese).
 
+## Highlights
+
+- **Time-weighted gym statistics.** Occupancy is averaged per 15-minute interval by the time each person was actually inside: leaving at 18:01 adds 1/15 of a person to 18:00, not a whole one. A typical day, a weekday × hour heatmap and the average/median visit length, for today, 7, 30 or 90 days.
+- **Local time done right.** Statistics group by Lisbon time without a date library, and the daylight saving days (23 or 25 hours) are covered by tests.
+- **Privacy by design.** Statistics are aggregates only; the database query reads entry and exit times, never who.
+
 ## Stack
 
 React + Vite (`apps/web`), NestJS + Prisma (`apps/api`), PostgreSQL on Neon, pnpm monorepo.

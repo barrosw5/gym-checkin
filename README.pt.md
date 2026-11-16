@@ -15,6 +15,12 @@ Contas públicas de demonstração (não podem mudar a password; a conta de admi
 
 Plano completo e estado das fases: [ROADMAP.md](ROADMAP.md).
 
+## Destaques
+
+- **Estatísticas ponderadas pelo tempo.** A ocupação é a média por intervalo de 15 minutos, pesada pelo tempo que cada pessoa lá esteve: sair às 18:01 soma 1/15 de pessoa às 18:00, não uma inteira. Dia típico, heatmap dia da semana × hora e duração média/mediana das visitas, para hoje, 7, 30 ou 90 dias.
+- **Hora local bem feita.** As estatísticas agrupam pela hora de Lisboa sem biblioteca de datas, e os dias da mudança de hora (23 ou 25 horas) estão cobertos por testes.
+- **Privacidade desde o desenho.** As estatísticas são só agregados: a consulta à base de dados lê as horas de entrada e saída, nunca quem.
+
 ## Stack
 
 React + Vite (`apps/web`), NestJS + Prisma (`apps/api`), PostgreSQL na Neon, monorepo com pnpm.
