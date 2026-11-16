@@ -125,6 +125,12 @@ describe('CheckinController (HTTP)', () => {
     expect(checkIn).not.toHaveBeenCalled();
   });
 
+  it('rejects a SCREEN_QR check-in without a token with 400', async () => {
+    await post({ method: 'SCREEN_QR' }).expect(400);
+
+    expect(checkIn).not.toHaveBeenCalled();
+  });
+
   it('passes the 409 from the service through', async () => {
     checkIn.mockRejectedValue(new ConflictException());
 

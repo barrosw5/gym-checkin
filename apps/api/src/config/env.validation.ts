@@ -14,11 +14,12 @@ export function validateEnv(
     errors.push('DATABASE_URL is required');
   }
 
-  if (
-    typeof config.JWT_SECRET !== 'string' ||
-    config.JWT_SECRET.length < MIN_SECRET_LENGTH
-  ) {
-    errors.push(`JWT_SECRET is required (at least ${MIN_SECRET_LENGTH} chars)`);
+  // Separate secrets: a leaked QR secret must not let anyone forge logins
+  for (const name of ['JWT_SECRET', 'QR_SECRET']) {
+    const value = config[name];
+    if (typeof value !== 'string' || value.length < MIN_SECRET_LENGTH) {
+      errors.push(`${name} is required (at least ${MIN_SECRET_LENGTH} chars)`);
+    }
   }
 
   if (errors.length > 0) {

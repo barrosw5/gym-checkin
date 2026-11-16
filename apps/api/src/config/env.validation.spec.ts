@@ -4,6 +4,7 @@ import { validateEnv } from './env.validation.js';
 const validEnv = {
   DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
   JWT_SECRET: 'x'.repeat(32),
+  QR_SECRET: 'y'.repeat(32),
 };
 
 describe('validateEnv', () => {
@@ -12,9 +13,8 @@ describe('validateEnv', () => {
   });
 
   it('rejects a missing JWT_SECRET', () => {
-    expect(() => validateEnv({ DATABASE_URL: validEnv.DATABASE_URL })).toThrow(
-      /JWT_SECRET/,
-    );
+    const { JWT_SECRET: _omit, ...env } = validEnv;
+    expect(() => validateEnv(env)).toThrow(/JWT_SECRET/);
   });
 
   it('rejects a short JWT_SECRET', () => {
@@ -24,12 +24,19 @@ describe('validateEnv', () => {
   });
 
   it('rejects a missing DATABASE_URL', () => {
-    expect(() => validateEnv({ JWT_SECRET: validEnv.JWT_SECRET })).toThrow(
-      /DATABASE_URL/,
+    const { DATABASE_URL: _omit, ...env } = validEnv;
+    expect(() => validateEnv(env)).toThrow(/DATABASE_URL/);
+  });
+
+  it('rejects a missing or short QR_SECRET', () => {
+    const { QR_SECRET: _omit, ...env } = validEnv;
+    expect(() => validateEnv(env)).toThrow(/QR_SECRET/);
+    expect(() => validateEnv({ ...validEnv, QR_SECRET: 'short' })).toThrow(
+      /QR_SECRET/,
     );
   });
 
   it('reports every problem at once', () => {
-    expect(() => validateEnv({})).toThrow(/DATABASE_URL.*JWT_SECRET/);
+    expect(() => validateEnv({})).toThrow(/DATABASE_URL.*JWT_SECRET.*QR_SECRET/);
   });
 });
