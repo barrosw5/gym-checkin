@@ -64,3 +64,9 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 - `core/services/`: business logic. Processes data before sending it to the API or after receiving it.
 - `core/api/`: pure HTTP calls using `fetch` or `axios` (e.g. `authApi.ts`). No React state.
 - `core/types/`: shared TypeScript interfaces and types.
+
+### File naming
+
+- Hooks: `useX.ts` (e.g. `useDashboard.ts`). Only hooks start with `use` (React reserves the prefix; the react-hooks lint rules apply to it).
+- Services: same name as the hook that uses them, without `use`: `xService.ts` (e.g. `useCheckin` → `checkinService.ts`). A hook may reuse another hook's service (e.g. `useCurrentUser` uses `authService`).
+- API: `xApi.ts` (e.g. `checkinApi.ts`). Components: `PascalCase.tsx`.
