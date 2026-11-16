@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { GymModule } from '../gym/gym.module.js';
 import { SettingsModule } from '../settings/settings.module.js';
+import { AdminRequestsController } from './admin-requests.controller.js';
 import { AutoCloseService } from './auto-close.service.js';
+import { CheckinRequestController } from './checkin-request.controller.js';
+import { CheckinRequestService } from './checkin-request.service.js';
 import {
   CHECKIN_METHOD_STRATEGIES,
   type CheckinMethodStrategy,
@@ -21,9 +24,15 @@ import { QrTokenService } from './qr-token.service.js';
     // Same setup as AuthModule: per-route limits, in-memory storage
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
   ],
-  controllers: [CheckinController, QrController],
+  controllers: [
+    CheckinController,
+    CheckinRequestController,
+    AdminRequestsController,
+    QrController,
+  ],
   providers: [
     CheckinService,
+    CheckinRequestService,
     AutoCloseService,
     QrTokenService,
     SimpleCheckinMethod,

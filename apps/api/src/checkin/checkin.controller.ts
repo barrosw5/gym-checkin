@@ -37,6 +37,11 @@ export class CheckinController {
     return this.checkinService.checkIn(user.userId, body);
   }
 
+  @Get('checkin/methods')
+  async methods() {
+    return { enabledMethods: await this.checkinService.getEnabledMethods() };
+  }
+
   // Wrapped in an object: a bare `null` body is ambiguous for clients.
   // Not throttled per route: a read, covered by the module's default limit
   @Get('checkin/current')
