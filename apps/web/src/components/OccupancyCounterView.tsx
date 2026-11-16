@@ -43,7 +43,7 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
         </div>
         <p className="mt-1 text-5xl font-medium tracking-tight text-slate-900 tabular-nums">
           {count}
-          <span className="text-2xl text-slate-400">/{capacity}</span>
+          <span className="text-2xl text-slate-500">/{capacity}</span>
         </p>
 
         {capacity <= MAX_DRAWN_PLACES ? (
