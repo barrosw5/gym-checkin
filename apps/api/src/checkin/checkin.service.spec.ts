@@ -98,6 +98,24 @@ describe('CheckinService', () => {
     );
   });
 
+  describe('getOpenSession', () => {
+    it("returns only the user's own open session", async () => {
+      const open = { id: 's1', entryAt: new Date() };
+      findFirst.mockResolvedValue(open);
+
+      await expect(service.getOpenSession('u1')).resolves.toBe(open);
+      expect(findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'u1', exitAt: null } }),
+      );
+    });
+
+    it('returns null when the user is not in the gym', async () => {
+      findFirst.mockResolvedValue(null);
+
+      await expect(service.getOpenSession('u1')).resolves.toBeNull();
+    });
+  });
+
   describe('checkOut', () => {
     const entryAt = new Date('2026-11-16T18:00:00Z');
 

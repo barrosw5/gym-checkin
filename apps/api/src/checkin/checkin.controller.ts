@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -34,6 +35,13 @@ export class CheckinController {
     // The user comes from the cookie, never from the body: no one can
     // check in someone else
     return this.checkinService.checkIn(user.userId, body);
+  }
+
+  // Wrapped in an object: a bare `null` body is ambiguous for clients.
+  // Not throttled per route: a read, covered by the module's default limit
+  @Get('checkin/current')
+  async current(@CurrentUser() user: AuthUser) {
+    return { session: await this.checkinService.getOpenSession(user.userId) };
   }
 
   // 200, not 201: it updates an existing session instead of creating one
