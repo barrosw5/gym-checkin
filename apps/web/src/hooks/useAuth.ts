@@ -19,7 +19,7 @@ export const useAuth = () => {
       const target =
         typeof from === "string" && from.startsWith("/") && !from.startsWith("//")
           ? from
-          : "/dashboard";
+          : "/"; // RoleHome sends each role to its own page
       navigate(target, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

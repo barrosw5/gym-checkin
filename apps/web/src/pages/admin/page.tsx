@@ -1,5 +1,5 @@
-import UsersAdmin from "../../components/UsersAdmin";
+import AdminHome from "../../components/AdminHome";
 
 export default function AdminPage() {
-  return <UsersAdmin />;
+  return <AdminHome />;
 }

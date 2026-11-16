@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
+import LogoutButton from "./LogoutButton";
+import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
+import SessionsToday from "./SessionsToday";
 
-/** Reception panel (staff PC): requests to approve and the QR screen link. */
+/** Reception panel (staff PC): requests, today's sessions, the QR screen. */
 export default function ReceptionHome() {
   const user = useAuthenticatedUser();
 
   return (
-    <div
-      style={{ maxWidth: "600px", margin: "50px auto", fontFamily: "sans-serif" }}
-    >
+    <main style={{ maxWidth: "800px", margin: "40px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
       <h1>Painel da receção</h1>
       <p>Olá, {user.name}.</p>
       <p>
@@ -18,9 +19,11 @@ export default function ReceptionHome() {
           Abrir o ecrã do QR
         </Link>
       </p>
+      <OccupancyCounter />
       {/* Here, not on the QR screen: that one faces students (names, GDPR) */}
       <PendingRequests />
-      <Link to="/dashboard">Voltar ao início</Link>
-    </div>
+      <SessionsToday />
+      <LogoutButton />
+    </main>
   );
 }

@@ -1,23 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import type { AdminUser } from "../core/types/adminUsers";
 import { useUsersAdmin } from "../hooks/useUsersAdmin";
 
 const EXAMPLE = "nome;quarto;username\nAna Silva;101;ana.silva\nRui Costa;102;rui.costa";
 
-/** Admin page: import residents from a CSV and manage their accounts. */
+/** Admin panel section: import residents from a CSV, manage accounts. */
 export default function UsersAdmin() {
   const { users, failed, importResult, busy, message, reload, importCsv, clearImportResult, update } =
     useUsersAdmin();
   const [csv, setCsv] = useState("");
 
   return (
-    <main style={{ maxWidth: "800px", margin: "40px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
-      <h1>Gestão de utilizadores</h1>
-      <Link to="/dashboard">Voltar ao início</Link>
+    <section aria-labelledby="users-admin-title" style={{ margin: "30px 0" }}>
+      <h2 id="users-admin-title">Gestão de utilizadores</h2>
 
       <section aria-labelledby="import-title" style={{ margin: "30px 0" }}>
-        <h2 id="import-title">Importar residentes</h2>
+        <h3 id="import-title">Importar residentes</h3>
         <p>
           Uma linha por residente: <code>nome;quarto;username</code> (o formato que o Excel
           exporta em &quot;CSV separado por ponto e vírgula&quot;). Ninguém é importado se houver erros.
@@ -97,7 +95,7 @@ export default function UsersAdmin() {
       </section>
 
       <section aria-labelledby="users-title">
-        <h2 id="users-title">Contas</h2>
+        <h3 id="users-title">Contas</h3>
         {failed && (
           <p>
             Não foi possível carregar. <button onClick={reload}>Tentar outra vez</button>
@@ -116,7 +114,7 @@ export default function UsersAdmin() {
           {message}
         </p>
       )}
-    </main>
+    </section>
   );
 }
 
