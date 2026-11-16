@@ -21,7 +21,8 @@ export default function LanguagePicker() {
             aria-label={t(`language.${option}`)}
             lang={option}
             className={cn(
-              "h-8 min-w-10 rounded-md px-2.5 transition-colors duration-150",
+              // Looks 32 px (fits the header); the invisible ::before makes the tap area 44 px
+              "relative h-8 min-w-11 rounded-md px-2.5 transition-colors duration-150 before:absolute before:inset-x-0 before:-inset-y-1.5",
               active
                 ? "bg-white font-medium text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]"
                 : "text-slate-600 hover:text-slate-900",

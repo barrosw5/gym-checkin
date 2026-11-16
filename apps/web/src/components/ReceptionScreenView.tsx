@@ -23,6 +23,8 @@ export default function ReceptionScreenView({ qrUrl, stale, occupancy }: Recepti
 
   return (
     <main className="relative flex min-h-svh flex-col items-center justify-center gap-6 bg-slate-50 px-4 py-8 text-center">
+      {/* No PageLayout here (full screen), so the tab title is set here */}
+      <title>{t("layout.documentTitle", { page: t("receptionScreen.title") })}</title>
       {/* Staff picks the language the screen shows to students */}
       <div className="absolute top-4 right-4">
         <LanguagePicker />

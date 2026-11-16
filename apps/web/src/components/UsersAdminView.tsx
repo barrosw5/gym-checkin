@@ -52,7 +52,8 @@ export default function UsersAdminView({
                 const file = e.target.files?.[0];
                 if (file) setCsv(await file.text());
               }}
-              className="mt-1.5 block w-full text-sm text-slate-600 file:mr-3 file:h-9 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:font-medium file:text-slate-900 hover:file:bg-slate-200"
+              // py-1 around the 36 px button: the whole input (44 px) opens the picker
+              className="mt-1.5 block w-full py-1 text-sm text-slate-600 file:mr-3 file:h-9 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:font-medium file:text-slate-900 hover:file:bg-slate-200"
             />
           </label>
           <textarea
@@ -61,7 +62,8 @@ export default function UsersAdminView({
             placeholder={example}
             rows={6}
             aria-label={t("users.csvContent")}
-            className="w-full rounded-lg bg-white p-3 font-mono text-sm ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
+            // 16 px on phones: below that, iOS zooms the page in on focus
+            className="w-full rounded-lg bg-white p-3 font-mono text-base sm:text-sm ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
           />
           <Button onClick={() => onImport(csv)} loading={busy} disabled={!csv.trim()}>
             {!busy && <Upload {...ICON} />}
@@ -102,7 +104,7 @@ export default function UsersAdminView({
                 <tbody>
                   {importResult.created.map((a) => (
                     <tr key={a.username} className="border-t border-ember-700/10">
-                      <td className="py-1.5">{a.username}</td>
+                      <td className="py-1.5 wrap-anywhere">{a.username}</td>
                       <td className="py-1.5 font-mono">{a.temporaryPassword}</td>
                     </tr>
                   ))}

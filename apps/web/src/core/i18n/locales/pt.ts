@@ -20,6 +20,9 @@ export const pt = {
   },
   layout: {
     appName: "Ginásio",
+    // Browser tab: the page first, so tabs stay apart when several are open
+    documentTitle: "{page} · Ginásio PIO XII",
+    documentTitleHome: "Ginásio PIO XII",
   },
   language: {
     label: "Língua",
