@@ -1,3 +1,5 @@
+import { ApiZodBody } from '../common/api-docs.js';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -24,6 +26,8 @@ import { RolesGuard } from '../auth/roles.guard.js';
 import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AdminUsersService } from './admin-users.service.js';
 
+@ApiTags('admin')
+@ApiCookieAuth()
 @Controller('admin/users')
 // Accounts are the admin's job, not reception's
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -38,12 +42,14 @@ export class AdminUsersController {
 
   // JSON body with the CSV text: no multipart upload dependency needed.
   // The response holds temporary passwords: never cache it
+  @ApiZodBody(userImportSchema)
   @Post('import')
   @Header('Cache-Control', 'no-store')
   async import(@Body(new ZodValidationPipe(userImportSchema)) body: UserImportInput) {
     return { created: await this.users.import(body.csv) };
   }
 
+  @ApiZodBody(userUpdateSchema)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

@@ -1,3 +1,4 @@
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Header, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
@@ -5,6 +6,8 @@ import { Roles } from '../auth/roles.decorator.js';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { QrTokenService } from './qr-token.service.js';
 
+@ApiTags('reception')
+@ApiCookieAuth()
 @Controller('admin/qr')
 // Only staff may read the token: a student with it could check in from bed
 @UseGuards(JwtAuthGuard, RolesGuard)

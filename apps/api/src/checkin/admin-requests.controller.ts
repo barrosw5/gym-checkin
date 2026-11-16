@@ -1,3 +1,4 @@
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -28,6 +29,8 @@ import { HEARTBEAT_MS } from '../gym/gym.controller.js';
 import { CheckinRequestService } from './checkin-request.service.js';
 
 /** Reception's side of method B. Names and rooms: staff only. */
+@ApiTags('reception')
+@ApiCookieAuth()
 @Controller('admin/requests')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.RECEPTION, Role.ADMIN)
