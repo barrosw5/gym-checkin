@@ -1,3 +1,4 @@
+import { LoaderCircle, LogIn, LogOut, QrCode } from "lucide-react";
 import type { Translatable } from "../core/i18n/types";
 import { formatTime } from "../core/utils/format";
 import type { CheckinState } from "../hooks/useCheckin";
@@ -5,6 +6,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import Alert from "./ui/Alert";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
+import { ICON } from "./ui/icon";
 
 export interface CheckinPanelViewProps {
   state: CheckinState;
@@ -31,7 +33,7 @@ export default function CheckinPanelView({
   return (
     <Card>
       <div className="flex flex-col gap-4">
-        {state.status === "loading" && <p className="text-slate-600">{t("checkin.checking")}</p>}
+        {state.status === "loading" && <p className="text-sm text-slate-500">{t("checkin.checking")}</p>}
 
         {state.status === "error" && (
           <>
@@ -44,38 +46,37 @@ export default function CheckinPanelView({
 
         {state.status === "in" && (
           <>
-            <p className="flex items-center gap-2 text-lg font-semibold text-green-800">
-              <span aria-hidden="true" className="size-3 rounded-full bg-green-700" />
+            <p className="flex items-center gap-2.5 text-[15px] font-medium text-slate-900 tabular-nums">
+              <span aria-hidden="true" className="size-2.5 rounded-full bg-green-600 ring-4 ring-green-600/15" />
               {t("checkin.inSince", { time: formatTime(state.session.entryAt, languageTag) })}
             </p>
-            <Button variant="warning" size="lg" fullWidth loading={busy} onClick={onLeave}>
+            <Button size="lg" fullWidth loading={busy} onClick={onLeave}>
+              {!busy && <LogOut {...ICON} />}
               {t("checkin.leave")}
             </Button>
           </>
         )}
 
         {state.status === "waiting" && (
-          <Alert tone="info">
-            <span className="flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                className="size-4 shrink-0 animate-spin rounded-full border-2 border-sky-800 border-t-transparent"
-              />
-              {t("checkin.waiting")}
-            </span>
+          <Alert tone="info" icon={<LoaderCircle {...ICON} className="animate-spin" />}>
+            {t("checkin.waiting")}
           </Alert>
         )}
 
         {state.status === "out" && (
           <>
-            <p className="text-lg font-semibold text-slate-700">{t("checkin.out")}</p>
+            <p className="text-[15px] text-slate-600">{t("checkin.out")}</p>
             {state.methods.includes("RECEPTION_APPROVAL") && (
               <Button size="lg" fullWidth loading={busy} onClick={onRequestEntry}>
+                {!busy && <LogIn {...ICON} />}
                 {t("checkin.requestEntry")}
               </Button>
             )}
             {state.methods.includes("SCREEN_QR") && (
-              <p className="text-sm text-slate-600">{t("checkin.orScanQr")}</p>
+              <p className="flex items-center gap-2 text-sm text-slate-500">
+                <QrCode {...ICON} className="shrink-0" />
+                {t("checkin.orScanQr")}
+              </p>
             )}
           </>
         )}

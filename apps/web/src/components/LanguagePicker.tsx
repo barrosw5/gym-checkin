@@ -2,24 +2,12 @@ import { LOCALES } from "../core/i18n/types";
 import { cn } from "../core/utils/cn";
 import { useTranslation } from "../hooks/useTranslation";
 
-export interface LanguagePickerProps {
-  /** onDark: inside the navy brand bar; onLight: on a white/grey page. */
-  tone?: "onDark" | "onLight";
-}
-
 /** PT | EN switch. The choice is remembered on this device. */
-export default function LanguagePicker({ tone = "onLight" }: LanguagePickerProps) {
+export default function LanguagePicker() {
   const { t, locale, setLocale } = useTranslation();
 
   return (
-    <div
-      role="group"
-      aria-label={t("language.label")}
-      className={cn(
-        "inline-flex rounded-full p-1 text-sm font-semibold",
-        tone === "onDark" ? "bg-navy-900/60" : "bg-slate-200",
-      )}
-    >
+    <div role="group" aria-label={t("language.label")} className="inline-flex rounded-lg bg-slate-100 p-0.5 text-sm">
       {LOCALES.map((option) => {
         const active = option === locale;
         return (
@@ -33,13 +21,10 @@ export default function LanguagePicker({ tone = "onLight" }: LanguagePickerProps
             aria-label={t(`language.${option}`)}
             lang={option}
             className={cn(
-              // 44 px wide touch target, compact height inside the bar
-              "min-h-9 min-w-11 rounded-full px-3 transition-colors",
+              "h-8 min-w-10 rounded-md px-2.5 transition-colors duration-150",
               active
-                ? "bg-gold-400 text-navy-900"
-                : tone === "onDark"
-                  ? "text-navy-100 hover:text-white"
-                  : "text-slate-700 hover:text-navy-900",
+                ? "bg-white font-medium text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]"
+                : "text-slate-600 hover:text-slate-900",
             )}
           >
             {option.toUpperCase()}

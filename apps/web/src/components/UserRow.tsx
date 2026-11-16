@@ -1,6 +1,11 @@
+import { UserCheck, UserX } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser } from "../core/types/adminUsers";
+import { cn } from "../core/utils/cn";
 import { useTranslation } from "../hooks/useTranslation";
+import Button from "./ui/Button";
+import { ICON } from "./ui/icon";
+import KeyTag from "./ui/KeyTag";
 
 interface UserRowProps {
   user: AdminUser;
@@ -8,45 +13,48 @@ interface UserRowProps {
   onUpdate: (body: { active?: boolean; room?: string }) => void;
 }
 
-/** Admin: one account, with its room and active/inactive toggle. */
+/** Admin: one account, with its room and the active/inactive toggle. */
 export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
   const { t } = useTranslation();
   const [room, setRoom] = useState(user.room);
 
   return (
-    <li
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "10px",
-        alignItems: "center",
-        padding: "10px 0",
-        borderBottom: "1px solid #e2e8f0",
-        opacity: user.active ? 1 : 0.6,
-      }}
-    >
-      <span style={{ flex: "1 1 220px" }}>
-        <strong>{user.name}</strong> · {user.username} · {t(`roles.${user.role}`)}
-        {!user.active && ` · ${t("users.deactivated")}`}
-      </span>
+    <li className={cn("flex flex-wrap items-center gap-x-4 gap-y-3 py-3", !user.active && "opacity-60")}>
+      <div className="min-w-48 flex-1">
+        <p className="flex items-center gap-2 font-medium text-slate-900">
+          {user.name}
+          <KeyTag room={user.room} />
+        </p>
+        <p className="mt-0.5 text-sm text-slate-500">
+          {user.username} · {t(`roles.${user.role}`)}
+          {!user.active && ` · ${t("users.deactivated")}`}
+        </p>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           onUpdate({ room });
         }}
-        style={{ display: "flex", gap: "6px" }}
+        className="flex items-center gap-2"
       >
-        <label>
-          {t("users.roomLabel")}{" "}
-          <input value={room} onChange={(e) => setRoom(e.target.value)} size={6} required />
+        <label className="sr-only" htmlFor={`room-${user.id}`}>
+          {t("users.roomLabel")}
         </label>
-        <button type="submit" disabled={busy || room.trim() === user.room}>
+        <input
+          id={`room-${user.id}`}
+          value={room}
+          onChange={(e) => setRoom(e.target.value)}
+          required
+          className="h-9 w-20 rounded-lg bg-white px-2 text-sm tabular-nums ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
+        />
+        <Button size="sm" variant="secondary" type="submit" disabled={busy || room.trim() === user.room}>
           {t("common.save")}
-        </button>
+        </Button>
       </form>
-      <button onClick={() => onUpdate({ active: !user.active })} disabled={busy}>
+      <Button size="sm" variant={user.active ? "danger" : "secondary"} disabled={busy} onClick={() => onUpdate({ active: !user.active })}>
+        {user.active ? <UserX {...ICON} /> : <UserCheck {...ICON} />}
         {user.active ? t("users.deactivate") : t("users.reactivate")}
-      </button>
+      </Button>
     </li>
   );
 }

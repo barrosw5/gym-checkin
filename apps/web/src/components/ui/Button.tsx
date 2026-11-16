@@ -1,8 +1,8 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "../../core/utils/cn";
 
-export type ButtonVariant = "primary" | "secondary" | "success" | "warning" | "danger" | "ghost";
-export type ButtonSize = "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
+export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -13,20 +13,20 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
 }
 
-// Every text/background pair here is checked for WCAG AA contrast
+// Navy is the one accent: only the primary action is filled with it
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-navy-700 text-white hover:bg-navy-800",
-  secondary: "border-2 border-navy-700 bg-white text-navy-700 hover:bg-navy-50",
-  success: "bg-green-700 text-white hover:bg-green-800",
-  warning: "bg-ember-700 text-white hover:bg-ember-700/90",
-  danger: "bg-red-700 text-white hover:bg-red-800",
-  ghost: "text-navy-700 underline-offset-4 hover:underline",
+  secondary: "bg-white text-slate-900 ring-1 ring-inset ring-slate-900/15 hover:bg-slate-100",
+  danger: "bg-white text-red-700 ring-1 ring-inset ring-red-700/30 hover:bg-red-50",
+  ghost: "text-navy-700 hover:bg-navy-50",
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  // min-h-11 = 44 px: the minimum touch target on a phone (WCAG 2.5.8)
-  md: "min-h-11 px-4 text-base",
-  lg: "min-h-14 px-6 text-lg",
+  // sm stays 36 px: secondary row actions on the reception PC
+  sm: "h-9 px-3 text-sm",
+  // 44 px: the minimum touch target on a phone (WCAG 2.5.8)
+  md: "h-11 px-4 text-[15px]",
+  lg: "h-12 px-5 text-base",
 };
 
 export default function Button({
@@ -47,8 +47,9 @@ export default function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors",
-        "disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex shrink-0 items-center justify-center gap-2 rounded-lg font-medium",
+        "transition-[background-color,color,transform] duration-150 ease-(--ease-out) active:scale-[0.98]",
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",
         VARIANTS[variant],
         SIZES[size],
         fullWidth && "w-full",

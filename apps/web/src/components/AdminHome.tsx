@@ -1,33 +1,31 @@
-import { Link } from "react-router-dom";
 import { useAuthenticatedUser } from "../hooks/useCurrentUser";
 import { useTranslation } from "../hooks/useTranslation";
 import AccountActions from "./AccountActions";
-import PageLayout from "./ui/PageLayout";
 import OccupancyCounter from "./OccupancyCounter";
 import PendingRequests from "./PendingRequests";
+import QrScreenLink from "./QrScreenLink";
 import SessionsToday from "./SessionsToday";
 import UsersAdmin from "./UsersAdmin";
+import PageLayout from "./ui/PageLayout";
 
-/** Admin panel: everything reception does, plus accounts. No check-in. */
+/** Admin desk: everything reception does, plus accounts. No check-in. */
 export default function AdminHome() {
   const user = useAuthenticatedUser();
   const { t } = useTranslation();
 
   return (
-    <PageLayout width="wide" title={t("admin.title")} subtitle={t("common.hello", { name: user.name })}>
-      <p>
-        {/* New tab: the screen stays open full screen on the reception PC */}
-        <Link
-          to="/reception/screen"
-          target="_blank"
-          className="font-semibold text-navy-700 underline underline-offset-4"
-        >
-          {t("common.openQrScreen")}
-        </Link>
-      </p>
-      <OccupancyCounter />
-      <PendingRequests />
-      <SessionsToday />
+    <PageLayout width="wide" title={t("admin.title")} subtitle={t("common.signedInAs", { name: user.name })}>
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_2fr]">
+        <div className="flex flex-col gap-4">
+          <OccupancyCounter />
+          <QrScreenLink />
+        </div>
+        <div className="flex flex-col gap-4">
+          <PendingRequests />
+          <SessionsToday />
+        </div>
+      </div>
+      <h2 className="mt-4 text-xl font-medium text-slate-900">{t("users.title")}</h2>
       <UsersAdmin />
       <AccountActions />
     </PageLayout>

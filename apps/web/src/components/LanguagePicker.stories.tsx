@@ -10,8 +10,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const OnLight: Story = { args: { tone: "onLight" } };
-export const OnDark: Story = {
-  args: { tone: "onDark" },
-  decorators: [(Story) => <div className="inline-block bg-navy-700 p-3">{Story()}</div>],
-};
+export const Default: Story = {};

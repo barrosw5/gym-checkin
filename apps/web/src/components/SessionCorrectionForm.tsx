@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { AdminSession } from "../core/types/adminSessions";
 import { toLocalInput } from "../core/utils/format";
 import { useTranslation } from "../hooks/useTranslation";
+import Button from "./ui/Button";
+import TextField from "./ui/TextField";
 
 interface SessionCorrectionFormProps {
   session: AdminSession;
@@ -23,19 +25,26 @@ export default function SessionCorrectionForm({ session, busy, onSave }: Session
         e.preventDefault();
         onSave(entry, exit);
       }}
-      style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}
+      className="mt-3 flex flex-wrap items-end gap-3 rounded-xl bg-slate-50 p-3"
     >
-      <label>
-        {t("sessions.entry")}{" "}
-        <input type="datetime-local" value={entry} onChange={(e) => setEntry(e.target.value)} required />
-      </label>
-      <label>
-        {t("sessions.exit")}{" "}
-        <input type="datetime-local" value={exit} onChange={(e) => setExit(e.target.value)} />
-      </label>
-      <button type="submit" disabled={busy} style={{ padding: "8px 16px" }}>
+      <TextField
+        label={t("sessions.entry")}
+        type="datetime-local"
+        value={entry}
+        onChange={(e) => setEntry(e.target.value)}
+        required
+        className="min-w-52 flex-1"
+      />
+      <TextField
+        label={t("sessions.exit")}
+        type="datetime-local"
+        value={exit}
+        onChange={(e) => setExit(e.target.value)}
+        className="min-w-52 flex-1"
+      />
+      <Button type="submit" loading={busy}>
         {t("common.save")}
-      </button>
+      </Button>
     </form>
   );
 }

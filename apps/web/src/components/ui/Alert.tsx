@@ -1,32 +1,39 @@
+import { CircleAlert, CircleCheck, Info, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "../../core/utils/cn";
+import { ICON } from "./icon";
 
 export type AlertTone = "error" | "warning" | "info" | "success";
 
 export interface AlertProps {
   tone?: AlertTone;
+  /** Replaces the default icon (e.g. a spinner while waiting). */
+  icon?: ReactNode;
   className?: string;
   children: ReactNode;
 }
 
-const TONES: Record<AlertTone, string> = {
-  error: "border-red-700 bg-red-50 text-red-800",
-  warning: "border-ember-700 bg-ember-100 text-ember-700",
-  info: "border-sky-800 bg-sky-50 text-sky-800",
-  success: "border-green-700 bg-green-50 text-green-800",
+const TONES: Record<AlertTone, { box: string; Icon: typeof Info }> = {
+  error: { box: "bg-red-50 text-red-800", Icon: CircleAlert },
+  warning: { box: "bg-ember-50 text-ember-700", Icon: TriangleAlert },
+  info: { box: "bg-sky-50 text-sky-800", Icon: Info },
+  success: { box: "bg-green-50 text-green-800", Icon: CircleCheck },
 };
 
 /**
- * A message box. Errors use role="alert" (read out immediately); the rest
- * use role="status" (read out politely, without interrupting).
+ * A message. Errors use role="alert" (read out immediately); the rest use
+ * role="status" (read out politely, without interrupting).
  */
-export default function Alert({ tone = "info", className, children }: AlertProps) {
+export default function Alert({ tone = "info", icon, className, children }: AlertProps) {
+  const { box, Icon } = TONES[tone];
+
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={cn("rounded-xl border-l-4 px-4 py-3 text-sm font-medium", TONES[tone], className)}
+      className={cn("flex items-start gap-2.5 rounded-lg px-3 py-2.5 text-sm", box, className)}
     >
-      {children}
+      <span className="mt-px shrink-0">{icon ?? <Icon {...ICON} />}</span>
+      <div>{children}</div>
     </div>
   );
 }

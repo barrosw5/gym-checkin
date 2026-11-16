@@ -4,50 +4,50 @@ import { useTranslation } from "../../hooks/useTranslation";
 import LanguagePicker from "../LanguagePicker";
 
 export interface PageLayoutProps {
-  /** Page heading (h1), under the brand bar. */
+  /** Page heading (h1): names the context, never a greeting. */
   title?: ReactNode;
-  /** One line under the title (e.g. "Room 501"). */
+  /** One quiet line or row under the title (e.g. the user and their room). */
   subtitle?: ReactNode;
   /**
    * narrow: one column, phone first (student pages, forms).
-   * wide: reception/admin desks on a PC.
+   * wide: reception/admin desks on a PC, using the whole width.
    */
   width?: "narrow" | "wide";
   children: ReactNode;
 }
 
-const WIDTHS = { narrow: "max-w-md", wide: "max-w-4xl" };
+const WIDTHS = { narrow: "max-w-md", wide: "max-w-6xl" };
 
-/** Every page: brand bar, title, then the content in a centred column. */
+/** Every page: a quiet white bar with the name, then the content. */
 export default function PageLayout({ title, subtitle, width = "narrow", children }: PageLayoutProps) {
   const { t } = useTranslation();
 
   return (
     <div className="min-h-svh">
-      <header className="bg-navy-700 text-white shadow-md">
-        <div className={cn("mx-auto flex items-center justify-between gap-4 px-4 py-3", WIDTHS[width])}>
-          <div className="flex items-center gap-3">
-            {/* Text mark until the symbol is cleared for use (ROADMAP: ask the direction) */}
+      <header className="border-b border-slate-900/[0.08] bg-white">
+        <div className={cn("mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6", WIDTHS[width])}>
+          <div className="flex items-center gap-2.5">
+            {/* Flat roundel in the crest navy; the real symbol needs the direction's approval */}
             <span
               aria-hidden="true"
-              className="grid size-10 place-items-center rounded-full border-2 border-gold-400 text-xs font-black text-gold-300"
+              className="grid size-8 place-items-center rounded-full bg-navy-700 text-[11px] font-semibold text-white"
             >
               XII
             </span>
-            <span className="leading-tight">
-              <span className="block text-sm font-black tracking-widest text-gold-300">PIO XII</span>
-              <span className="block text-xs text-navy-100">{t("layout.appName")}</span>
+            <span className="text-[15px] font-semibold text-navy-900">
+              Pio XII
+              <span className="font-normal text-slate-500"> · {t("layout.appName")}</span>
             </span>
           </div>
-          <LanguagePicker tone="onDark" />
+          <LanguagePicker />
         </div>
       </header>
 
-      <main className={cn("mx-auto flex flex-col gap-4 px-4 py-6", WIDTHS[width])}>
+      <main className={cn("mx-auto flex flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8", WIDTHS[width])}>
         {(title || subtitle) && (
-          <div>
-            {title && <h1 className="text-2xl font-bold text-navy-900 sm:text-3xl">{title}</h1>}
-            {subtitle && <p className="mt-1 text-slate-600">{subtitle}</p>}
+          <div className="mb-2 flex flex-col gap-2">
+            {title && <h1 className="text-[28px] leading-tight font-medium text-slate-900">{title}</h1>}
+            {subtitle && <div className="flex flex-wrap items-center gap-2 text-slate-600">{subtitle}</div>}
           </div>
         )}
         {children}

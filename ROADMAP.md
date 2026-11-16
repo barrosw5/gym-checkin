@@ -266,8 +266,8 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 - [x] Português e inglês (i18n): seletor de língua e todo o texto em ficheiros de língua, sem frases fixas nos componentes
 - [x] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
-- [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
-- [ ] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com Tailwind em vez de estilos inline
+- [x] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
+- [x] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com Tailwind em vez de estilos inline
 - [ ] Identidade visual do PIO XII (ver passos abaixo)
 - [ ] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os residentes o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
 - [ ] Acessibilidade (contraste WCAG AA, teclado, labels, botões com área de toque adequada)

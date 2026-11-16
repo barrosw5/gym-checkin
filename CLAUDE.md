@@ -70,6 +70,7 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 ### Styling, views and Storybook
 
 - **Tailwind** for all styling; no inline `style={{}}` except truly dynamic values (e.g. a bar width). Brand colours (from the PIO XII symbol: `navy`, `gold`, `ember`, `sky`) are tokens in `src/index.css` (`@theme`), defined once; text/background pairs must pass WCAG AA.
+- **Design direction (PIO XII):** calm and institutional, the reception desk and its key board. Surfaces stay neutral (slate); navy is the one accent (primary action, selection); gold only for the signature, the room number as a brass `KeyTag` (rooms only). Moments with colour: the occupancy as one block per place, and the QR screen as a navy plaque. No emoji (lucide icons, `ICON` size/stroke), weights 400 to 600, sentence case, no exclamation marks or greeting titles, `tabular-nums` for numbers, transitions named (never `transition-all`).
 - **Mobile first:** design for the phone, then widen with `sm:`/`md:`. Touch targets at least 44 px (`min-h-11`).
 - `components/ui/`: reusable building blocks (`Button`, `Card`, `Alert`, `TextField`, `PageLayout`) that only take props.
 - **View split:** a feature component (e.g. `CheckinButton`) only calls its hook and renders `XView` (e.g. `CheckinPanelView`) with props. Views hold no data hooks (only `useTranslation()` and local form state), so they render the same in the app and in Storybook.

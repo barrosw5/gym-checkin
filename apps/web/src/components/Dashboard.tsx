@@ -3,6 +3,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import AccountActions from "./AccountActions";
 import CheckinButton from "./CheckinButton";
 import OccupancyCounter from "./OccupancyCounter";
+import KeyTag from "./ui/KeyTag";
 import PageLayout from "./ui/PageLayout";
 
 /** Student home (phone first): how full the gym is, and the way in/out. */
@@ -12,8 +13,13 @@ export default function Dashboard() {
 
   return (
     <PageLayout
-      title={t("dashboard.welcome", { name: user.name })}
-      subtitle={t("dashboard.room", { room: user.room })}
+      title={t("dashboard.title")}
+      subtitle={
+        <>
+          <span>{user.name}</span>
+          <KeyTag room={user.room} />
+        </>
+      }
     >
       <OccupancyCounter />
       <CheckinButton />
