@@ -6,6 +6,7 @@ export const useDashboard = () => {
   const user = useAuthenticatedUser();
   const { logout } = useAuth(); // Reusing the logout function from useAuth
   const isStaff = user.role === "RECEPTION" || user.role === "ADMIN";
+  const isAdmin = user.role === "ADMIN";
 
-  return { user, isStaff, logout };
+  return { user, isStaff, isAdmin, logout };
 };

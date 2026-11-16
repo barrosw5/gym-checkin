@@ -4,7 +4,7 @@ import CheckinButton from "./CheckinButton";
 import OccupancyCounter from "./OccupancyCounter";
 
 export default function Dashboard() {
-  const { user, isStaff, logout } = useDashboard();
+  const { user, isStaff, isAdmin, logout } = useDashboard();
 
   return (
     <div
@@ -24,6 +24,11 @@ export default function Dashboard() {
       {isStaff && (
         <p>
           <Link to="/reception">Painel da receção</Link>
+        </p>
+      )}
+      {isAdmin && (
+        <p>
+          <Link to="/admin">Gestão de utilizadores</Link>
         </p>
       )}
 

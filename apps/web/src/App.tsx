@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/page";
 import DashboardPage from "./pages/dashboard/page";
 import QrCheckinPage from "./pages/checkin/page";
+import AdminPage from "./pages/admin/page";
 import ReceptionPage from "./pages/reception/page";
 import ReceptionScreenPage from "./pages/reception/screen/page";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -23,6 +24,11 @@ function App() {
         <Route element={<ProtectedRoute roles={["RECEPTION", "ADMIN"]} />}>
           <Route path="/reception" element={<ReceptionPage />} />
           <Route path="/reception/screen" element={<ReceptionScreenPage />} />
+        </Route>
+
+        {/* Admin only: accounts */}
+        <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
+          <Route path="/admin" element={<AdminPage />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
