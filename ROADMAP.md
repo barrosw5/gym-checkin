@@ -185,6 +185,7 @@ Para manter um código limpo e escalável, o frontend (React) deve seguir estrit
 *   `core/services/`: lógica de negócio. Processam dados antes de enviar para a API ou depois de receber.
 *   `core/api/`: chamadas HTTP puras usando `fetch` ou `axios` (ex: `authApi.ts`). Sem estado React.
 *   `core/types/`: interfaces e tipos TypeScript partilhados.
+*   `core/utils/`: funções puras de apresentação (ex: `formatTime`), sem estado nem API. É a única pasta de `core/` que os componentes podem importar diretamente.
 
 ### Nomes dos ficheiros
 *   Hooks: `useX.ts` (ex: `useDashboard.ts`, `useCheckin.ts`). Só os hooks começam por `use` (o React reserva esse prefixo).
@@ -263,7 +264,8 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 
 Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem antes das estatísticas, para os ecrãs novos (gráficos) já nascerem com a base visual.
 
-- [ ] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
+- [x] Português e inglês (i18n): seletor de língua e todo o texto em ficheiros de língua, sem frases fixas nos componentes
+- [x] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
 - [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
 - [ ] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com CSS em vez de estilos inline
 - [ ] Identidade visual do PIO XII (ver passos abaixo)

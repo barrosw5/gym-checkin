@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { occupancyService } from "../core/services/occupancyService";
 import { sessionsTodayService } from "../core/services/sessionsTodayService";
 import type { AdminSession } from "../core/types/adminSessions";
+import { toTranslatable, type Translatable } from "../core/i18n/types";
 
 /**
  * Today's sessions for reception. Reloads whenever the live occupancy
@@ -12,7 +13,7 @@ export const useSessionsToday = () => {
   const [sessions, setSessions] = useState<AdminSession[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<Translatable | null>(null);
 
   const reload = useCallback(async () => {
     try {
@@ -37,12 +38,12 @@ export const useSessionsToday = () => {
   /** Runs a change; returns true on success (so the form can close). */
   const run = async (id: string, action: () => Promise<void>) => {
     setBusyId(id);
-    setMessage("");
+    setMessage(null);
     try {
       await action();
       return true;
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Erro inesperado.");
+      setMessage(toTranslatable(err));
       return false;
     } finally {
       setBusyId(null);

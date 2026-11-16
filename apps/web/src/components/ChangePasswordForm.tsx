@@ -1,9 +1,13 @@
 import { MIN_PASSWORD_LENGTH } from "@gym-checkin/shared";
 import { useState } from "react";
 import { useChangePassword } from "../hooks/useChangePassword";
+import { useTranslation } from "../hooks/useTranslation";
+
+const inputStyle = { display: "block", width: "100%", padding: "8px", boxSizing: "border-box" } as const;
 
 export default function ChangePasswordForm() {
   const { forced, isDemo, busy, error, done, submit, goHome } = useChangePassword();
+  const { t, tm } = useTranslation();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -12,30 +16,25 @@ export default function ChangePasswordForm() {
 
   return (
     <main style={{ maxWidth: "400px", margin: "50px auto", padding: "0 16px", fontFamily: "sans-serif" }}>
-      <h1>Mudar a password</h1>
+      <h1>{t("password.title")}</h1>
 
       {done ? (
         <div role="status">
-          <p>✅ Password mudada. As sessões noutros dispositivos foram terminadas.</p>
+          <p>{t("password.done")}</p>
           <button onClick={goHome} style={{ padding: "10px 16px" }}>
-            Continuar
+            {t("common.continue")}
           </button>
         </div>
       ) : isDemo ? (
         <>
-          <p>As contas de demonstração são públicas e não podem mudar a password.</p>
+          <p>{t("password.demo")}</p>
           <button onClick={goHome} style={{ padding: "10px 16px" }}>
-            Voltar
+            {t("common.back")}
           </button>
         </>
       ) : (
         <>
-          {forced && (
-            <p>
-              A tua conta foi criada com uma password temporária. Escolhe uma nova para
-              continuar.
-            </p>
-          )}
+          {forced && <p>{t("password.forced")}</p>}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -44,18 +43,18 @@ export default function ChangePasswordForm() {
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
             <label>
-              Password atual
+              {t("password.current")}
               <input
                 type="password"
                 autoComplete="current-password"
                 value={current}
                 onChange={(e) => setCurrent(e.target.value)}
                 required
-                style={{ display: "block", width: "100%", padding: "8px" }}
+                style={inputStyle}
               />
             </label>
             <label>
-              Nova password (pelo menos {MIN_PASSWORD_LENGTH} caracteres)
+              {t("password.new", { min: MIN_PASSWORD_LENGTH })}
               <input
                 type="password"
                 // Lets the phone's password manager suggest and save a strong one
@@ -64,11 +63,11 @@ export default function ChangePasswordForm() {
                 onChange={(e) => setNext(e.target.value)}
                 minLength={MIN_PASSWORD_LENGTH}
                 required
-                style={{ display: "block", width: "100%", padding: "8px" }}
+                style={inputStyle}
               />
             </label>
             <label>
-              Repete a nova password
+              {t("password.repeat")}
               <input
                 type="password"
                 autoComplete="new-password"
@@ -76,21 +75,21 @@ export default function ChangePasswordForm() {
                 onChange={(e) => setConfirm(e.target.value)}
                 required
                 aria-invalid={mismatch}
-                style={{ display: "block", width: "100%", padding: "8px" }}
+                style={inputStyle}
               />
             </label>
-            {mismatch && <p style={{ color: "#c53030", margin: 0 }}>As passwords não coincidem.</p>}
+            {mismatch && <p style={{ color: "#c53030", margin: 0 }}>{t("password.mismatch")}</p>}
             {error && (
               <p role="alert" style={{ color: "#c53030", margin: 0 }}>
-                {error}
+                {tm(error)}
               </p>
             )}
             <button type="submit" disabled={busy || mismatch} style={{ padding: "10px" }}>
-              {busy ? "A guardar..." : "Mudar password"}
+              {busy ? t("password.saving") : t("password.submit")}
             </button>
             {!forced && (
               <button type="button" onClick={goHome} style={{ padding: "10px" }}>
-                Cancelar
+                {t("common.cancel")}
               </button>
             )}
           </form>

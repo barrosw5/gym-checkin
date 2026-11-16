@@ -1,6 +1,7 @@
+import type { CheckinMethodName } from "@gym-checkin/shared";
 import { checkinApi } from "../api/checkinApi";
 import { HttpError } from "../api/httpError";
-import type { CheckinMethodName } from "@gym-checkin/shared";
+import { TranslatableError, type MessageKey } from "../i18n/types";
 import type {
   CheckinRequestStatus,
   OpenSession,
@@ -12,38 +13,30 @@ const toOpenSession = (dto: OpenSessionDto): OpenSession => ({
   entryAt: new Date(dto.entryAt),
 });
 
-/** Turns a failed check-in/checkout into a message the user can act on. */
-function errorMessage(err: unknown): string {
+/** Which message explains a failed check-in/checkout (shown in the user's language). */
+function errorKey(err: unknown): MessageKey {
   if (err instanceof HttpError) {
-    if (err.status === 409) return "O teu estado mudou entretanto. Já atualizámos.";
-    if (err.status === 403) return "Este método de entrada não está ativo.";
-    if (err.status === 429) return "Demasiados pedidos. Espera um pouco.";
+    if (err.status === 409) return "errors.checkin.stateChanged";
+    if (err.status === 403) return "errors.checkin.methodDisabled";
+    if (err.status === 429) return "errors.tooManyRequests";
   }
-  return "Não foi possível concluir. Tenta outra vez.";
+  return "errors.unexpected";
 }
 
-/** Rethrows with a user-facing message, keeping the HttpError as `cause`. */
+/** Rethrows as a TranslatableError, keeping the HttpError as `cause`. */
 async function withMessage<T>(request: Promise<T>): Promise<T> {
   try {
     return await request;
   } catch (err) {
-    throw new Error(errorMessage(err), { cause: err });
+    throw new TranslatableError(errorKey(err), undefined, { cause: err });
   }
 }
 
-/** Outcome of scanning the reception QR. Errors are thrown with a message. */
+/** Outcome of scanning the reception QR. Errors are thrown as TranslatableError. */
 export type QrCheckinResult =
   | { status: "checked-in"; session: OpenSession }
   // Scanned while already inside (e.g. on the way out): not an error
   | { status: "already-in" };
-
-function qrErrorMessage(err: unknown): string {
-  // 403 here means the token is too old (the login took a while) or forged
-  if (err instanceof HttpError && err.status === 403) {
-    return "O código expirou. Volta a ler o QR no ecrã da receção.";
-  }
-  return errorMessage(err);
-}
 
 export const checkinService = {
   getOpenSession: async (): Promise<OpenSession | null> => {
@@ -60,7 +53,10 @@ export const checkinService = {
       if (err instanceof HttpError && err.status === 409) {
         return { status: "already-in" };
       }
-      throw new Error(qrErrorMessage(err), { cause: err });
+      // 403 here means the token is too old (the login took a while) or forged
+      const key =
+        err instanceof HttpError && err.status === 403 ? "errors.checkin.qrExpired" : errorKey(err);
+      throw new TranslatableError(key, undefined, { cause: err });
     }
   },
 
@@ -75,13 +71,11 @@ export const checkinService = {
     try {
       await checkinApi.createRequest();
     } catch (err) {
-      if (err instanceof HttpError && err.status === 409) {
-        throw new Error(
-          "Já tens um pedido à espera, ou já estás no ginásio.",
-          { cause: err },
-        );
-      }
-      throw new Error(errorMessage(err), { cause: err });
+      const key =
+        err instanceof HttpError && err.status === 409
+          ? "errors.checkin.alreadyPending"
+          : errorKey(err);
+      throw new TranslatableError(key, undefined, { cause: err });
     }
   },
 

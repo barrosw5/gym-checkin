@@ -65,6 +65,13 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 - `core/services/`: business logic. Processes data before sending it to the API or after receiving it.
 - `core/api/`: pure HTTP calls using `fetch` or `axios` (e.g. `authApi.ts`). No React state.
 - `core/types/`: shared TypeScript interfaces and types.
+- `core/utils/`: pure presentation helpers (e.g. `formatTime`), no state and no API. The only `core/` folder components may import directly; services are reached only through the component's hook.
+
+### Text and languages (i18n)
+
+- **No fixed user-visible text in components, hooks or services.** Every sentence lives in `core/i18n/locales/pt.ts` (source of truth) and `en.ts` (typed as `Messages`: missing, extra or misspelled keys fail the build). Components call `t("some.key", params)` from `useTranslation()`.
+- Services throw `TranslatableError(key, params)` instead of `Error("sentence")`; hooks keep it as a `Translatable` (`toTranslatable(err)`); components show it with `tm(message)`.
+- Dates and times are formatted in the active language (`formatTime(date, languageTag)`).
 
 ### File naming
 

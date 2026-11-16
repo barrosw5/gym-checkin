@@ -1,10 +1,7 @@
 import type { CSSProperties } from "react";
+import { formatTime } from "../core/utils/format";
 import { useCheckin } from "../hooks/useCheckin";
-
-const timeFormat = new Intl.DateTimeFormat("pt-PT", {
-  hour: "2-digit",
-  minute: "2-digit",
-});
+import { useTranslation } from "../hooks/useTranslation";
 
 const buttonStyle = (color: string, busy: boolean): CSSProperties => ({
   padding: "16px 32px",
@@ -17,17 +14,18 @@ const buttonStyle = (color: string, busy: boolean): CSSProperties => ({
 
 export default function CheckinButton() {
   const { state, busy, message, reload, requestEntry, leave } = useCheckin();
+  const { t, tm, languageTag } = useTranslation();
 
   if (state.status === "loading") {
-    return <p>A verificar se estás no ginásio...</p>;
+    return <p>{t("checkin.checking")}</p>;
   }
 
   if (state.status === "error") {
     return (
       <div>
-        <p>Não foi possível saber se estás no ginásio.</p>
+        <p>{t("checkin.unknown")}</p>
         <button onClick={reload} style={{ padding: "10px" }}>
-          Tentar outra vez
+          {t("common.retry")}
         </button>
       </div>
     );
@@ -37,49 +35,34 @@ export default function CheckinButton() {
     <div style={{ margin: "30px 0" }}>
       {state.status === "in" && (
         <>
-          <p>
-            Estás no ginásio desde as{" "}
-            {timeFormat.format(state.session.entryAt)}.
-          </p>
-          <button
-            onClick={leave}
-            disabled={busy}
-            style={buttonStyle("#dd6b20", busy)}
-          >
-            {busy ? "Aguarda..." : "Sair do ginásio"}
+          <p>{t("checkin.inSince", { time: formatTime(state.session.entryAt, languageTag) })}</p>
+          <button onClick={leave} disabled={busy} style={buttonStyle("#dd6b20", busy)}>
+            {busy ? t("common.wait") : t("checkin.leave")}
           </button>
         </>
       )}
 
       {state.status === "waiting" && (
         // role="status": screen readers announce it without stealing focus
-        <p role="status">⏳ À espera que a receção aceite o teu pedido...</p>
+        <p role="status">{t("checkin.waiting")}</p>
       )}
 
       {state.status === "out" && (
         <>
-          <p>Não estás no ginásio.</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {state.methods.includes("RECEPTION_APPROVAL") && (
-              <button
-                onClick={requestEntry}
-                disabled={busy}
-                style={buttonStyle("#3182ce", busy)}
-              >
-                {busy ? "Aguarda..." : "Pedir entrada à receção"}
-              </button>
-            )}
-          </div>
-          {state.methods.includes("SCREEN_QR") && (
-            <p>Ou lê o QR no ecrã da receção para entrares logo.</p>
+          <p>{t("checkin.out")}</p>
+          {state.methods.includes("RECEPTION_APPROVAL") && (
+            <button onClick={requestEntry} disabled={busy} style={buttonStyle("#3182ce", busy)}>
+              {busy ? t("common.wait") : t("checkin.requestEntry")}
+            </button>
           )}
+          {state.methods.includes("SCREEN_QR") && <p>{t("checkin.orScanQr")}</p>}
         </>
       )}
 
       {/* role="alert": screen readers announce the message when it appears */}
       {message && (
         <p role="alert" style={{ color: "#c53030" }}>
-          {message}
+          {tm(message)}
         </p>
       )}
     </div>

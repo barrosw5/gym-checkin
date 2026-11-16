@@ -5,6 +5,7 @@ import {
 } from "@gym-checkin/shared";
 import { authApi } from "../api/authApi";
 import { HttpError } from "../api/httpError";
+import { TranslatableError, type MessageKey, type MessageParams } from "../i18n/types";
 import type { Role, User } from "../types/user";
 
 /** Each role's home: students train, staff run the gym (no check-in). */
@@ -17,35 +18,40 @@ const HOME_BY_ROLE: Record<Role, string> = {
 export const homePathFor = (role: Role): string => HOME_BY_ROLE[role];
 
 /** Turns a failed login into a message the user can act on. */
-function loginErrorMessage(err: unknown): string {
-  if (err instanceof HttpError) {
-    if (err.status === 401) return "Username ou password incorretos.";
-    if (err.status === 429) {
-      const wait = err.retryAfter ? ` daqui a ${err.retryAfter} s` : " daqui a pouco";
-      return `Demasiadas tentativas. Tenta outra vez${wait}.`;
-    }
+function loginError(err: unknown): TranslatableError {
+  if (err instanceof HttpError && err.status === 401) {
+    return new TranslatableError("errors.login.invalid", undefined, { cause: err });
   }
-  return "Não foi possível entrar. Tenta outra vez.";
+  if (err instanceof HttpError && err.status === 429) {
+    return err.retryAfter
+      ? new TranslatableError("errors.login.tooManyIn", { seconds: err.retryAfter }, { cause: err })
+      : new TranslatableError("errors.login.tooManySoon", undefined, { cause: err });
+  }
+  return new TranslatableError("errors.login.failed", undefined, { cause: err });
 }
+
+// The shared schemas' messages (English, stable) mapped to message keys
+const LOGIN_RULES: Record<string, MessageKey> = {
+  "Username is required": "errors.login.usernameRequired",
+  "Password is required": "errors.login.passwordRequired",
+  "Password is too long": "errors.login.passwordTooLong",
+};
 
 /** Turns a refused password change into a message the user can act on. */
-function changePasswordErrorMessage(err: unknown): string {
+function changePasswordErrorKey(err: unknown): MessageKey {
   if (err instanceof HttpError) {
-    if (err.message === "Current password is incorrect") return "A password atual está errada.";
-    if (err.message === "Demo accounts cannot change their password") {
-      return "As contas de demonstração não podem mudar a password.";
-    }
-    if (err.status === 429) return "Demasiadas tentativas. Espera um minuto.";
+    if (err.message === "Current password is incorrect") return "errors.password.currentWrong";
+    if (err.message === "Demo accounts cannot change their password") return "errors.password.demo";
+    if (err.status === 429) return "errors.password.tooMany";
   }
-  return "Não foi possível mudar a password. Tenta outra vez.";
+  return "errors.password.failed";
 }
 
-// The shared schema's checks, in the language the user reads
-const PASSWORD_RULE_MESSAGES: Record<string, string> = {
-  "Current password is required": "Escreve a password atual.",
-  [`At least ${MIN_PASSWORD_LENGTH} characters`]: `A nova password tem de ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`,
-  "Password is too long": "A nova password é demasiado longa.",
-  "The new password must be different": "A nova password tem de ser diferente da atual.",
+const PASSWORD_RULES: Record<string, [MessageKey, MessageParams?]> = {
+  "Current password is required": ["errors.password.currentRequired"],
+  [`At least ${MIN_PASSWORD_LENGTH} characters`]: ["errors.password.minLength", { min: MIN_PASSWORD_LENGTH }],
+  "Password is too long": ["errors.password.tooLong"],
+  "The new password must be different": ["errors.password.sameAsCurrent"],
 };
 
 export const authService = {
@@ -54,25 +60,25 @@ export const authService = {
     // UX only; the API validates again, since the client can be bypassed.
     const result = loginSchema.safeParse({ username, password });
     if (!result.success) {
-      throw new Error(result.error.issues[0].message);
+      throw new TranslatableError(LOGIN_RULES[result.error.issues[0].message] ?? "errors.login.failed");
     }
     try {
       return await authApi.login(result.data.username, result.data.password);
     } catch (err) {
-      throw new Error(loginErrorMessage(err), { cause: err });
+      throw loginError(err);
     }
   },
   /** Same schema as the API: instant feedback (UX); the API checks again. */
   changePassword: async (currentPassword: string, newPassword: string) => {
     const result = changePasswordSchema.safeParse({ currentPassword, newPassword });
     if (!result.success) {
-      const message = result.error.issues[0].message;
-      throw new Error(PASSWORD_RULE_MESSAGES[message] ?? message);
+      const [key, params] = PASSWORD_RULES[result.error.issues[0].message] ?? ["errors.password.failed"];
+      throw new TranslatableError(key, params);
     }
     try {
       await authApi.changePassword(result.data);
     } catch (err) {
-      throw new Error(changePasswordErrorMessage(err), { cause: err });
+      throw new TranslatableError(changePasswordErrorKey(err), undefined, { cause: err });
     }
   },
   logout: async () => {

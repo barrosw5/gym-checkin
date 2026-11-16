@@ -1,5 +1,6 @@
 import { adminRequestsApi } from "../api/adminRequestsApi";
 import { HttpError } from "../api/httpError";
+import { TranslatableError, type MessageKey } from "../i18n/types";
 import type {
   PendingRequest,
   PendingRequestDto,
@@ -13,17 +14,15 @@ const toPendingRequest = (dto: PendingRequestDto): PendingRequest => ({
   room: dto.user.room,
 });
 
-function decisionErrorMessage(err: unknown): string {
+function decisionErrorKey(err: unknown): MessageKey {
   if (err instanceof HttpError) {
-    if (err.status === 409 && err.message.includes("already in the gym")) {
-      return "Este estudante já está no ginásio.";
+    if (err.status === 409 && err.message === "The student is already in the gym") {
+      return "errors.requests.studentInside";
     }
     // Decided by a colleague, or expired, or gone
-    if (err.status === 409 || err.status === 404) {
-      return "Este pedido já não está pendente.";
-    }
+    if (err.status === 409 || err.status === 404) return "errors.requests.notPending";
   }
-  return "Não foi possível concluir. Tenta outra vez.";
+  return "errors.unexpected";
 }
 
 export const pendingRequestsService = {
@@ -41,7 +40,7 @@ export const pendingRequestsService = {
     try {
       await adminRequestsApi.decide(id, decision);
     } catch (err) {
-      throw new Error(decisionErrorMessage(err), { cause: err });
+      throw new TranslatableError(decisionErrorKey(err), undefined, { cause: err });
     }
   },
 };

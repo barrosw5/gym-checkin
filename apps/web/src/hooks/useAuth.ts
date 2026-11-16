@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authService } from "../core/services/authService";
+import { toTranslatable, type Translatable } from "../core/i18n/types";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<Translatable | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   const login = async (username: string, password: string) => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       await authService.login(username, password);
       // Back to the page ProtectedRoute sent us away from, if any
@@ -22,7 +23,7 @@ export const useAuth = () => {
           : "/"; // RoleHome sends each role to its own page
       navigate(target, { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(toTranslatable(err));
     } finally {
       setLoading(false);
     }
