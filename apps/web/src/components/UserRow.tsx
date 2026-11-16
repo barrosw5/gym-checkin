@@ -19,9 +19,11 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
   const [room, setRoom] = useState(user.room);
 
   return (
-    <li className={cn("flex flex-wrap items-center gap-x-4 gap-y-3 py-3", !user.active && "opacity-60")}>
+    // Inactive: a muted name plus the "deactivated" word, never opacity (it would
+    // drop every text in the row below WCAG AA contrast)
+    <li className="flex flex-wrap items-center gap-x-4 gap-y-3 py-3">
       <div className="min-w-48 flex-1">
-        <p className="flex items-center gap-2 font-medium text-slate-900">
+        <p className={cn("flex items-center gap-2 font-medium", user.active ? "text-slate-900" : "text-slate-500")}>
           {user.name}
           <KeyTag room={user.room} />
         </p>
