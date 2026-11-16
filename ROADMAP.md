@@ -256,17 +256,11 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [x] Lista em tempo real e aprovar/rejeitar
 - [x] Correção manual de sessões e gestão de utilizadores (import CSV)
 - [x] Remover o método `SIMPLE` (sem prova de presença): ficam só o QR e a aprovação da receção; as sessões antigas `SIMPLE` mantêm-se no histórico
+- [x] Separar os papéis: só os estudantes entram no ginásio; a receção aceita pedidos, fecha/corrige sessões e abre o ecrã do QR; o admin faz o mesmo e gere as contas. Cada papel tem a sua página inicial
 
-### Fase 5: Estatísticas
+### Fase 5: Interface e identidade visual
 
-- [ ] Cálculo de ocupação por intervalos (por exemplo de 15 em 15 minutos)
-- [ ] Heatmap por dia da semana e hora, horas de pico, duração média
-- [ ] Ecrã "melhor altura para ir"
-- [ ] Extras: "vou às 18h", previsão simples com base no histórico
-
-### Fase 6: Interface e identidade visual
-
-Uma fase só para o frontend ficar bonito, consistente e bem documentado, antes do polimento final.
+Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem antes das estatísticas, para os ecrãs novos (gráficos) já nascerem com a base visual.
 
 - [ ] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
 - [ ] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
@@ -282,6 +276,13 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado, antes 
 - [ ] Extrair as cores do símbolo e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
 - [ ] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
 - [ ] Usar o logótipo no ecrã de login, no cabeçalho e no ecrã do QR da receção
+
+### Fase 6: Estatísticas
+
+- [ ] Cálculo de ocupação por intervalos (por exemplo de 15 em 15 minutos)
+- [ ] Heatmap por dia da semana e hora, horas de pico, duração média
+- [ ] Ecrã "melhor altura para ir"
+- [ ] Extras: "vou às 18h", previsão simples com base no histórico
 
 ### Fase 7: Polimento e GitHub
 

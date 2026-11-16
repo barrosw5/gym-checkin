@@ -31,6 +31,7 @@ This project is also a learning project: the goal is to grow as a backend/full-s
 - **Critical rules live in the backend and the database, never only in the frontend.** The frontend only improves UX. Example: "one open session per user" is enforced by the partial unique index `one_open_session_per_user`.
 - **The check-in method is a swappable component** (Strategy pattern): `SCREEN_QR` (rotating QR) and `RECEPTION_APPROVAL` (reception approves a request). `SIMPLE` (no proof of presence) was removed in Phase 4; `SessionMethod.SIMPLE` only remains for old sessions. Adding a new method must not require changing the others. The backend must support several methods enabled at the same time (configured in `Settings`).
 - **Authentication:** JWT in an `httpOnly` cookie. **Never** store tokens in `localStorage`. Authorization via role-based guards (`STUDENT` / `RECEPTION` / `ADMIN`).
+- **Roles are separate:** only `STUDENT` checks in/out and asks for entry; `RECEPTION` approves requests, closes/corrects sessions and opens the QR screen; `ADMIN` does what reception does plus account management. Staff never check in (`@Roles(STUDENT)` on the check-in endpoints), and each role has its own home page.
 - **Checkout does not require a token.** Sessions closed by the periodic job are marked `closedBy: AUTO` so they don't distort statistics.
 - Rate limit the login and check-in endpoints.
 
