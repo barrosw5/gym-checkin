@@ -82,3 +82,7 @@ Checks: `pnpm lint`, `pnpm test` and `pnpm build` in each package, `pnpm storybo
 - [API docs](https://gym-checkin-pjyi.onrender.com/api/docs) (interactive)
 - [Security and privacy](docs/security-and-privacy.md)
 - [Roadmap](ROADMAP.md) (in Portuguese)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
