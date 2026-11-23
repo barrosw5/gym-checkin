@@ -1,4 +1,4 @@
-import { RESIDENCE_TIME_ZONE, type StatsRange, type StatsSummary } from "@gym-checkin/shared";
+import { GYM_TIME_ZONE, type StatsRange, type StatsSummary } from "@gym-checkin/shared";
 import { statsApi } from "../api/statsApi";
 import type { BestHour, ChartRow, Stats } from "../types/stats";
 
@@ -6,10 +6,10 @@ const SLOT_MINUTES = 15;
 const DAY_MINUTES = 24 * 60;
 const WEEKDAYS: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
 
-// The residence's clock, not the browser's: a student abroad still sees
+// The gym's clock, not the browser's: a student abroad still sees
 // "18:00" as 18:00 in Lisbon, where the gym is
 const clock = new Intl.DateTimeFormat("en-GB", {
-  timeZone: RESIDENCE_TIME_ZONE,
+  timeZone: GYM_TIME_ZONE,
   weekday: "short",
   hour: "2-digit",
   minute: "2-digit",

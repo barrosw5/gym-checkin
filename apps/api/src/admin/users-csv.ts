@@ -16,8 +16,13 @@ export interface ParsedRow extends ImportedUser {
 
 const SEPARATOR = ';';
 const COLUMNS = 3;
-// Accepted header lines (skipped): Portuguese or English
-const HEADERS = new Set(['nome;quarto;username', 'name;room;username']);
+// Accepted header lines (skipped): Portuguese or English, new or old wording
+const HEADERS = new Set([
+  'nome;numero;username',
+  'name;number;username',
+  'nome;quarto;username',
+  'name;room;username',
+]);
 
 /**
  * Parses "name;room;username" lines. A deliberately small format (no quotes,

@@ -27,7 +27,7 @@ export const HEARTBEAT_MS = 25_000;
 @ApiTags('gym')
 @ApiCookieAuth()
 @Controller('gym')
-// Residents only: the occupancy is not for the whole internet
+// Members only: the occupancy is not for the whole internet
 @UseGuards(JwtAuthGuard)
 export class GymController {
   constructor(private occupancy: OccupancyService) {}

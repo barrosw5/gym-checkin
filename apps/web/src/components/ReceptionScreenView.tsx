@@ -16,7 +16,7 @@ export interface ReceptionScreenViewProps {
 
 /**
  * Full screen for the reception PC/tablet, facing students. The second
- * moment: the QR set in a navy ring like the crest, with a gold caption.
+ * moment: the QR set in a navy ring, with a gold caption.
  */
 export default function ReceptionScreenView({ qrUrl, stale, occupancy }: ReceptionScreenViewProps) {
   const { t } = useTranslation();

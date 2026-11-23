@@ -9,8 +9,8 @@ import { StatsService } from './stats.service.js';
 @ApiTags('stats')
 @ApiCookieAuth()
 @Controller('stats')
-// Any signed-in role: residents plan their visit, staff read the trends.
-// Not public: only aggregates, but still the residence's own data
+// Any signed-in role: members plan their visit, staff read the trends.
+// Not public: only aggregates, but still the gym's own data
 @UseGuards(JwtAuthGuard)
 export class StatsController {
   constructor(private stats: StatsService) {}

@@ -3,7 +3,7 @@ import { ClosedBy, SessionMethod, type Prisma } from '@prisma/client';
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
-// Rough residence pattern: early morning, lunch and a big evening peak.
+// Rough gym pattern: early morning, lunch and a big evening peak.
 // Repeating an hour makes it more likely to be picked.
 const ENTRY_HOURS = [7, 7, 8, 12, 13, 17, 18, 18, 19, 19, 19, 20, 20, 21];
 
@@ -73,7 +73,7 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-/** How one fake resident uses the gym. */
+/** How one fake member uses the gym. */
 export interface DemoHabit {
   /** Local hours they usually arrive at (repeat an hour to favour it). */
   hours: readonly number[];
@@ -82,7 +82,7 @@ export interface DemoHabit {
   weekend: number;
 }
 
-/** A few believable residents: the mix makes the morning and evening peaks. */
+/** A few believable members: the mix makes the morning and evening peaks. */
 export const DEMO_HABITS: readonly DemoHabit[] = [
   { hours: [7, 7, 8], weekday: 0.7, weekend: 0.2 }, // before classes
   { hours: [18, 19, 19, 20], weekday: 0.6, weekend: 0.3 }, // after classes
@@ -92,8 +92,8 @@ export const DEMO_HABITS: readonly DemoHabit[] = [
 ];
 
 export interface DemoVisitOptions {
-  /** One habit per fake resident (their ids come from the database). */
-  residents: readonly { userId: string; habit: DemoHabit }[];
+  /** One habit per fake member (their ids come from the database). */
+  members: readonly { userId: string; habit: DemoHabit }[];
   /** Visits end before this instant: none is still open. */
   now: Date;
   days: number;
@@ -106,13 +106,13 @@ export interface DemoVisitOptions {
 }
 
 /**
- * 90 days of visits for the statistics demo: each resident follows a habit,
+ * 90 days of visits for the statistics demo: each member follows a habit,
  * weekends are quieter and later, about 1 in 20 visits is a forgotten key
  * (closed AUTO). Times are local (Lisbon), so the peaks land on 7-9h and
  * 18-21h in the charts. Only closed visits, and today only up to now.
  */
 export function buildDemoVisits(opts: DemoVisitOptions): Prisma.SessionCreateManyInput[] {
-  const { residents, now, days, autoCloseHours, localMidnight, today, random } = opts;
+  const { members, now, days, autoCloseHours, localMidnight, today, random } = opts;
   const visits: Prisma.SessionCreateManyInput[] = [];
 
   for (let daysAgo = days - 1; daysAgo >= 0; daysAgo--) {
@@ -121,7 +121,7 @@ export function buildDemoVisits(opts: DemoVisitOptions): Prisma.SessionCreateMan
     const weekend = date.getUTCDay() === 0 || date.getUTCDay() === 6;
     const midnight = localMidnight(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
 
-    for (const { userId, habit } of residents) {
+    for (const { userId, habit } of members) {
       if (random() >= (weekend ? habit.weekend : habit.weekday)) continue;
 
       const hour = habit.hours[Math.floor(random() * habit.hours.length)];

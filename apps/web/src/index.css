@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 /*
- * PIO XII design tokens, defined once. Direction: calm and institutional,
+ * Design tokens, defined once. Direction: calm and institutional,
  * the reception desk and its key board. Surfaces stay neutral (slate, a
- * faintly blue "ink" grey); navy from the crest is the one accent for
- * actions and selection; gold only carries the signature (the room key
- * tag). Text/background pairs used in components pass WCAG AA (4.5:1).
+ * faintly blue "ink" grey); navy is the one accent for
+ * actions and selection; gold only carries the signature (the member
+ * number key tag). Text/background pairs used in components pass WCAG AA (4.5:1).
  * Design pass based on unslop by Damir Sokolovsky (@heydamir), CC BY 4.0.
  */
 @theme {
-  /* Navy: the outer ring of the crest. The accent (primary action, selection) */
+  /* Navy: the accent (primary action, selection) */
   --color-navy-50: #eef1fb;
   --color-navy-100: #d9def5;
   --color-navy-200: #b3bdea;
@@ -22,7 +22,7 @@
   --color-navy-900: #141d4f;
   --color-navy-950: #0c1233;
 
-  /* Gold: the lettering. Signature only (brass key tags) */
+  /* Gold: signature only (brass key tags) */
   --color-gold-50: #fdf7ec;
   --color-gold-100: #f9e9cb;
   --color-gold-200: #f3d293;

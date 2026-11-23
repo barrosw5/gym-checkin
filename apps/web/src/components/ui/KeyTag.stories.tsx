@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import KeyTag from "./KeyTag";
 
 /**
- * The signature detail: room numbers as the brass tags on the reception
- * key board. Only for rooms.
+ * The signature detail: member numbers as the brass tags on the reception
+ * key board. Only for member numbers.
  */
 const meta = {
   title: "UI/KeyTag",

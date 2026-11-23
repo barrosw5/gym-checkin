@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 /**
- * The residence's time zone. Statistics group by local hour ("18:00 on a
+ * The gym's time zone. Statistics group by local hour ("18:00 on a
  * Monday"), so the API needs it; shared so web and API never disagree.
  */
-export const RESIDENCE_TIME_ZONE = 'Europe/Lisbon';
+export const GYM_TIME_ZONE = 'Europe/Lisbon';
 
 /** Period filter of the statistics page: today, 7, 30 or 90 days. */
 export const STATS_RANGES = ['today', 'week', 'month', 'quarter'] as const;

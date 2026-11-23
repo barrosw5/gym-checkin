@@ -10,7 +10,7 @@ export class SettingsService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * The residence's configuration. Read on every call (one primary-key
+   * The gym's configuration. Read on every call (one primary-key
    * lookup) instead of cached, so an admin change applies immediately.
    * Throws if the row is missing: that is a broken deploy, not a user error.
    */

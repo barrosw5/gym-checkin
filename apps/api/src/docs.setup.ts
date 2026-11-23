@@ -15,7 +15,7 @@ export function setupDocs(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle('gym-checkin API')
     .setDescription(
-      'Gym check-in for a student residence. Log in with POST /api/auth/login: ' +
+      'Gym check-in for a fictional demo gym. Log in with POST /api/auth/login: ' +
         'the session is an httpOnly cookie, sent by the browser on every request.',
     )
     .setVersion('1.0')

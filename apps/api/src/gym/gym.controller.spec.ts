@@ -43,7 +43,7 @@ describe('GET /api/gym/occupancy', () => {
     expect(res.body).toEqual({ count: 3, capacity: 10 });
   });
 
-  it('is for logged-in residents only', async () => {
+  it('is for logged-in members only', async () => {
     loggedIn = false;
 
     // A guard returning false is a 403 in Nest; the real JwtAuthGuard gives 401

@@ -2,18 +2,18 @@
 
 [English](README.md) · **Português**
 
-Uma app de check-in para o ginásio da residência PIO XII: sabe quão cheio está o ginásio antes de desceres, e entra e sai pelo telemóvel.
+Uma app de check-in para o **Ginásio Demo**, um ginásio fictício criado para este projeto de aprendizagem e portefólio: sabe quão cheio está o ginásio antes de ires, e entra e sai pelo telemóvel.
 
 **Demo:** <https://gym-checkin-pjyi.onrender.com> (dados falsos; o primeiro carregamento pode demorar uns segundos)
 
 | Role | Username | Password |
 | --- | --- | --- |
-| Estudante | `joaosilva` | `estudante-demo` |
+| Sócio | `joaosilva` | `estudante-demo` |
 | Receção | `rececao` | `rececao-demo` |
 
-| Estudante (telemóvel) | Estatísticas (telemóvel) |
+| Sócio (telemóvel) | Estatísticas (telemóvel) |
 | --- | --- |
-| <img src="docs/screenshots/student-phone.png" alt="Início do estudante: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Estatísticas: hoje sobre o dia típico, duração das visitas, heatmap dia da semana por hora" width="300"> |
+| <img src="docs/screenshots/student-phone.png" alt="Início do sócio: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Estatísticas: hoje sobre o dia típico, duração das visitas, heatmap dia da semana por hora" width="300"> |
 
 | Balcão da receção (PC) | Ecrã do QR na receção |
 | --- | --- |
@@ -21,12 +21,12 @@ Uma app de check-in para o ginásio da residência PIO XII: sabe quão cheio est
 
 ## Porquê
 
-Para usar o ginásio da residência é preciso ir buscar a chave à receção e preencher uma folha em papel. O ginásio é pequeno e não há forma de saber quantas pessoas lá estão antes de descer. A folha em papel também não serve para estatísticas.
+No Ginásio Demo, que é fictício, é preciso ir buscar a chave à receção e preencher uma folha em papel. O ginásio é pequeno e não há forma de saber quantas pessoas lá estão antes de chegar. A folha em papel também não serve para estatísticas.
 
 ## O que faz
 
 - **Vês quantas pessoas estão no ginásio agora**, em tempo real, no telemóvel.
-- **Entras** lendo o QR do ecrã da receção, ou pedindo à receção que te aceite. Uma foto do QR não funciona a partir do quarto: o código muda a cada 30 segundos.
+- **Entras** lendo o QR do ecrã da receção, ou pedindo à receção que te aceite. Uma foto do QR não funciona a partir de casa: o código muda a cada 30 segundos.
 - **Sais** com um toque. Quem se esquece de sair é fechado automaticamente.
 - **Vês quando está mais calmo**: um dia típico, as horas com mais gente em cada dia da semana e a melhor altura para ir hoje.
 - **A receção** aceita pedidos, vê quem está lá dentro e as visitas de hoje numa linha do tempo, e corrige horas erradas.
@@ -36,13 +36,13 @@ Para usar o ginásio da residência é preciso ir buscar a chave à receção e 
 
 - **Regras na base de dados:** "uma visita aberta por pessoa" é um índice único, seguro mesmo com dois pedidos ao mesmo tempo.
 - **Estatísticas justas:** cada visita conta pelo tempo que a pessoa esteve mesmo lá dentro, na hora de Lisboa, incluindo os dias da mudança de hora.
-- **Privacidade desde o desenho:** os estudantes só veem contagens, nunca quem lá esteve ([segurança e privacidade](docs/seguranca-e-privacidade.md)).
+- **Privacidade desde o desenho:** os sócios só veem contagens, nunca quem lá esteve ([segurança e privacidade](docs/seguranca-e-privacidade.md)).
 - **Testado de ponta a ponta:** cada pull request arranca a app inteira em Docker e um browser faz o fluxo principal.
 - **Acessível:** áreas de toque grandes, contraste WCAG AA, navegação por teclado, uma story no Storybook para cada parte do ecrã.
 
 ```mermaid
 flowchart LR
-  phone["Telemóvel do estudante"] --> app
+  phone["Telemóvel do sócio"] --> app
   desk["PC da receção"] --> app
   screen["Ecrã do QR"] -. lido pelo .-> phone
   app["API NestJS + app React"] --> db[("PostgreSQL")]

@@ -62,7 +62,7 @@ describe('POST /api/auth/login rate limit', () => {
     await attempt('Joao').expect(429);
   });
 
-  it('does not block other users on the same IP (shared residence NAT)', async () => {
+  it('does not block other users on the same IP (shared gym NAT)', async () => {
     for (let i = 0; i < LOGIN_RATE_LIMIT.limit; i++) {
       await attempt('joao').expect(401);
     }
