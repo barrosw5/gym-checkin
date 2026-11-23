@@ -7,8 +7,8 @@ export interface KeyTagProps {
 }
 
 /**
- * The signature detail: a room number as the brass tag on a key from the
- * reception key board (gold from the crest lettering). Used for room
+ * The signature detail: a member number as the brass tag on a key from the
+ * reception key board. Used for member
  * numbers only, everywhere they appear, and nowhere else.
  */
 export default function KeyTag({ room, className }: KeyTagProps) {
@@ -16,7 +16,7 @@ export default function KeyTag({ room, className }: KeyTagProps) {
 
   return (
     <span
-      // Screen readers hear "Quarto 501", not just "501"
+      // Screen readers hear "Sócio n.º 501", not just "501"
       aria-label={t("common.room", { room })}
       className={cn(
         "inline-flex h-6 items-center gap-1.5 rounded-md bg-gold-100 pr-2 pl-1.5 text-xs font-semibold text-gold-700 tabular-nums",

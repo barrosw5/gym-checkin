@@ -22,7 +22,7 @@ const isLocale = (value: unknown): value is Locale =>
 export const translationService = {
   /**
    * Saved choice, else Portuguese. The browser language is ignored on purpose:
-   * the residence works in Portuguese, so that is what a first visit shows.
+   * the gym works in Portuguese, so that is what a first visit shows.
    */
   getInitialLocale: (): Locale => {
     try {

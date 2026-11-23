@@ -4,8 +4,8 @@ import type { Request } from 'express';
 import type { AuthUser } from '../auth/auth-user.js';
 
 /**
- * Rate limit counted per authenticated user, not per IP: every resident
- * shares the residence's public IP (NAT), so an IP limit would make one
+ * Rate limit counted per authenticated user, not per IP: every member
+ * shares the gym's public IP (NAT), so an IP limit would make one
  * person's taps count against everyone.
  * Must run after JwtAuthGuard: `@UseGuards(JwtAuthGuard, UserThrottlerGuard)`.
  */

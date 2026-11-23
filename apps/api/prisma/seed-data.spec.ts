@@ -118,7 +118,7 @@ describe('buildDemoVisits', () => {
   const now = new Date('2026-01-07T18:30:00Z');
   const demo = (overrides: Partial<DemoVisitOptions> = {}) =>
     buildDemoVisits({
-      residents: DEMO_HABITS.map((habit, i) => ({ userId: `r${i}`, habit })),
+      members: DEMO_HABITS.map((habit, i) => ({ userId: `r${i}`, habit })),
       now,
       days: 90,
       autoCloseHours: 2,

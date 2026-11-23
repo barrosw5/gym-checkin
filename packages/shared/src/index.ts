@@ -25,5 +25,5 @@ export type {
   UserImportInput,
   UserUpdate,
 } from './admin.js';
-export { RESIDENCE_TIME_ZONE, STATS_RANGES, statsQuerySchema } from './stats.js';
+export { GYM_TIME_ZONE, STATS_RANGES, statsQuerySchema } from './stats.js';
 export type { OccupancyPoint, StatsQuery, StatsRange, StatsSummary, VisitDuration } from './stats.js';

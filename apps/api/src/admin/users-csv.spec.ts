@@ -14,6 +14,13 @@ describe('parseUsersCsv', () => {
     });
   });
 
+  it.each(['nome;numero;username', 'name;number;username'])('skips the member number header %s', (header) => {
+    const { rows, errors } = parseUsersCsv(`${header}\nAna Silva;101;ana`);
+
+    expect(errors).toEqual([]);
+    expect(rows).toHaveLength(1);
+  });
+
   it('reports every bad line at once, with its line number', () => {
     const { rows, errors } = parseUsersCsv('Ana;101;ana\nonly-two;cols\n;102;rui\nZé;103;zé');
 

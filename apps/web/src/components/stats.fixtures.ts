@@ -1,4 +1,4 @@
-// Story data only: a believable residence gym, run through the real toStats
+// Story data only: a believable gym, run through the real toStats
 import type { StatsSummary } from "@gym-checkin/shared";
 import { toStats } from "../core/services/statsService";
 

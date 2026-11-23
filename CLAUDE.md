@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Gym check-in system for a student residence (see [ROADMAP.md](ROADMAP.md) for the full plan).
+Gym check-in system for **Demo Gym**, a fictional gym for demonstration and learning (see [ROADMAP.md](ROADMAP.md) for the full plan). The UI says member (`sócio`) and member number; the database and code keep the `STUDENT` role and the `room` column on purpose, to avoid a migration.
 Monorepo with pnpm: `apps/web` (React + Vite), `apps/api` (NestJS + Prisma + PostgreSQL on Neon), `packages/shared` (`@gym-checkin/shared`: zod schemas, shared types and constants; compiled to `dist/`, so build it before api/web).
 
 Environments: local dev uses the Neon `development` branch; the public demo <https://gym-checkin-pjyi.onrender.com> (Render, auto-deploy on merge to `main`) uses the Neon `production` branch. Seed users are created/rotated with `pnpm db:seed` (passwords from `SEED_*` env vars).
@@ -69,8 +69,8 @@ To keep the code clean and scalable, the frontend (React) must strictly follow t
 
 ### Styling, views and Storybook
 
-- **Tailwind** for all styling; no inline `style={{}}` except truly dynamic values (e.g. a bar width). Brand colours (from the PIO XII symbol: `navy`, `gold`, `ember`, `sky`) are tokens in `src/index.css` (`@theme`), defined once; text/background pairs must pass WCAG AA.
-- **Design direction (PIO XII):** calm and institutional, the reception desk and its key board. Surfaces stay neutral (slate); navy is the one accent (primary action, selection); gold only for the signature, the room number as a brass `KeyTag` (rooms only). Moments with colour: the occupancy as one block per place, and the QR screen as a navy plaque. No emoji (lucide icons, `ICON` size/stroke), weights 400 to 600, sentence case, no exclamation marks or greeting titles, `tabular-nums` for numbers, transitions named (never `transition-all`).
+- **Tailwind** for all styling; no inline `style={{}}` except truly dynamic values (e.g. a bar width). Brand colours (`navy`, `gold`, `ember`, `sky`) are tokens in `src/index.css` (`@theme`), defined once; text/background pairs must pass WCAG AA.
+- **Design direction (Demo Gym):** calm and institutional, the reception desk and its key board. Surfaces stay neutral (slate); navy is the one accent (primary action, selection); gold only for the signature, the member number as a brass `KeyTag` (member numbers only). Moments with colour: the occupancy as one block per place, and the QR screen as a navy plaque. No emoji (lucide icons, `ICON` size/stroke), weights 400 to 600, sentence case, no exclamation marks or greeting titles, `tabular-nums` for numbers, transitions named (never `transition-all`).
 - **Mobile first:** design for the phone, then widen with `sm:`/`md:`. Touch targets at least 44 px (`min-h-11`).
 - `components/ui/`: reusable building blocks (`Button`, `Card`, `Alert`, `TextField`, `PageLayout`) that only take props.
 - **View split:** a feature component (e.g. `CheckinButton`) only calls its hook and renders `XView` (e.g. `CheckinPanelView`) with props. Views hold no data hooks (only `useTranslation()` and local form state), so they render the same in the app and in Storybook.

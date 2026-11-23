@@ -1,4 +1,4 @@
-# Plano do projeto: registo de entradas no ginásio (PIO XII)
+# Plano do projeto: registo de entradas no ginásio (Ginásio Demo)
 
 Plano de trabalho · versão 2 · 5 de novembro de 2026
 
@@ -6,44 +6,44 @@ Plano de trabalho · versão 2 · 5 de novembro de 2026
 
 ## 1. Resumo
 
-O objetivo é substituir a folha de papel do ginásio da residência por um sistema web simples: o estudante regista a entrada e a saída com o telemóvel, a receção valida o momento da entrada, e toda a gente consegue ver **quantas pessoas estão no ginásio agora** e, mais tarde, estatísticas de utilização (horas de pico, melhores horas para treinar, etc.).
+O Ginásio Demo é um ginásio fictício, criado só para demonstração e aprendizagem. O objetivo é substituir a sua folha de papel por um sistema web simples: o sócio regista a entrada e a saída com o telemóvel, a receção valida o momento da entrada, e toda a gente consegue ver **quantas pessoas estão no ginásio agora** e, mais tarde, estatísticas de utilização (horas de pico, melhores horas para treinar, etc.).
 
-O projeto serve três propósitos ao mesmo tempo: resolve um problema real, é uma ótima oportunidade para aprender backend, bases de dados e tempo real, e pode ficar como um projeto de portfólio no GitHub (com a possibilidade de um piloto na residência).
+O projeto serve dois propósitos: é uma ótima oportunidade para aprender backend, bases de dados e tempo real, e fica como um projeto de portfólio no GitHub.
 
 Restrição principal: **sem hardware novo** (sem sensores nem NFC). Usa-se apenas telemóveis e o ecrã/computador que a receção já tem.
 
 ## 2. O problema que estamos a resolver
 
-- Hoje, para treinar, é preciso ir à receção buscar a chave, preencher uma folha (nome, quarto, assinatura, dia, hora e minuto de entrada e saída) e devolver a chave no fim.
-- Não há forma de saber antes de descer quantas pessoas estão no ginásio, que é pequeno. Isto pode estragar um treino.
+- No ginásio fictício, para treinar, é preciso ir à receção buscar a chave, preencher uma folha (nome, número de sócio, assinatura, dia, hora e minuto de entrada e saída) e devolver a chave no fim.
+- Não há forma de saber antes de chegar quantas pessoas estão no ginásio, que é pequeno. Isto pode estragar um treino.
 - O registo em papel não serve para estatísticas.
 
 ## 3. O que o sistema precisa de garantir
 
-1. **O registo acontece no momento**, com a pessoa fisicamente presente (e não a partir do quarto).
+1. **O registo acontece no momento**, com a pessoa fisicamente presente (e não a partir de casa).
 2. **Uma pessoa só pode estar dentro uma vez**: não se pode spammar "Entrar".
-3. **A ocupação atual é visível** para todos os residentes, em tempo real.
+3. **A ocupação atual é visível** para todos os sócios, em tempo real.
 4. **A saída fecha a sessão** e, se alguém se esquecer, o sistema corrige-se sozinho.
 5. **Os dados pessoais são tratados com cuidado** (RGPD).
 
 ## 4. Decisão sobre segurança (importante)
 
-Um QR impresso em papel é fixo, por isso não prova presença: qualquer pessoa pode tirar-lhe uma foto e usá-lo do quarto. Não vamos ignorar este problema nem tentar resolvê-lo com truques frágeis (geolocalização, IP). Vamos **isolá-lo num componente trocável**, o "método de check-in", e implementar vários métodos por ordem de força:
+Um QR impresso em papel é fixo, por isso não prova presença: qualquer pessoa pode tirar-lhe uma foto e usá-lo de casa. Não vamos ignorar este problema nem tentar resolvê-lo com truques frágeis (geolocalização, IP). Vamos **isolá-lo num componente trocável**, o "método de check-in", e implementar vários métodos por ordem de força:
 
 | Método | Como funciona | Força |
 | --- | --- | --- |
-| **A. QR dinâmico num ecrã** | Uma página em ecrã inteiro (no computador da receção ou num telemóvel/tablet antigo) mostra um QR que muda a cada 30 s. O estudante faz scan e confirma. | Forte (a foto expira em 30 s) |
-| **B. Aprovação da receção** | O estudante cria um pedido pendente (por exemplo com um QR fixo em papel) e a receção aprova no painel de admin. O pedido expira em 2 minutos. | Média/forte (validação humana) |
+| **A. QR dinâmico num ecrã** | Uma página em ecrã inteiro (no computador da receção ou num telemóvel/tablet antigo) mostra um QR que muda a cada 30 s. O sócio faz scan e confirma. | Forte (a foto expira em 30 s) |
+| **B. Aprovação da receção** | O sócio cria um pedido pendente (por exemplo com um QR fixo em papel) e a receção aprova no painel de admin. O pedido expira em 2 minutos. | Média/forte (validação humana) |
 | **C. Modo simples** | Só login e botão. Serve para desenvolvimento e demonstração. | Fraca (só confiança) |
 
-**Ordem de implementação: C (para testar), depois A, depois B.** O backend deve aceitar vários métodos em simultâneo, e a residência escolhe qual ativar nas definições. Esta separação limpa é também um ponto forte para mostrar a quem ler o repositório.
+**Ordem de implementação: C (para testar), depois A, depois B.** O backend deve aceitar vários métodos em simultâneo, e o ginásio escolhe qual ativar nas definições. Esta separação limpa é também um ponto forte para mostrar a quem ler o repositório.
 
 ## 5. Fluxos principais
 
 ### 5.1 Entrada (método A)
 
 1. A receção abre `/reception/screen` no computador. A página pede o token atual à API a cada poucos segundos e desenha o QR.
-2. O estudante faz scan com a câmara. O link abre `/c/<token>` no browser.
+2. O sócio faz scan com a câmara. O link abre `/c/<token>` no browser.
 3. Se não tiver sessão iniciada, faz login (a sessão é de longa duração, por isso nas vezes seguintes não pede nada).
 4. A página mostra o botão "Entrar no ginásio" (ou "Sair", se já tiver uma sessão aberta).
 5. Ao confirmar, a API valida o token (ainda é o da janela atual ou da anterior), verifica que o utilizador não tem sessão aberta e cria a sessão.
@@ -52,9 +52,9 @@ Um QR impresso em papel é fixo, por isso não prova presença: qualquer pessoa 
 
 ### 5.2 Entrada (método B: aprovação)
 
-1. O estudante abre o site (por exemplo por um QR fixo na receção) e carrega em "Pedir entrada".
+1. O sócio abre o site (por exemplo por um QR fixo na receção) e carrega em "Pedir entrada".
 2. Cria-se um `CheckinRequest` pendente com validade de 2 minutos. Só pode haver um pendente por pessoa.
-3. O painel de admin mostra o pedido (nome, quarto) e a pessoa da receção aprova ou rejeita.
+3. O painel de admin mostra o pedido (nome, número de sócio) e a pessoa da receção aprova ou rejeita.
 4. Ao aprovar, cria-se a sessão. O painel de admin atualiza-se em tempo real.
 
 ### 5.3 Saída
@@ -76,7 +76,7 @@ Decisão: **a saída não precisa de token**. A saída não precisa de prova de 
 
 Três peças, num único repositório:
 
-1. **App dos estudantes (React):** login, ecrã de scan/entrada/saída, contador ao vivo, estatísticas públicas e histórico pessoal.
+1. **App dos sócios (React):** login, ecrã de scan/entrada/saída, contador ao vivo, estatísticas públicas e histórico pessoal.
 2. **Painel de receção/admin (React, mesma app com rotas protegidas por papel):** ecrã do QR dinâmico, lista de pedidos pendentes, ocupação atual, correção de sessões, gestão de utilizadores.
 3. **API + base de dados (NestJS + Prisma + PostgreSQL):** autenticação, regras de negócio, estatísticas, tempo real.
 
@@ -256,7 +256,7 @@ Cada passo inclui os seus próprios testes (Vitest), em vez de um passo de teste
 - [x] Lista em tempo real e aprovar/rejeitar
 - [x] Correção manual de sessões e gestão de utilizadores (import CSV)
 - [x] Remover o método `SIMPLE` (sem prova de presença): ficam só o QR e a aprovação da receção; as sessões antigas `SIMPLE` mantêm-se no histórico
-- [x] Separar os papéis: só os estudantes entram no ginásio; a receção aceita pedidos, fecha/corrige sessões e abre o ecrã do QR; o admin faz o mesmo e gere as contas. Cada papel tem a sua página inicial
+- [x] Separar os papéis: só os sócios entram no ginásio; a receção aceita pedidos, fecha/corrige sessões e abre o ecrã do QR; o admin faz o mesmo e gere as contas. Cada papel tem a sua página inicial
 - [x] Mudar a password (obrigatório depois de uma password temporária; termina as sessões noutros dispositivos); contas de demonstração públicas não a podem mudar
 
 ### Fase 5: Interface e identidade visual
@@ -267,13 +267,13 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Rever o frontend contra a arquitetura da secção 11 (pages vazias, componentes com o seu hook, camadas API → Services → Hooks, nomes dos ficheiros, sem `any`) e corrigir o que falhar
 - [x] Storybook com stories de todos os componentes, em todos os estados (a carregar, erro, vazio, sucesso)
 - [x] Componentes base reutilizáveis (botão, cartão, mensagens de erro) com Tailwind em vez de estilos inline
-- [x] Identidade visual do PIO XII (ver passos abaixo)
-- [x] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os residentes o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
+- [x] Identidade visual do Ginásio Demo (ver passos abaixo)
+- [x] Design responsive e mobile-first: pensado primeiro para o telemóvel (é onde os sócios o usam), mas a funcionar bem também no PC (ecrãs largos, ecrã da receção)
 - [x] Acessibilidade (contraste WCAG AA, teclado, labels, botões com área de toque adequada)
 
-**Identidade visual do PIO XII (passos, por ordem):**
+**Identidade visual do Ginásio Demo (passos, por ordem):**
 
-- [x] Extrair as cores do símbolo e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
+- [x] Escolher as cores da marca e defini-las como variáveis CSS (`--color-primary`, `--color-accent`, etc.) em `apps/web/src/index.css`, num só sítio
 - [x] Aplicar as variáveis ao login, dashboard e restantes ecrãs (substituir os estilos inline por CSS reutilizável) e verificar o contraste das cores (WCAG AA)
 
 ### Fase 6: Estatísticas
@@ -293,24 +293,24 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Teste ponta a ponta do fluxo principal (Playwright), também no CI
 - [x] README final: problema, diagrama, screenshots (geradas com `pnpm screenshots`) e instruções com `docker compose up`
 
-### Fase 8: Piloto na residência (opcional)
+### Fase 8: Piloto num ginásio real (opcional)
 
 Antes de haver dados reais (obrigações do RGPD, ver [docs/seguranca-e-privacidade.md](docs/seguranca-e-privacidade.md)):
 
 - [ ] Retenção: apagar ou anonimizar as visitas com mais de 12 meses
 - [ ] Apagar uma conta a pedido (anonimizando as suas visitas, para manter as estatísticas)
-- [ ] Cada estudante vê o seu próprio histórico de visitas (`GET /me/sessions`)
+- [ ] Cada sócio vê o seu próprio histórico de visitas (`GET /me/sessions`)
 
 O piloto:
 
 - [ ] Apresentar uma demonstração à direção/receção
-- [ ] Testar com um grupo pequeno de residentes
+- [ ] Testar com um grupo pequeno de sócios
 - [ ] Recolher feedback e ajustar
-- [ ] Instalação on-prem na residência: `Dockerfile` + `docker compose` (API + PostgreSQL local), acessível só na rede interna do PIO; dados reais dos residentes só aqui, nunca na demo em cloud
+- [ ] Instalação on-prem no ginásio: `Dockerfile` + `docker compose` (API + PostgreSQL local), acessível só na rede interna; dados reais dos sócios só aqui, nunca na demo em cloud
 
 ## 13. RGPD e privacidade
 
-- Guardar o mínimo de dados: nome, quarto, username e as sessões.
+- Guardar o mínimo de dados: nome, número de sócio, username e as sessões.
 - As estatísticas públicas mostram só agregados (contagens), nunca quem estava lá.
 - Cada utilizador vê apenas o seu próprio histórico; só a receção/admin vê sessões individuais.
 - Definir uma política de retenção (por exemplo apagar ou anonimizar sessões com mais de 12 meses).

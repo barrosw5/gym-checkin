@@ -2,18 +2,18 @@
 
 **English** · [Português](README.pt.md)
 
-A gym check-in app for the PIO XII student residence: know how full the gym is before you go down, and check in and out from your phone.
+A gym check-in app for **Demo Gym**, a fictional gym made up for this learning and portfolio project: know how full the gym is before you go, and check in and out from your phone.
 
 **Demo:** <https://gym-checkin-pjyi.onrender.com> (fake data; the first load may take a few seconds)
 
 | Role | Username | Password |
 | --- | --- | --- |
-| Student | `joaosilva` | `estudante-demo` |
+| Member | `joaosilva` | `estudante-demo` |
 | Reception | `rececao` | `rececao-demo` |
 
-| Student (phone) | Statistics (phone) |
+| Member (phone) | Statistics (phone) |
 | --- | --- |
-| <img src="docs/screenshots/student-phone.png" alt="Student home: people in the gym now, ask to enter" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Statistics: today over the typical day, visit length, weekday by hour heatmap" width="300"> |
+| <img src="docs/screenshots/student-phone.png" alt="Member home: people in the gym now, ask to enter" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Statistics: today over the typical day, visit length, weekday by hour heatmap" width="300"> |
 
 | Reception desk (PC) | QR screen at reception |
 | --- | --- |
@@ -21,12 +21,12 @@ A gym check-in app for the PIO XII student residence: know how full the gym is b
 
 ## Why
 
-To use the residence gym you pick up the key at reception and fill in a paper sheet. The gym is small, and there is no way to know how many people are there before walking down. The paper sheet is also useless for statistics.
+At the fictional Demo Gym, you pick up the key at reception and fill in a paper sheet. The gym is small, and there is no way to know how many people are there before you arrive. The paper sheet is also useless for statistics.
 
 ## What it does
 
 - **See how many people are in the gym right now**, live, from your phone.
-- **Check in** by scanning the QR code on the reception screen, or by asking reception to accept you. A photo of the QR does not work from your room: the code changes every 30 seconds.
+- **Check in** by scanning the QR code on the reception screen, or by asking reception to accept you. A photo of the QR does not work from home: the code changes every 30 seconds.
 - **Check out** with one tap. Forgotten check-outs are closed automatically.
 - **See when it is quietest**: a typical day, the busiest hours of each weekday and the best time to go today.
 - **Reception** accepts requests, sees who is inside and today's visits on a timeline, and fixes wrong times.
@@ -36,13 +36,13 @@ To use the residence gym you pick up the key at reception and fill in a paper sh
 
 - **Rules in the database:** "one open visit per person" is a unique index, safe even with two requests at once.
 - **Fair statistics:** each visit counts by the time actually spent inside, in Lisbon time, daylight saving days included.
-- **Privacy by design:** students only see counts, never who was there ([security and privacy](docs/security-and-privacy.md)).
+- **Privacy by design:** members only see counts, never who was there ([security and privacy](docs/security-and-privacy.md)).
 - **Tested end to end:** every pull request starts the whole app in Docker and a browser runs the main flow.
 - **Accessible:** large touch targets, WCAG AA contrast, keyboard navigation, a Storybook story for every screen part.
 
 ```mermaid
 flowchart LR
-  phone["Student's phone"] --> app
+  phone["Member's phone"] --> app
   desk["Reception PC"] --> app
   screen["QR screen"] -. scanned by .-> phone
   app["NestJS API + React app"] --> db[("PostgreSQL")]

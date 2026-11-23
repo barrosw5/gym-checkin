@@ -21,7 +21,7 @@ export interface UsersAdminViewProps {
   onUpdate: (id: string, body: { active?: boolean; room?: string }) => void;
 }
 
-/** Admin: import residents from a CSV, then manage the accounts. */
+/** Admin: import members from a CSV, then manage the accounts. */
 export default function UsersAdminView({
   users,
   failed,

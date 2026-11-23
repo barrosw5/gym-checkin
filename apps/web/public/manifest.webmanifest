@@ -1,7 +1,7 @@
 {
-  "name": "Ginásio PIO XII",
+  "name": "Ginásio Demo",
   "short_name": "Ginásio",
-  "description": "Entrada e saída do ginásio da residência PIO XII, e quanta gente está lá agora.",
+  "description": "Projeto de demonstração: entrada e saída de um ginásio fictício, e quanta gente está lá agora.",
   "lang": "pt-PT",
   "start_url": "/",
   "scope": "/",

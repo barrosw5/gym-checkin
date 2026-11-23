@@ -38,7 +38,7 @@ async function correct(id: string, body: SessionCorrection): Promise<void> {
 
 export const sessionsTodayService = {
   /**
-   * Today's sessions in the browser's time zone (the residence's): the
+   * Today's sessions in the browser's time zone (the gym's): the
    * client computes local midnight, so the API never guesses a time zone.
    */
   listToday: async (now = new Date()): Promise<AdminSession[]> => {

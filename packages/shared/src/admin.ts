@@ -5,7 +5,7 @@ const instant = z.iso.datetime({ offset: true });
 
 /**
  * Query of GET /api/admin/sessions: open sessions, or a time range.
- * The client sends the range (e.g. "today" in the residence's time zone),
+ * The client sends the range (e.g. "today" in the gym's time zone),
  * so the API never has to guess a time zone.
  */
 export const sessionsQuerySchema = z.union([
@@ -26,7 +26,7 @@ export type SessionCorrection = z.infer<typeof sessionCorrectionSchema>;
 /** Lowercase letters, digits, dot, dash, underscore: safe in URLs and logs. */
 export const USERNAME_PATTERN = /^[a-z0-9._-]{3,30}$/;
 
-/** One resident from the import file (GDPR: only name, room, username). */
+/** One member from the import file (GDPR: only name, room, username). */
 export const importedUserSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
   room: z.string().trim().min(1, 'Room is required').max(20),

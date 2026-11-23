@@ -3,7 +3,7 @@ import { usersAdminService } from "../core/services/usersAdminService";
 import type { AdminUser, ImportResult } from "../core/types/adminUsers";
 import { toTranslatable, type Translatable } from "../core/i18n/types";
 
-/** Admin page: residents' accounts and the CSV import. */
+/** Admin page: members' accounts and the CSV import. */
 export const useUsersAdmin = () => {
   const [users, setUsers] = useState<AdminUser[] | null>(null);
   const [failed, setFailed] = useState(false);

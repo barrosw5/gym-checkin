@@ -1,12 +1,14 @@
+import { Dumbbell } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "../../core/utils/cn";
 import { useTranslation } from "../../hooks/useTranslation";
 import LanguagePicker from "../LanguagePicker";
+import { ICON } from "./icon";
 
 export interface PageLayoutProps {
   /** Page heading (h1) and browser tab title: names the context, never a greeting. */
   title?: string;
-  /** One quiet line or row under the title (e.g. the user and their room). */
+  /** One quiet line or row under the title (e.g. the user and their member number). */
   subtitle?: ReactNode;
   /**
    * narrow: one column, phone first (student pages, forms).
@@ -31,17 +33,14 @@ export default function PageLayout({ title, subtitle, width = "narrow", children
       <header className="border-b border-slate-900/[0.08] bg-white">
         <div className={cn("mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6", WIDTHS[width])}>
           <div className="flex items-center gap-2.5">
-            {/* Flat roundel in the crest navy: the brand mark (no logo file, by decision) */}
+            {/* Flat navy roundel: the brand mark (no logo file, by decision) */}
             <span
               aria-hidden="true"
-              className="grid size-8 place-items-center rounded-full bg-navy-700 text-[11px] font-semibold text-white"
+              className="grid size-8 place-items-center rounded-full bg-navy-700 text-white"
             >
-              XII
+              <Dumbbell {...ICON} />
             </span>
-            <span className="text-[15px] font-semibold text-navy-900">
-              Pio XII
-              <span className="font-normal text-slate-500"> · {t("layout.appName")}</span>
-            </span>
+            <span className="text-[15px] font-semibold text-navy-900">{t("layout.appName")}</span>
           </div>
           <LanguagePicker />
         </div>

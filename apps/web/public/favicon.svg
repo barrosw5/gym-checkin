@@ -1,4 +1,4 @@
-<!-- Dumbbell from Lucide (lucide.dev, ISC licence) on the PIO XII navy (--color-navy-700) -->
+<!-- Dumbbell from Lucide (lucide.dev, ISC licence) on the brand navy (--color-navy-700) -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="112" fill="#1f2e85"/>
   <!-- Large on purpose: it must still read at 16 px in a browser tab -->

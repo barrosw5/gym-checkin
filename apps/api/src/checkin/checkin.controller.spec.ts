@@ -165,7 +165,7 @@ describe('CheckinController (HTTP)', () => {
     }
 
     await post(QR).expect(429);
-    // Another resident (same IP in the residence) is not affected
+    // Another member (same IP in the gym) is not affected
     await post(QR, 'u2').expect(201);
   });
 });

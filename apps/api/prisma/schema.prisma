@@ -23,7 +23,7 @@ enum SessionMethod {
 
 // Ways a student can open a session (Strategy pattern in the API).
 // Separate from SessionMethod: MANUAL is an admin correction, never something
-// the residence can "enable", and SIMPLE only remains there for old sessions.
+// the gym can "enable", and SIMPLE only remains there for old sessions.
 enum CheckinMethod {
   SCREEN_QR
   RECEPTION_APPROVAL
