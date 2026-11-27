@@ -12,20 +12,28 @@
 
 Uma app de check-in para o **Ginásio Demo**, um ginásio fictício criado para este projeto de aprendizagem e portefólio: sabe quão cheio está o ginásio antes de ires, e entra e sai pelo telemóvel.
 
-**Demo:** <https://gym-checkin-pjyi.onrender.com> (dados falsos; o primeiro carregamento pode demorar uns segundos)
+**Demo:** <https://gym-checkin-pjyi.onrender.com> (sócios fictícios entram e saem ao longo do dia, por isso está sempre em uso; o primeiro carregamento pode demorar uns segundos)
 
 | Role | Username | Password |
 | --- | --- | --- |
 | Sócio | `joaosilva` | `estudante-demo` |
 | Receção | `rececao` | `rececao-demo` |
 
-| Sócio (telemóvel) | Estatísticas (telemóvel) |
+| Sócio, tema claro | Sócio, tema escuro |
 | --- | --- |
-| <img src="docs/screenshots/student-phone.png" alt="Início do sócio: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Estatísticas: hoje sobre o dia típico, duração das visitas, heatmap dia da semana por hora" width="300"> |
+| <img src="docs/screenshots/student-phone-light.png" alt="Início do sócio no tema claro: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/student-phone-dark.png" alt="Início do sócio no tema escuro: pessoas no ginásio agora, pedir entrada" width="300"> |
 
-| Balcão da receção (PC) | Ecrã do QR na receção |
-| --- | --- |
-| <img src="docs/screenshots/reception-desk.png" alt="Receção: ocupação, pedidos de entrada, visitas de hoje numa linha do tempo" width="420"> | <img src="docs/screenshots/qr-screen.png" alt="Código QR rotativo em ecrã inteiro" width="420"> |
+**Balcão da receção**
+
+<img src="docs/screenshots/reception-desk.png" alt="Receção: ocupação, um pedido de entrada pendente e as visitas de hoje numa linha do tempo" width="860">
+
+**Estatísticas**
+
+<img src="docs/screenshots/stats-desktop.png" alt="Estatísticas de 30 dias no tema escuro: hoje sobre o dia típico, duração das visitas e heatmap por dia da semana e hora" width="860">
+
+**Ecrã do QR na receção**
+
+<img src="docs/screenshots/qr-screen.png" alt="Código QR rotativo em ecrã inteiro, com a ocupação em tempo real" width="860">
 
 ## Porquê
 
@@ -45,6 +53,7 @@ No Ginásio Demo, que é fictício, é preciso ir buscar a chave à receção e 
 - **Regras na base de dados:** "uma visita aberta por pessoa" é um índice único, seguro mesmo com dois pedidos ao mesmo tempo.
 - **Estatísticas justas:** cada visita conta pelo tempo que a pessoa esteve mesmo lá dentro, na hora de Lisboa, incluindo os dias da mudança de hora.
 - **Privacidade desde o desenho:** os sócios só veem contagens, nunca quem lá esteve ([segurança e privacidade](docs/seguranca-e-privacidade.md)).
+- **Uma demo sempre viva:** sócios fictícios entram e saem ao longo do dia, com horários calculados só a partir da data, por isso um reinício nunca duplica dados e as contas reais nunca são tocadas.
 - **Testado de ponta a ponta:** cada pull request arranca a app inteira em Docker e um browser faz o fluxo principal.
 - **Acessível:** áreas de toque grandes, contraste WCAG AA, navegação por teclado, uma story no Storybook para cada parte do ecrã.
 
