@@ -12,20 +12,28 @@
 
 A gym check-in app for **Demo Gym**, a fictional gym made up for this learning and portfolio project: know how full the gym is before you go, and check in and out from your phone.
 
-**Demo:** <https://gym-checkin-pjyi.onrender.com> (fake data; the first load may take a few seconds)
+**Demo:** <https://gym-checkin-pjyi.onrender.com> (fictional members come and go all day, so it is always in use; the first load may take a few seconds)
 
 | Role | Username | Password |
 | --- | --- | --- |
 | Member | `joaosilva` | `estudante-demo` |
 | Reception | `rececao` | `rececao-demo` |
 
-| Member (phone) | Statistics (phone) |
+| Member, light theme | Member, dark theme |
 | --- | --- |
-| <img src="docs/screenshots/student-phone.png" alt="Member home: people in the gym now, ask to enter" width="300"> | <img src="docs/screenshots/stats-phone.png" alt="Statistics: today over the typical day, visit length, weekday by hour heatmap" width="300"> |
+| <img src="docs/screenshots/student-phone-light.png" alt="Member home in the light theme: people in the gym now, ask to enter" width="300"> | <img src="docs/screenshots/student-phone-dark.png" alt="Member home in the dark theme: people in the gym now, ask to enter" width="300"> |
 
-| Reception desk (PC) | QR screen at reception |
-| --- | --- |
-| <img src="docs/screenshots/reception-desk.png" alt="Reception: occupancy, entry requests, today's visits as a timeline" width="420"> | <img src="docs/screenshots/qr-screen.png" alt="Full-screen rotating QR code" width="420"> |
+**Reception desk**
+
+<img src="docs/screenshots/reception-desk.png" alt="Reception: occupancy, a pending entry request and today's visits as a timeline" width="860">
+
+**Statistics**
+
+<img src="docs/screenshots/stats-desktop.png" alt="Statistics for 30 days in the dark theme: today over the typical day, visit length and a weekday by hour heatmap" width="860">
+
+**QR screen at reception**
+
+<img src="docs/screenshots/qr-screen.png" alt="Full-screen rotating QR code with the live occupancy" width="860">
 
 ## Why
 
@@ -45,6 +53,7 @@ At the fictional Demo Gym, you pick up the key at reception and fill in a paper 
 - **Rules in the database:** "one open visit per person" is a unique index, safe even with two requests at once.
 - **Fair statistics:** each visit counts by the time actually spent inside, in Lisbon time, daylight saving days included.
 - **Privacy by design:** members only see counts, never who was there ([security and privacy](docs/security-and-privacy.md)).
+- **A demo that stays alive:** fictional members come and go during the day, planned from the date alone, so restarts never duplicate data and real accounts are never touched.
 - **Tested end to end:** every pull request starts the whole app in Docker and a browser runs the main flow.
 - **Accessible:** large touch targets, WCAG AA contrast, keyboard navigation, a Storybook story for every screen part.
 
