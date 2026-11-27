@@ -1,11 +1,9 @@
 import { useDashboard } from "../hooks/useDashboard";
 import { useTranslation } from "../hooks/useTranslation";
-import AccountActions from "./AccountActions";
 import CheckinButton from "./CheckinButton";
 import OccupancyCounter from "./OccupancyCounter";
-import StatsLink from "./StatsLink";
 import MemberBib from "./ui/MemberBib";
-import PageLayout from "./ui/PageLayout";
+import Page from "./ui/Page";
 
 /** Student home (phone first): how full the gym is, and the way in/out. */
 export default function Dashboard() {
@@ -13,7 +11,8 @@ export default function Dashboard() {
   const { t } = useTranslation();
 
   return (
-    <PageLayout
+    <Page
+      width="medium"
       title={t("dashboard.title")}
       subtitle={
         <>
@@ -22,10 +21,11 @@ export default function Dashboard() {
         </>
       }
     >
-      <OccupancyCounter />
-      <CheckinButton />
-      <StatsLink />
-      <AccountActions />
-    </PageLayout>
+      {/* Stacked on a phone, side by side on a PC */}
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <OccupancyCounter />
+        <CheckinButton />
+      </div>
+    </Page>
   );
 }

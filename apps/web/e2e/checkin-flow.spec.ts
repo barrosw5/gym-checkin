@@ -68,9 +68,13 @@ test("the student pages fit a phone screen", async ({ browser }) => {
   const page = await (await browser.newContext({ viewport: { width: 360, height: 740 } })).newPage();
   await logIn(page, STUDENT);
 
-  for (const path of ["/dashboard", "/stats"]) {
+  for (const [path, content] of [
+    ["/dashboard", page.getByRole("img", { name: /lugares ocupados/ })],
+    ["/stats", page.getByRole("table")],
+    ["/account", page.getByRole("heading", { name: "Conta" })],
+  ] as const) {
     await page.goto(path);
-    await page.getByRole("img", { name: /lugares ocupados/ }).or(page.getByRole("table")).first().waitFor();
+    await content.waitFor();
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width, `${path} scrolls sideways`).toBeLessThanOrEqual(360);
   }

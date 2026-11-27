@@ -1,8 +1,7 @@
 import { useStats } from "../hooks/useStats";
 import { useTranslation } from "../hooks/useTranslation";
-import AccountActions from "./AccountActions";
 import StatsView from "./StatsView";
-import PageLayout from "./ui/PageLayout";
+import Page from "./ui/Page";
 
 /** Statistics page (any role): connects the hook to the view. */
 export default function Stats() {
@@ -10,7 +9,7 @@ export default function Stats() {
   const { t } = useTranslation();
 
   return (
-    <PageLayout width="wide" title={t("stats.title")}>
+    <Page width="wide" title={t("stats.title")}>
       <StatsView
         range={range}
         onRangeChange={setRange}
@@ -19,7 +18,6 @@ export default function Stats() {
         failed={failed}
         onReload={reload}
       />
-      <AccountActions />
-    </PageLayout>
+    </Page>
   );
 }

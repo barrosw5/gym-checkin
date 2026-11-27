@@ -12,17 +12,29 @@ export const pt = {
     back: "Voltar",
     continue: "Continuar",
     wait: "Aguarda...",
-    signedInAs: "Sessão de {name}",
     room: "Sócio n.º {room}",
     reconnecting: "Sem ligação, a tentar outra vez",
     goHome: "Ir para o início",
-    openQrScreen: "Abrir o ecrã do QR",
   },
   layout: {
     appName: "Ginásio Demo",
     // Browser tab: the page first, so tabs stay apart when several are open
     documentTitle: "{page} · Ginásio Demo",
     documentTitleHome: "Ginásio Demo",
+  },
+  nav: {
+    label: "Navegação principal",
+    home: "Início",
+    desk: "Receção",
+    stats: "Estatísticas",
+    users: "Contas",
+    qr: "Ecrã QR",
+    account: "Conta",
+  },
+  account: {
+    title: "Conta",
+    preferences: "Preferências",
+    theme: "Tema",
   },
   theme: {
     toDark: "Mudar para o tema escuro",
@@ -91,10 +103,6 @@ export const pt = {
   },
   reception: {
     title: "Receção",
-    qrScreenHint: "Abre-o no ecrã virado para os sócios",
-  },
-  admin: {
-    title: "Administração",
   },
   requests: {
     title: "Pedidos de entrada",
@@ -121,8 +129,6 @@ export const pt = {
   },
   stats: {
     title: "Estatísticas",
-    link: "Ver estatísticas",
-    linkHint: "Quando há mais gente e quanto tempo se fica",
     range: {
       label: "Período",
       today: "Hoje",

@@ -12,7 +12,8 @@ import type { Role, User } from "../types/user";
 const HOME_BY_ROLE: Record<Role, string> = {
   STUDENT: "/dashboard",
   RECEPTION: "/reception",
-  ADMIN: "/admin",
+  // The admin starts at the desk too; accounts are one click away
+  ADMIN: "/reception",
 };
 
 export const homePathFor = (role: Role): string => HOME_BY_ROLE[role];

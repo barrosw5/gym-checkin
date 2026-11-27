@@ -4,13 +4,13 @@ import { useTranslation } from "../hooks/useTranslation";
 import Button from "./ui/Button";
 import { ICON } from "./ui/icon";
 
-/** Log out, shared by every role's home page. */
-export default function LogoutButton() {
+/** Log out: in the sidebar and on the account page. */
+export default function LogoutButton({ fullWidth = false }: { fullWidth?: boolean }) {
   const { logout } = useAuth();
   const { t } = useTranslation();
 
   return (
-    <Button variant="secondary" onClick={logout}>
+    <Button variant="secondary" fullWidth={fullWidth} onClick={logout}>
       <LogOut {...ICON} />
       {t("auth.logout")}
     </Button>

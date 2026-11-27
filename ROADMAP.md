@@ -297,7 +297,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 
 - [x] Modo claro e escuro, com identidade desportiva (grafite e lima)
 - [x] Dados de demonstração sempre atuais (modo demo na API)
-- [ ] Nova estrutura: barra lateral no PC e barra de navegação no telemóvel
+- [x] Nova estrutura: barra lateral no PC e barra de navegação no telemóvel
 - [ ] Ecrãs redesenhados (login com contas demo, sócio, estatísticas, receção, admin e ecrã do QR)
 - [ ] Screenshots e vídeo da app nos dois temas
 
