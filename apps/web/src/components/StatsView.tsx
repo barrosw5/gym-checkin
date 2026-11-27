@@ -44,13 +44,13 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
 
       {failed && (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-sm text-slate-600">{t("common.loadFailed")}</p>
+          <p className="text-sm text-ink-2">{t("common.loadFailed")}</p>
           <Button size="sm" variant="secondary" onClick={onReload}>
             {t("common.retry")}
           </Button>
         </div>
       )}
-      {!stats && !failed && <p className="text-sm text-slate-500">{t("common.loading")}</p>}
+      {!stats && !failed && <p className="text-sm text-ink-3">{t("common.loading")}</p>}
 
       {stats && (
         // The previous period stays visible, dimmed, while the new one loads
@@ -62,7 +62,7 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
             {stats.hasVisits ? (
               <OccupancyChart rows={stats.chart} showTypical={!isToday} summary={chartSummary(stats)} />
             ) : (
-              <p className="text-sm text-slate-500">{t("stats.chart.empty")}</p>
+              <p className="text-sm text-ink-3">{t("stats.chart.empty")}</p>
             )}
           </Card>
 
@@ -74,17 +74,17 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
                     <ul className="flex flex-wrap gap-x-6 gap-y-2">
                       {stats.best.map((b) => (
                         <li key={b.hour}>
-                          <p className="text-2xl font-medium text-navy-700 tabular-nums">
+                          <p className="text-2xl font-medium text-accent-ink tabular-nums">
                             {t("stats.best.hour", { hour: b.hour })}
                           </p>
-                          <p className="text-sm text-slate-500">{t("stats.best.people", { value: n(b.average) })}</p>
+                          <p className="text-sm text-ink-3">{t("stats.best.people", { value: n(b.average) })}</p>
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-3 text-sm text-slate-600">{t("stats.best.hint")}</p>
+                    <p className="mt-3 text-sm text-ink-2">{t("stats.best.hint")}</p>
                   </>
                 ) : (
-                  <p className="text-sm text-slate-500">{t("stats.best.none")}</p>
+                  <p className="text-sm text-ink-3">{t("stats.best.none")}</p>
                 )}
               </Card>
             )}
@@ -94,24 +94,24 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
                 <>
                   <dl className="flex flex-wrap gap-x-8 gap-y-2">
                     <div>
-                      <dt className="text-sm text-slate-500">{t("stats.duration.average")}</dt>
-                      <dd className="text-2xl font-medium text-slate-900 tabular-nums">
+                      <dt className="text-sm text-ink-3">{t("stats.duration.average")}</dt>
+                      <dd className="text-2xl font-medium text-ink tabular-nums">
                         {t("stats.duration.minutes", { value: stats.duration.averageMinutes })}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm text-slate-500">{t("stats.duration.median")}</dt>
-                      <dd className="text-2xl font-medium text-slate-900 tabular-nums">
+                      <dt className="text-sm text-ink-3">{t("stats.duration.median")}</dt>
+                      <dd className="text-2xl font-medium text-ink tabular-nums">
                         {t("stats.duration.minutes", { value: stats.duration.medianMinutes })}
                       </dd>
                     </div>
                   </dl>
-                  <p className="mt-3 text-sm text-slate-600 tabular-nums">
+                  <p className="mt-3 text-sm text-ink-2 tabular-nums">
                     {t("stats.duration.visits", { value: stats.duration.visits })}
                   </p>
                 </>
               ) : (
-                <p className="text-sm text-slate-500">{t("stats.duration.none")}</p>
+                <p className="text-sm text-ink-3">{t("stats.duration.none")}</p>
               )}
             </Card>
           </div>
@@ -119,7 +119,7 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
           {/* One day fills one row only: the heatmap needs a longer period */}
           {!isToday && stats.hasVisits && (
             <Card title={t("stats.heatmap.title")}>
-              <p className="mb-3 text-sm text-slate-600">{t("stats.heatmap.hint")}</p>
+              <p className="mb-3 text-sm text-ink-2">{t("stats.heatmap.hint")}</p>
               <StatsHeatmap heatmap={stats.heatmap} todayWeekday={stats.todayWeekday} />
             </Card>
           )}

@@ -1,5 +1,13 @@
 # gym-checkin
 
+[![CI](https://github.com/barrosw5/gym-checkin/actions/workflows/ci.yml/badge.svg)](https://github.com/barrosw5/gym-checkin/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/barrosw5/gym-checkin/actions/workflows/codeql.yml/badge.svg)](https://github.com/barrosw5/gym-checkin/actions/workflows/codeql.yml)
+![Node](https://img.shields.io/badge/Node-24-3c873a)
+![React](https://img.shields.io/badge/Web-React%20%2B%20Vite%20%2B%20TypeScript-0b0b0b)
+![NestJS](https://img.shields.io/badge/API-NestJS%20%2B%20Prisma-5a8000)
+![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-336791)
+[![License](https://img.shields.io/badge/License-MIT-52514e)](LICENSE)
+
 [English](README.md) · **Português**
 
 Uma app de check-in para o **Ginásio Demo**, um ginásio fictício criado para este projeto de aprendizagem e portefólio: sabe quão cheio está o ginásio antes de ires, e entra e sai pelo telemóvel.
@@ -30,7 +38,7 @@ No Ginásio Demo, que é fictício, é preciso ir buscar a chave à receção e 
 - **Sais** com um toque. Quem se esquece de sair é fechado automaticamente.
 - **Vês quando está mais calmo**: um dia típico, as horas com mais gente em cada dia da semana e a melhor altura para ir hoje.
 - **A receção** aceita pedidos, vê quem está lá dentro e as visitas de hoje numa linha do tempo, e corrige horas erradas.
-- **Funciona como uma app** no telemóvel (instalável), em português e inglês.
+- **Funciona como uma app** no telemóvel (instalável), em português e inglês, com tema claro e escuro.
 
 ## Para quem programa
 

@@ -293,6 +293,14 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Teste ponta a ponta do fluxo principal (Playwright), também no CI
 - [x] README final: problema, diagrama, screenshots (geradas com `pnpm screenshots`) e instruções com `docker compose up`
 
+### Redesign para o portefólio
+
+- [x] Modo claro e escuro, com identidade desportiva (grafite e lima)
+- [ ] Dados de demonstração sempre atuais (modo demo na API)
+- [ ] Nova estrutura: barra lateral no PC e barra de navegação no telemóvel
+- [ ] Ecrãs redesenhados (login com contas demo, sócio, estatísticas, receção, admin e ecrã do QR)
+- [ ] Screenshots e vídeo da app nos dois temas
+
 ### Fase 8: Piloto num ginásio real (opcional)
 
 Antes de haver dados reais (obrigações do RGPD, ver [docs/seguranca-e-privacidade.md](docs/seguranca-e-privacidade.md)):

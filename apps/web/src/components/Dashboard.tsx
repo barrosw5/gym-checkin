@@ -4,7 +4,7 @@ import AccountActions from "./AccountActions";
 import CheckinButton from "./CheckinButton";
 import OccupancyCounter from "./OccupancyCounter";
 import StatsLink from "./StatsLink";
-import KeyTag from "./ui/KeyTag";
+import MemberBib from "./ui/MemberBib";
 import PageLayout from "./ui/PageLayout";
 
 /** Student home (phone first): how full the gym is, and the way in/out. */
@@ -18,7 +18,7 @@ export default function Dashboard() {
       subtitle={
         <>
           <span>{user.name}</span>
-          <KeyTag room={user.room} />
+          <MemberBib room={user.room} />
         </>
       }
     >

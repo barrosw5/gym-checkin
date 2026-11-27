@@ -22,6 +22,10 @@ export const en: Messages = {
     documentTitle: "{page} · Demo Gym",
     documentTitleHome: "Demo Gym",
   },
+  theme: {
+    toDark: "Switch to dark theme",
+    toLight: "Switch to light theme",
+  },
   language: {
     label: "Language",
     pt: "Português",
@@ -134,7 +138,7 @@ export const en: Messages = {
     },
     heatmap: {
       title: "By weekday and hour",
-      hint: "Average people inside. Darker means busier.",
+      hint: "Average people inside. Stronger colour means busier.",
       cell: "{day}, {hour}:00: {value}",
       noData: "no data",
     },

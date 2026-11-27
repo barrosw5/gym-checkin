@@ -27,7 +27,7 @@ export default function AdminHome() {
           <SessionsToday />
         </div>
       </div>
-      <h2 className="mt-4 text-xl font-medium text-slate-900">{t("users.title")}</h2>
+      <h2 className="mt-4 text-xl font-medium text-ink">{t("users.title")}</h2>
       <UsersAdmin />
       <AccountActions />
     </PageLayout>

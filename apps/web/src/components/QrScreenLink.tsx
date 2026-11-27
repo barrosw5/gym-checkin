@@ -16,15 +16,15 @@ export default function QrScreenLink() {
         target="_blank"
         className="group flex items-center gap-3 rounded-lg"
       >
-        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-700">
+        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-ink">
           <QrCode {...ICON} />
         </span>
         <span className="flex-1">
-          <span className="flex items-center gap-1.5 font-medium text-navy-700 group-hover:text-navy-900">
+          <span className="flex items-center gap-1.5 font-medium text-accent-ink group-hover:text-ink">
             {t("common.openQrScreen")}
             <ExternalLink size={14} strokeWidth={1.5} aria-hidden="true" />
           </span>
-          <span className="block text-sm text-slate-500">{t("reception.qrScreenHint")}</span>
+          <span className="block text-sm text-ink-3">{t("reception.qrScreenHint")}</span>
         </span>
       </Link>
     </Card>

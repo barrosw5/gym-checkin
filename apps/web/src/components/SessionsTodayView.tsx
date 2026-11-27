@@ -9,7 +9,7 @@ import Alert from "./ui/Alert";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 import { ICON } from "./ui/icon";
-import KeyTag from "./ui/KeyTag";
+import MemberBib from "./ui/MemberBib";
 import SegmentedControl from "./ui/SegmentedControl";
 import TodayTimeline from "./TodayTimeline";
 
@@ -47,14 +47,14 @@ export default function SessionsTodayView({
     <Card title={t("sessions.title")} meta={sessions && sessions.length > 0 ? `${inside}/${sessions.length}` : undefined}>
       {failed && (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-sm text-slate-600">{t("common.loadFailed")}</p>
+          <p className="text-sm text-ink-2">{t("common.loadFailed")}</p>
           <Button size="sm" variant="secondary" onClick={onReload}>
             {t("common.retry")}
           </Button>
         </div>
       )}
-      {sessions === null && !failed && <p className="text-sm text-slate-500">{t("common.loading")}</p>}
-      {sessions?.length === 0 && <p className="text-sm text-slate-500">{t("sessions.none")}</p>}
+      {sessions === null && !failed && <p className="text-sm text-ink-3">{t("common.loading")}</p>}
+      {sessions?.length === 0 && <p className="text-sm text-ink-3">{t("sessions.none")}</p>}
 
       {sessions && sessions.length > 0 && (
         <SegmentedControl
@@ -72,20 +72,20 @@ export default function SessionsTodayView({
       {sessions && sessions.length > 0 && view === "timeline" && <TodayTimeline sessions={sessions} now={now} />}
 
       {sessions && sessions.length > 0 && view === "list" && (
-        <ul className="-my-3 divide-y divide-slate-900/[0.06]">
+        <ul className="-my-3 divide-y divide-line">
           {sessions.map((s) => (
             <li key={s.id} className="py-3">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
                 <div className="min-w-48 flex-1">
-                  <p className="flex items-center gap-2 font-medium text-slate-900">
+                  <p className="flex items-center gap-2 font-medium text-ink">
                     {s.name}
-                    <KeyTag room={s.room} />
+                    <MemberBib room={s.room} />
                   </p>
-                  <p className="mt-0.5 flex items-center gap-2 text-sm text-slate-500 tabular-nums">
+                  <p className="mt-0.5 flex items-center gap-2 text-sm text-ink-3 tabular-nums">
                     {formatTime(s.entryAt, languageTag)} – {s.exitAt ? formatTime(s.exitAt, languageTag) : "…"}
                     {!s.exitAt && (
-                      <span className="flex items-center gap-1.5 font-medium text-green-700">
-                        <span aria-hidden="true" className="size-2 rounded-full bg-green-600" />
+                      <span className="flex items-center gap-1.5 font-medium text-accent-ink">
+                        <span aria-hidden="true" className="size-2 rounded-full bg-data" />
                         {t("sessions.insideNow")}
                       </span>
                     )}

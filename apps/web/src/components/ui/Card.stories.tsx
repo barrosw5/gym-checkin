@@ -4,8 +4,8 @@ import Card from "./Card";
 const meta = {
   title: "UI/Card",
   component: Card,
-  args: { children: <p className="text-sm text-slate-600">Conteúdo do cartão</p> },
-  decorators: [(Story) => <div className="max-w-md bg-slate-50 p-4">{Story()}</div>],
+  args: { children: <p className="text-sm text-ink-2">Conteúdo do cartão</p> },
+  decorators: [(Story) => <div className="max-w-md bg-raised p-4">{Story()}</div>],
 } satisfies Meta<typeof Card>;
 
 export default meta;

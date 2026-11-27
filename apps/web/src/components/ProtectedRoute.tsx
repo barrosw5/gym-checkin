@@ -28,7 +28,7 @@ export default function ProtectedRoute({ roles, deniedMessage = "route.denied" }
   if (state.status === "loading") {
     return (
       <PageLayout>
-        <p className="text-sm text-slate-500">{t("common.loading")}</p>
+        <p className="text-sm text-ink-3">{t("common.loading")}</p>
       </PageLayout>
     );
   }
@@ -58,8 +58,8 @@ export default function ProtectedRoute({ roles, deniedMessage = "route.denied" }
       <PageLayout title={t("route.deniedTitle")}>
         <Card>
           <div className="flex flex-col items-start gap-4">
-            <p className="text-slate-600">{t(deniedMessage)}</p>
-            <Link to="/" className="inline-flex h-11 items-center font-medium text-navy-700 hover:text-navy-900">
+            <p className="text-ink-2">{t(deniedMessage)}</p>
+            <Link to="/" className="inline-flex h-11 items-center font-medium text-accent-ink hover:text-ink">
               {t("route.goToMyHome")}
             </Link>
           </div>

@@ -12,7 +12,7 @@ export interface StatsHeatmapProps {
 const HOURS = Array.from({ length: 24 }, (_, hour) => hour);
 
 /**
- * Weekday × hour, darker = busier. A real <table>: screen readers walk it
+ * Weekday × hour, stronger colour = busier. A real <table>: screen readers walk it
  * by row and column, and each cell says its number (visually hidden).
  */
 export default function StatsHeatmap({ heatmap, todayWeekday }: StatsHeatmapProps) {
@@ -30,7 +30,7 @@ export default function StatsHeatmap({ heatmap, todayWeekday }: StatsHeatmapProp
           <tr>
             <th className="w-10" />
             {HOURS.map((hour) => (
-              <th key={hour} scope="col" className="pb-1 font-normal text-slate-500 tabular-nums">
+              <th key={hour} scope="col" className="pb-1 font-normal text-ink-3 tabular-nums">
                 {/* Every 3 hours on screen; every header still has its hour for screen readers */}
                 <span className={cn(hour % 3 !== 0 && "sr-only")}>{hour}</span>
               </th>
@@ -46,7 +46,7 @@ export default function StatsHeatmap({ heatmap, todayWeekday }: StatsHeatmapProp
                   scope="row"
                   className={cn(
                     "pr-1.5 text-left font-normal capitalize",
-                    day === todayWeekday ? "font-medium text-navy-700" : "text-slate-600",
+                    day === todayWeekday ? "font-medium text-accent-ink" : "text-ink-2",
                   )}
                 >
                   {dayName}
@@ -54,9 +54,9 @@ export default function StatsHeatmap({ heatmap, todayWeekday }: StatsHeatmapProp
                 {row.map((value, hour) => (
                   <td
                     key={hour}
-                    className={cn("h-6 rounded-sm", value === null ? "bg-slate-50" : "bg-slate-100")}
-                    // The one dynamic value: how dark this cell is
-                    style={value && max > 0 ? { backgroundColor: `color-mix(in oklab, var(--color-navy-700) ${Math.round((value / max) * 100)}%, var(--color-navy-50))` } : undefined}
+                    className={cn("h-6 rounded-sm", value === null ? "bg-canvas" : "bg-raised")}
+                    // The one dynamic value: how strong the colour of this cell is
+                    style={value && max > 0 ? { backgroundColor: `color-mix(in oklab, var(--data) ${Math.round((value / max) * 100)}%, var(--data-soft))` } : undefined}
                   >
                     <span className="sr-only">
                       {t("stats.heatmap.cell", {

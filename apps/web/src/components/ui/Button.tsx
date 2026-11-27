@@ -13,12 +13,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
 }
 
-// Navy is the one accent: only the primary action is filled with it
+// Lime is the one accent: only the primary action is filled with it
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-navy-700 text-white hover:bg-navy-800",
-  secondary: "bg-white text-slate-900 ring-1 ring-inset ring-slate-900/15 hover:bg-slate-100",
-  danger: "bg-white text-red-700 ring-1 ring-inset ring-red-700/30 hover:bg-red-50",
-  ghost: "text-navy-700 hover:bg-navy-50",
+  primary: "bg-accent text-on-accent hover:bg-accent-hover",
+  secondary: "bg-surface text-ink ring-1 ring-inset ring-line-strong hover:bg-raised",
+  danger: "bg-surface text-danger ring-1 ring-inset ring-danger/30 hover:bg-danger-soft",
+  ghost: "text-accent-ink hover:bg-accent-soft",
 };
 
 const SIZES: Record<ButtonSize, string> = {
