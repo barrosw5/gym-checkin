@@ -20,6 +20,8 @@ The public demo holds fake people only. Real members' data is meant for an on-pr
 
 To look alive, the demo simulates fictional members coming and going (`DEMO_MODE=true`, off by default). Nobody can log in as them, only their own visits are changed, and the simulation refuses to run if the database holds a single real member account.
 
+Under the same conditions, the demo's login page shows how many people are in the gym (the count only) and offers one-click access to the member and reception demo accounts, never the admin. Outside demo mode that count stays for logged-in users only.
+
 ## Who sees what
 
 | | Member | Reception | Admin |

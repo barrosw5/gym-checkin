@@ -31,7 +31,7 @@ async function openAs([username, password], theme, viewport) {
     await page.goto(`${BASE_URL}/login`);
     await page.getByLabel("Username").fill(username);
     await page.getByLabel("Password").fill(password);
-    await page.getByRole("button", { name: "Entrar" }).click();
+    await page.getByRole("button", { name: "Entrar", exact: true }).click();
     await page.waitForURL((url) => !url.pathname.startsWith("/login"));
     sessions.set(username, await context.storageState());
   }

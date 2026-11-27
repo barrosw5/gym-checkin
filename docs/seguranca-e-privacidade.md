@@ -20,6 +20,8 @@ O demo público só tem pessoas falsas. Os dados reais dos sócios destinam-se a
 
 Para parecer viva, a demo simula sócios fictícios a entrar e a sair (`DEMO_MODE=true`, desligado por defeito). Ninguém consegue iniciar sessão com essas contas, só as visitas delas são alteradas, e a simulação recusa-se a correr se a base de dados tiver uma única conta de um sócio real.
 
+Nas mesmas condições, o login da demo mostra quantas pessoas estão no ginásio (só a contagem) e permite entrar com um clique nas contas de demonstração de sócio e de receção, nunca na de admin. Fora do modo demo, essa contagem continua reservada a quem tem sessão.
+
 ## Quem vê o quê
 
 | | Sócio | Receção | Admin |

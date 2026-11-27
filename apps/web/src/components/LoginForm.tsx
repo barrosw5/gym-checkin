@@ -1,16 +1,19 @@
 import { useAuth } from "../hooks/useAuth";
-import { useTranslation } from "../hooks/useTranslation";
+import { useDemo } from "../hooks/useDemo";
 import LoginFormView from "./LoginFormView";
-import PageLayout from "./ui/PageLayout";
+import LoginScreenView from "./LoginScreenView";
 
-/** Login page: connects the hook (API) to the view. */
+/** Login page: connects the hooks (API) to the views. */
 export default function LoginForm() {
-  const { login, loading, error } = useAuth();
-  const { t } = useTranslation();
+  const { login, loginDemo, loading, demoRole, error } = useAuth();
+  const { occupancy } = useDemo();
 
   return (
-    <PageLayout title={t("auth.title")}>
-      <LoginFormView onSubmit={login} loading={loading} error={error} />
-    </PageLayout>
+    <LoginScreenView
+      demo={occupancy}
+      demoRole={demoRole}
+      onDemoLogin={loginDemo}
+      form={<LoginFormView onSubmit={login} loading={loading} error={error} />}
+    />
   );
 }

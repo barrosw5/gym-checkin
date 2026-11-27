@@ -24,6 +24,7 @@ import { CurrentUser } from './current-user.decorator.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { Throttle } from '@nestjs/throttler';
 import { LoginThrottlerGuard } from './login-throttler.guard.js';
+import { setAuthCookie } from './auth-cookie.js';
 import { AUTH_COOKIE } from './auth.constants.js';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { ApiZodBody } from '../common/api-docs.js';
@@ -90,12 +91,7 @@ export class AuthController {
     user: Parameters<AuthService['login']>[0],
   ) {
     const token = await this.authService.login(user);
-    res.cookie(AUTH_COOKIE, token.access_token, {
-      httpOnly: true, // JS cannot read it
-      // HTTPS only in production (localhost dev runs on plain HTTP)
-      secure: this.config.get('NODE_ENV') === 'production',
-      sameSite: 'lax',
-    });
+    setAuthCookie(res, token.access_token, this.config.get('NODE_ENV') === 'production');
   }
 
   @UseGuards(JwtAuthGuard)

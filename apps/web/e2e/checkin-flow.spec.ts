@@ -9,7 +9,7 @@ async function logIn(page: Page, { username, password }: { username: string; pas
   await page.goto("/login");
   await page.getByLabel("Username").fill(username);
   await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", { name: "Entrar" }).click();
+  await page.getByRole("button", { name: "Entrar", exact: true }).click();
   // Fail here, clearly, if the login was refused (wrong password, or the
   // 5-per-minute rate limit after many runs in a row)
   await expect(page, `login as ${username} failed`).not.toHaveURL(/\/login/);

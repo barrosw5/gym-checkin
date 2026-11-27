@@ -87,8 +87,9 @@
     --warn-solid: #c2590a;
   }
 
-  /* Set on <html> by the script in index.html, then by ThemeProvider */
-  :root[data-theme="dark"] {
+  /* Set on <html> by the script in index.html, then by ThemeProvider. Also
+     usable on one element, for a panel that is graphite in both themes */
+  [data-theme="dark"] {
     color-scheme: dark;
 
     --canvas: #0f0f11;

@@ -49,13 +49,22 @@ export const en: Messages = {
     ADMIN: "Admin",
   },
   auth: {
-    title: "Demo Gym",
     username: "Username",
     password: "Password",
     submit: "Log in",
     submitting: "Logging in...",
     logout: "Log out",
     changePassword: "Change password",
+  },
+  login: {
+    headline: "Know how full the gym is before you go",
+    subline: "Check in and out from your phone, with the screen's QR code or by asking reception",
+    footnote: "A fictional gym, made for a portfolio project",
+  },
+  demo: {
+    hint: "Try the demo, no password",
+    member: "Enter as a member",
+    reception: "Enter as reception",
   },
   route: {
     serverDown: "Could not reach the server.",

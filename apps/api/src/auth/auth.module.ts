@@ -26,5 +26,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
   controllers: [AuthController],
   // PrismaService comes from the global PrismaModule (one shared instance)
   providers: [AuthService, JwtStrategy],
+  // DemoModule starts sessions for the public demo accounts
+  exports: [AuthService],
 })
 export class AuthModule {}
