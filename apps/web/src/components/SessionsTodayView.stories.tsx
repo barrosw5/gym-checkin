@@ -29,7 +29,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Loading: Story = { args: { sessions: null } };
 export const Empty: Story = { args: { sessions: [] } };
+/** The first tab: who is inside now. */
 export const Day: Story = {};
+export const AllVisits: Story = { args: { defaultTab: "all" } };
+export const Timeline: Story = { args: { defaultTab: "timeline" } };
+export const NobodyInside: Story = {
+  args: {
+    sessions: [{ id: "s2", name: "Rui Costa", room: "102", entryAt: at("17:20:00"), exitAt: at("18:31:00"), closedBy: "USER" }],
+  },
+};
 export const Closing: Story = { args: { busyId: "s1" } };
 export const ExitBeforeEntry: Story = { args: { message: { key: "errors.sessions.exitBeforeEntry" } } };
 export const LoadFailed: Story = { args: { sessions: null, failed: true } };

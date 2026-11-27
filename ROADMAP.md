@@ -302,7 +302,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
   - [x] Login com entrada rápida nas contas de demo
   - [x] Início do sócio
   - [x] Estatísticas
-  - [ ] Receção
+  - [x] Receção
   - [ ] Contas (admin)
   - [ ] Ecrã do QR
 - [ ] Screenshots e vídeo da app nos dois temas

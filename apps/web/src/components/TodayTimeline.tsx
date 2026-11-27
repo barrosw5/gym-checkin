@@ -10,7 +10,7 @@ export interface TodayTimelineProps {
 }
 
 const minuteOf = (date: Date) => date.getHours() * 60 + date.getMinutes();
-const TICKS = [0, 360, 720, 1080, 1440];
+const TICK_MINUTES = 180;
 
 /**
  * Staff only: today's visits as bars on one time axis (a Gantt), the
@@ -22,14 +22,18 @@ export default function TodayTimeline({ sessions, now }: TodayTimelineProps) {
   const nowMinute = minuteOf(now);
   // Oldest first: reads top to bottom like the day went
   const visits = [...sessions].sort((a, b) => a.entryAt.getTime() - b.entryAt.getTime());
-  const percent = (minute: number) => `${(minute / 1440) * 100}%`;
+  // A visit that began yesterday starts at the left edge
+  const startOf = (s: AdminSession) => (s.entryAt.toDateString() === now.toDateString() ? minuteOf(s.entryAt) : 0);
+  // The axis starts near the first visit: no room wasted on the empty night
+  const from = Math.floor(Math.min(...visits.map(startOf), 1440 - TICK_MINUTES) / TICK_MINUTES) * TICK_MINUTES;
+  const percent = (minutes: number) => `${(minutes / (1440 - from)) * 100}%`;
+  const ticks = Array.from({ length: (1440 - from) / TICK_MINUTES + 1 }, (_, i) => from + i * TICK_MINUTES);
 
   return (
     <div>
       <ol className="flex flex-col gap-1.5">
         {visits.map((s) => {
-          // A visit that began yesterday starts at the left edge
-          const start = s.entryAt.toDateString() === now.toDateString() ? minuteOf(s.entryAt) : 0;
+          const start = startOf(s);
           const end = s.exitAt ? minuteOf(s.exitAt) : nowMinute;
           const label = t("sessions.timelineLabel", {
             name: s.name,
@@ -51,7 +55,7 @@ export default function TodayTimeline({ sessions, now }: TodayTimelineProps) {
                     s.closedBy === "AUTO" && "bg-warn-solid/70",
                   )}
                   // Dynamic: where the bar starts and how long it is (at least visible)
-                  style={{ left: percent(start), width: `max(3px, ${percent(Math.max(0, end - start))})` }}
+                  style={{ left: percent(start - from), width: `max(3px, ${percent(Math.max(0, end - start))})` }}
                   title={label}
                 />
               </span>
@@ -59,10 +63,11 @@ export default function TodayTimeline({ sessions, now }: TodayTimelineProps) {
           );
         })}
       </ol>
-      <div aria-hidden="true" className="mt-2 grid grid-cols-[6rem_1fr] gap-2 text-xs text-ink-3 tabular-nums">
+      {/* Sticky: the hours stay visible while the visits scroll */}
+      <div aria-hidden="true" className="sticky bottom-0 grid grid-cols-[6rem_1fr] gap-2 bg-surface pt-2 text-xs text-ink-3 tabular-nums">
         <span />
         <span className="flex justify-between">
-          {TICKS.map((minute) => (
+          {ticks.map((minute) => (
             <span key={minute}>{formatMinute(minute)}</span>
           ))}
         </span>

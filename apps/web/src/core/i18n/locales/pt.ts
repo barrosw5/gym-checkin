@@ -130,7 +130,10 @@ export const pt = {
     entry: "Entrada",
     exit: "Saída",
     view: "Vista",
-    viewList: "Lista",
+    viewInside: "Dentro ({count})",
+    viewAll: "Todas ({count})",
+    nobodyInside: "Não está ninguém no ginásio",
+    scrollArea: "Visitas de hoje",
     viewTimeline: "Linha do tempo",
     // Staff only: one bar per visit of today (names are fine here, GDPR)
     timelineLabel: "{name}, {from} – {to}",
