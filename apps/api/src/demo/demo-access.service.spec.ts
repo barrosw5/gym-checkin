@@ -67,6 +67,16 @@ describe('DemoAccessService', () => {
     );
   });
 
+  it('opens the read-only demo admin, never the real one', async () => {
+    findUnique.mockResolvedValue({ ...account, username: 'admin.demo', role: 'ADMIN' });
+
+    await service.findAccount('ADMIN');
+
+    expect(findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { username: 'admin.demo' } }),
+    );
+  });
+
   it.each([
     ['missing', null],
     ['not a demo account', { ...account, isDemo: false }],

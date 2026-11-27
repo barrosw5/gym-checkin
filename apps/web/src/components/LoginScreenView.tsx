@@ -1,5 +1,5 @@
 import type { DemoRole } from "@gym-checkin/shared";
-import { ConciergeBell, User } from "lucide-react";
+import { ConciergeBell, ShieldCheck, User } from "lucide-react";
 import type { ReactNode } from "react";
 import type { OccupancyView } from "../core/types/occupancy";
 import { useTranslation } from "../hooks/useTranslation";
@@ -23,6 +23,7 @@ export interface LoginScreenViewProps {
 const SHORTCUTS = [
   { role: "STUDENT", label: "demo.member", Icon: User },
   { role: "RECEPTION", label: "demo.reception", Icon: ConciergeBell },
+  { role: "ADMIN", label: "demo.admin", Icon: ShieldCheck },
 ] as const;
 
 /**

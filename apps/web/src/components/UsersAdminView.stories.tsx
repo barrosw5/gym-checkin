@@ -12,6 +12,7 @@ const users = [
 const meta = {
   title: "Admin/Users",
   component: UsersAdminView,
+  // The view is the whole page, title and import button included
   parameters: { layout: "fullscreen" },
   args: {
     users,
@@ -19,12 +20,12 @@ const meta = {
     importResult: null,
     busy: false,
     message: null,
+    readOnly: false,
     onReload: fn(),
     onImport: fn(),
     onClearImport: fn(),
     onUpdate: fn(),
   },
-  decorators: [(Story) => <div className="max-w-6xl bg-raised p-6">{Story()}</div>],
 } satisfies Meta<typeof UsersAdminView>;
 
 export default meta;
@@ -32,28 +33,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Accounts: Story = {};
 export const Loading: Story = { args: { users: null } };
-export const Importing: Story = { args: { busy: true } };
-export const ImportErrors: Story = {
-  args: {
-    importResult: {
-      ok: false,
-      errors: [
-        { line: 2, messages: [{ key: "errors.import.nameRequired" }] },
-        { line: 3, messages: [{ key: "errors.import.exists", params: { username: "ana.ferreira" } }] },
-      ],
-    },
-  },
-};
-/** Temporary passwords are shown once, then hidden. */
+export const LoadFailed: Story = { args: { users: null, failed: true } };
+export const DemoAdmin: Story = { args: { readOnly: true } };
 export const Imported: Story = {
   args: {
-    importResult: {
-      ok: true,
-      created: [
-        { name: "Inês Rocha", username: "ines.rocha", temporaryPassword: "q7Vt2mLx9cNe" },
-        { name: "João Pires", username: "joao.pires", temporaryPassword: "Hb4sP0wZr1Ka" },
-      ],
-    },
+    importResult: { ok: true, created: [{ name: "Inês Rocha", username: "ines.rocha", temporaryPassword: "q7Vt2mLx9cNe" }] },
   },
 };
 export const CannotDeactivateSelf: Story = { args: { message: { key: "errors.users.cannotDeactivateSelf" } } };
+export const OnPhone: Story = { globals: { viewport: { value: "mobile1" } } };

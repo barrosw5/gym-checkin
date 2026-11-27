@@ -2,12 +2,15 @@ import { Upload } from "lucide-react";
 import { useState } from "react";
 import type { Translatable } from "../core/i18n/types";
 import type { AdminUser, ImportResult } from "../core/types/adminUsers";
+import { filterUsers } from "../core/utils/filterUsers";
 import { useTranslation } from "../hooks/useTranslation";
+import ImportPanel from "./ImportPanel";
 import UserRow from "./UserRow";
 import Alert from "./ui/Alert";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 import { ICON } from "./ui/icon";
+import Page from "./ui/Page";
 
 export interface UsersAdminViewProps {
   users: AdminUser[] | null;
@@ -15,128 +18,119 @@ export interface UsersAdminViewProps {
   importResult: ImportResult | null;
   busy: boolean;
   message: Translatable | null;
+  /** Demo admin: everything is visible, changes are switched off. */
+  readOnly: boolean;
   onReload: () => void;
   onImport: (csv: string) => void;
   onClearImport: () => void;
   onUpdate: (id: string, body: { active?: boolean; room?: string }) => void;
 }
 
-/** Admin: import members from a CSV, then manage the accounts. */
+/** Admin: search the accounts, edit one at a time, import from a CSV. */
 export default function UsersAdminView({
   users,
   failed,
   importResult,
   busy,
   message,
+  readOnly,
   onReload,
   onImport,
   onClearImport,
   onUpdate,
 }: UsersAdminViewProps) {
   const { t, tm } = useTranslation();
-  const [csv, setCsv] = useState("");
-  const example = t("users.csvExample");
+  const [query, setQuery] = useState("");
+  const [editing, setEditing] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
+  const shown = users ? filterUsers(users, query) : [];
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[2fr_3fr]">
-      <Card title={t("users.importTitle")}>
-        <div className="flex flex-col gap-3">
-          {/* The header line of the example is the format to follow */}
-          <p className="text-sm text-ink-2">{t("users.importHelp", { format: example.split("\n")[0] })}</p>
-          <label className="text-sm font-medium text-ink-2">
-            {t("users.csvFile")}
-            <input
-              type="file"
-              accept=".csv,text/csv,text/plain"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (file) setCsv(await file.text());
-              }}
-              // py-1 around the 36 px button: the whole input (44 px) opens the picker
-              className="mt-1.5 block w-full py-1 text-sm text-ink-2 file:mr-3 file:h-9 file:rounded-lg file:border-0 file:bg-raised file:px-3 file:font-medium file:text-ink hover:file:bg-line-strong"
-            />
-          </label>
-          <textarea
-            value={csv}
-            onChange={(e) => setCsv(e.target.value)}
-            placeholder={example}
-            rows={6}
-            aria-label={t("users.csvContent")}
-            // 16 px on phones: below that, iOS zooms the page in on focus
-            className="w-full rounded-lg bg-surface p-3 font-mono text-base sm:text-sm ring-1 ring-inset ring-line-strong focus:outline-none focus:ring-2 focus:ring-accent-ink"
+    <Page
+      width="wide"
+      title={t("users.title")}
+      actions={
+        <Button variant="secondary" onClick={() => setImporting(!importing)} aria-expanded={importing}>
+          <Upload {...ICON} />
+          {t("users.importTitle")}
+        </Button>
+      }
+    >
+      {readOnly && <Alert tone="info">{t("users.demoNotice")}</Alert>}
+
+      {/* Stays open while there is a result: temporary passwords show once */}
+      {(importing || importResult) && (
+        <ImportPanel
+          result={importResult}
+          busy={busy}
+          readOnly={readOnly}
+          onImport={onImport}
+          onClearResult={onClearImport}
+        />
+      )}
+
+      {message && <Alert tone="error">{tm(message)}</Alert>}
+
+      <Card className="!p-0">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-5 sm:p-6">
+          <h2 className="text-base font-medium text-ink">
+            {t("users.accounts")}
+            {users && (
+              <span className="ml-2 font-normal text-ink-3 tabular-nums">
+                {query.trim() ? t("users.found", { shown: shown.length, total: users.length }) : users.length}
+              </span>
+            )}
+          </h2>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("users.search")}
+            aria-label={t("users.searchLabel")}
+            className="h-11 w-full rounded-lg bg-surface px-3 text-base text-ink ring-1 ring-inset ring-line-strong focus:ring-2 focus:ring-accent-ink focus:outline-none sm:w-72 sm:text-sm"
           />
-          <Button onClick={() => onImport(csv)} loading={busy} disabled={!csv.trim()}>
-            {!busy && <Upload {...ICON} />}
-            {busy ? t("users.importing") : t("users.import")}
-          </Button>
-
-          {importResult?.ok === false && (
-            <Alert tone="error">
-              <p>{t("users.importFailed")}</p>
-              <ul className="mt-1 list-disc pl-4">
-                {importResult.errors.map((e) => (
-                  <li key={e.line}>
-                    {e.line > 0 && `${t("users.line", { line: e.line })} `}
-                    {e.messages.map(tm).join("; ")}
-                  </li>
-                ))}
-              </ul>
-            </Alert>
-          )}
-
-          {importResult?.ok && (
-            <div className="flex flex-col gap-3 rounded-xl bg-warn-soft p-3 ring-1 ring-inset ring-warn/20">
-              <p className="text-sm text-warn">
-                <span className="font-medium">
-                  {importResult.created.length === 1
-                    ? t("users.createdOne")
-                    : t("users.createdMany", { count: importResult.created.length })}
-                </span>
-                . {t("users.tempPasswordsWarning")}
-              </p>
-              <table className="w-full text-left text-sm">
-                <thead className="text-ink-3">
-                  <tr>
-                    <th className="py-1 font-medium">{t("users.username")}</th>
-                    <th className="py-1 font-medium">{t("users.tempPassword")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {importResult.created.map((a) => (
-                    <tr key={a.username} className="border-t border-warn/15">
-                      <td className="py-1.5 wrap-anywhere">{a.username}</td>
-                      <td className="py-1.5 font-mono">{a.temporaryPassword}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Button size="sm" variant="secondary" onClick={onClearImport}>
-                {t("users.hidePasswords")}
-              </Button>
-            </div>
-          )}
         </div>
-      </Card>
 
-      <Card title={t("users.accounts")} meta={users?.length}>
         {failed && (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 px-5 pb-5 sm:px-6">
             <p className="text-sm text-ink-2">{t("common.loadFailed")}</p>
             <Button size="sm" variant="secondary" onClick={onReload}>
               {t("common.retry")}
             </Button>
           </div>
         )}
-        {users === null && !failed && <p className="text-sm text-ink-3">{t("common.loading")}</p>}
-        {users && (
-          <ul className="-my-3 divide-y divide-line">
-            {users.map((u) => (
-              <UserRow key={u.id} user={u} busy={busy} onUpdate={(body) => onUpdate(u.id, body)} />
-            ))}
-          </ul>
+        {users === null && !failed && <p className="px-5 pb-5 text-sm text-ink-3 sm:px-6">{t("common.loading")}</p>}
+        {users && shown.length === 0 && <p className="px-5 pb-5 text-sm text-ink-3 sm:px-6">{t("users.noMatch")}</p>}
+
+        {shown.length > 0 && (
+          <table className="w-full text-left">
+            <thead className="text-sm text-ink-3">
+              <tr>
+                <th scope="col" className="py-2 pr-3 pl-5 font-normal sm:pl-6">{t("users.name")}</th>
+                <th scope="col" className="py-2 pr-3 font-normal">{t("users.number")}</th>
+                <th scope="col" className="hidden py-2 pr-3 font-normal md:table-cell">{t("users.role")}</th>
+                <th scope="col" className="hidden py-2 pr-3 font-normal md:table-cell">{t("users.state")}</th>
+                <th scope="col" className="py-2 pr-5 sm:pr-6">
+                  <span className="sr-only">{t("users.edit")}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((u) => (
+                <UserRow
+                  key={u.id}
+                  user={u}
+                  busy={busy}
+                  readOnly={readOnly}
+                  editing={editing === u.id}
+                  onToggle={() => setEditing(editing === u.id ? null : u.id)}
+                  onUpdate={(body) => onUpdate(u.id, body)}
+                />
+              ))}
+            </tbody>
+          </table>
         )}
-        {message && <Alert tone="error" className="mt-4">{tm(message)}</Alert>}
       </Card>
-    </div>
+    </Page>
   );
 }

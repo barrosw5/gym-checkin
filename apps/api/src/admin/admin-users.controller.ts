@@ -25,6 +25,7 @@ import { Roles } from '../auth/roles.decorator.js';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
 import { AdminUsersService } from './admin-users.service.js';
+import { NoDemoGuard } from './no-demo.guard.js';
 
 @ApiTags('admin')
 @ApiCookieAuth()
@@ -36,13 +37,14 @@ export class AdminUsersController {
   constructor(private users: AdminUsersService) {}
 
   @Get()
-  list() {
-    return this.users.list();
+  list(@CurrentUser() admin: AuthUser) {
+    return this.users.list(admin);
   }
 
   // JSON body with the CSV text: no multipart upload dependency needed.
   // The response holds temporary passwords: never cache it
   @ApiZodBody(userImportSchema)
+  @UseGuards(NoDemoGuard)
   @Post('import')
   @Header('Cache-Control', 'no-store')
   async import(@Body(new ZodValidationPipe(userImportSchema)) body: UserImportInput) {
@@ -50,6 +52,7 @@ export class AdminUsersController {
   }
 
   @ApiZodBody(userUpdateSchema)
+  @UseGuards(NoDemoGuard)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

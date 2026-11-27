@@ -1,3 +1,6 @@
+/** The read-only admin of the public demo (the real "admin" stays private). */
+export const DEMO_ADMIN_USERNAME = 'admin.demo';
+
 /**
  * Fictional members who "use" the demo gym: [username, name, member number].
  * Nobody can log in as them (random passwords). The demo only ever touches

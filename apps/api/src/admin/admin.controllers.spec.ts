@@ -37,7 +37,8 @@ describe('admin routes (HTTP)', () => {
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
           const req = ctx.switchToHttp().getRequest();
-          req.user = { userId: 'me', role: req.headers['x-test-role'] };
+          const isDemo = req.headers['x-test-demo'] === 'true';
+          req.user = { userId: 'me', role: req.headers['x-test-role'], isDemo };
           return true;
         },
       })
@@ -104,6 +105,20 @@ describe('admin routes (HTTP)', () => {
 
       expect(res.body).toEqual({ created: [{ username: 'ana', temporaryPassword: 'x' }] });
       expect(res.headers['cache-control']).toBe('no-store');
+    });
+
+    it('lets the demo admin look, but never change accounts', async () => {
+      const demo = () => request(app.getHttpServer());
+      const headers = { 'X-Test-Role': 'ADMIN', 'X-Test-Demo': 'true' };
+      users.list.mockResolvedValue([]);
+
+      await demo().get('/api/admin/users').set(headers).expect(200);
+      await demo().post('/api/admin/users/import').set(headers).send({ csv: 'Ana;101;ana' }).expect(403);
+      await demo().patch(`/api/admin/users/${ID}`).set(headers).send({ active: false }).expect(403);
+
+      expect(users.list).toHaveBeenCalledWith(expect.objectContaining({ isDemo: true }));
+      expect(users.import).not.toHaveBeenCalled();
+      expect(users.update).not.toHaveBeenCalled();
     });
 
     it('strips fields that are not allowed (no role changes via PATCH)', async () => {

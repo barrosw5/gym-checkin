@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { type PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { DEMO_MEMBERS } from './demo-members.js';
+import { DEMO_ADMIN_USERNAME, DEMO_MEMBERS } from './demo-members.js';
 import { type DemoMember, planDemoVisits } from './demo-plan.js';
 
 /** How much history the demo keeps: the longest range of the statistics. */
@@ -24,6 +24,18 @@ export interface DemoSyncResult {
   created: number;
   closed: number;
   pruned: number;
+}
+
+/** Creates the read-only demo admin if missing. An existing account is left as is. */
+async function ensureAdmin(db: DemoDb): Promise<void> {
+  const exists = await db.user.findUnique({ where: { username: DEMO_ADMIN_USERNAME }, select: { id: true } });
+  if (exists) return;
+  // No password login: only the demo button opens it
+  const passwordHash = await bcrypt.hash(randomBytes(32).toString('base64url'), 10);
+  await db.user.createMany({
+    data: [{ username: DEMO_ADMIN_USERNAME, name: 'Admin Demo', room: 'N/A', role: Role.ADMIN, isDemo: true, passwordHash }],
+    skipDuplicates: true,
+  });
 }
 
 /** Creates the fictional accounts that are missing; returns the usable ones. */
@@ -76,6 +88,7 @@ export async function syncDemoData(
     throw new Error(`Refusing to add demo data: this database has ${realStudents} real student account(s).`);
   }
 
+  await ensureAdmin(db);
   const members = await ensureMembers(db);
   const userIds = members.map((m) => m.userId);
   const { capacity, autoCloseHours } = await db.settings.findUniqueOrThrow({ where: { id: 'global' } });

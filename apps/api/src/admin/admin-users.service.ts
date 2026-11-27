@@ -36,8 +36,10 @@ export interface ImportedAccount {
 export class AdminUsersService {
   constructor(private prisma: PrismaService) {}
 
-  list() {
+  /** The demo admin sees demo accounts only, never the real administrator. */
+  list(admin: AuthUser) {
     return this.prisma.user.findMany({
+      ...(admin.isDemo && { where: { isDemo: true } }),
       orderBy: [{ role: 'asc' }, { name: 'asc' }],
       select: USER_SELECT,
     });
