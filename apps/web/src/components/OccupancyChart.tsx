@@ -1,5 +1,6 @@
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { ChartRow } from "../core/types/stats";
+import { chartAxis } from "../core/utils/chartAxis";
 import { formatMinute, formatNumber } from "../core/utils/format";
 import { useTranslation } from "../hooks/useTranslation";
 
@@ -11,25 +12,25 @@ export interface OccupancyChartProps {
   summary: string;
 }
 
-// Every 3 hours: readable on a phone, enough to place a time on a PC
-const TICKS = [0, 180, 360, 540, 720, 900, 1080, 1260, 1440];
-
 /** Occupancy through the day: today (exact steps) over the typical day (average). */
 export default function OccupancyChart({ rows, showTypical, summary }: OccupancyChartProps) {
   const { t, languageTag } = useTranslation();
+  const { domain, ticks } = chartAxis(rows);
+  // Rows outside the axis would be drawn past its edges
+  const visible = rows.filter((r) => r.minute >= domain[0] && r.minute <= domain[1]);
 
   return (
     <figure>
       {/* The SVG is decoration for screen readers: the sentence carries the data */}
       <div aria-hidden="true" className="h-56 sm:h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+          <ComposedChart data={visible} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
             <CartesianGrid vertical={false} stroke="var(--line)" />
             <XAxis
               dataKey="minute"
               type="number"
-              domain={[0, 1440]}
-              ticks={TICKS}
+              domain={domain}
+              ticks={ticks}
               tickFormatter={formatMinute}
               tick={{ fontSize: 12, fill: "var(--ink-3)" }}
               tickLine={false}

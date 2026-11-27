@@ -1,8 +1,9 @@
 import { STATS_RANGES, type StatsRange } from "@gym-checkin/shared";
 import type { Stats } from "../core/types/stats";
+import { chartSummary } from "../core/utils/chartSummary";
 import { cn } from "../core/utils/cn";
-import { formatMinute, formatNumber } from "../core/utils/format";
 import { useTranslation } from "../hooks/useTranslation";
+import BestHoursCard from "./BestHoursCard";
 import OccupancyChart from "./OccupancyChart";
 import StatsHeatmap from "./StatsHeatmap";
 import Button from "./ui/Button";
@@ -22,15 +23,7 @@ export interface StatsViewProps {
 /** The statistics page: one period filter for everything below it. */
 export default function StatsView({ range, onRangeChange, stats, loading, failed, onReload }: StatsViewProps) {
   const { t, languageTag } = useTranslation();
-  const n = (value: number) => formatNumber(value, languageTag);
   const isToday = range === "today";
-
-  const chartSummary = (s: Stats) =>
-    isToday || !s.peakTypical
-      ? s.peakToday
-        ? t("stats.chart.summaryToday", { max: s.peakToday.count, at: formatMinute(s.peakToday.minute) })
-        : t("stats.chart.empty")
-      : t("stats.chart.summaryTypical", { hour: s.peakTypical.hour, value: n(s.peakTypical.average) });
 
   return (
     <div className="flex flex-col gap-4">
@@ -60,34 +53,14 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
         >
           <Card title={t("stats.chart.title")}>
             {stats.hasVisits ? (
-              <OccupancyChart rows={stats.chart} showTypical={!isToday} summary={chartSummary(stats)} />
+              <OccupancyChart rows={stats.chart} showTypical={!isToday} summary={chartSummary(stats, t, languageTag)} />
             ) : (
               <p className="text-sm text-ink-3">{t("stats.chart.empty")}</p>
             )}
           </Card>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {!isToday && (
-              <Card title={t("stats.best.title")}>
-                {stats.best.length > 0 ? (
-                  <>
-                    <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                      {stats.best.map((b) => (
-                        <li key={b.hour}>
-                          <p className="text-2xl font-medium text-accent-ink tabular-nums">
-                            {t("stats.best.hour", { hour: b.hour })}
-                          </p>
-                          <p className="text-sm text-ink-3">{t("stats.best.people", { value: n(b.average) })}</p>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="mt-3 text-sm text-ink-2">{t("stats.best.hint")}</p>
-                  </>
-                ) : (
-                  <p className="text-sm text-ink-3">{t("stats.best.none")}</p>
-                )}
-              </Card>
-            )}
+            {!isToday && <BestHoursCard best={stats.best} />}
 
             <Card title={t("stats.duration.title")}>
               {stats.duration.visits > 0 && stats.duration.averageMinutes !== null && stats.duration.medianMinutes !== null ? (
