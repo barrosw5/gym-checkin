@@ -298,7 +298,13 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [x] Modo claro e escuro, com identidade desportiva (grafite e lima)
 - [x] Dados de demonstração sempre atuais (modo demo na API)
 - [x] Nova estrutura: barra lateral no PC e barra de navegação no telemóvel
-- [ ] Ecrãs redesenhados (login com contas demo, sócio, estatísticas, receção, admin e ecrã do QR)
+- [ ] Ecrãs redesenhados
+  - [x] Login com entrada rápida nas contas de demo
+  - [x] Início do sócio
+  - [ ] Estatísticas
+  - [ ] Receção
+  - [ ] Contas (admin)
+  - [ ] Ecrã do QR
 - [ ] Screenshots e vídeo da app nos dois temas
 
 ### Fase 8: Piloto num ginásio real (opcional)
