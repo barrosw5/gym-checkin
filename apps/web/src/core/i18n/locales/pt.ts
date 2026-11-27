@@ -155,6 +155,16 @@ export const pt = {
       summaryTypical: "Num dia típico, a hora com mais gente é às {hour}h, com {value} pessoas em média.",
       empty: "Ainda não há visitas neste período.",
     },
+    highlights: {
+      visits: "Visitas",
+      visitsHint: "terminadas no período",
+      duration: "Tempo por visita",
+      median: "mediana {value} min",
+      busiest: "Hora com mais gente",
+      calmest: "Mais calmo ainda hoje",
+      peakTime: "Pico de hoje",
+      peakPeople: "Máximo ao mesmo tempo",
+    },
     heatmap: {
       title: "Por dia da semana e hora",
       hint: "Média de pessoas lá dentro. Cor mais forte, mais gente.",
@@ -162,12 +172,7 @@ export const pt = {
       noData: "sem dados",
     },
     duration: {
-      title: "Quanto tempo se fica",
-      average: "Média",
-      median: "Mediana",
       minutes: "{value} min",
-      visits: "{value} visitas terminadas",
-      none: "Ainda não há visitas terminadas neste período.",
     },
     best: {
       title: "Melhor altura para ir hoje",

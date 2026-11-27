@@ -1,6 +1,7 @@
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { ChartRow } from "../core/types/stats";
 import { chartAxis } from "../core/utils/chartAxis";
+import { cn } from "../core/utils/cn";
 import { formatMinute, formatNumber } from "../core/utils/format";
 import { useTranslation } from "../hooks/useTranslation";
 
@@ -10,10 +11,12 @@ export interface OccupancyChartProps {
   showTypical: boolean;
   /** One sentence with the gist, read instead of the drawing by screen readers. */
   summary: string;
+  /** More height on a PC, where the chart is the main thing on the page. */
+  tall?: boolean;
 }
 
 /** Occupancy through the day: today (exact steps) over the typical day (average). */
-export default function OccupancyChart({ rows, showTypical, summary }: OccupancyChartProps) {
+export default function OccupancyChart({ rows, showTypical, summary, tall = false }: OccupancyChartProps) {
   const { t, languageTag } = useTranslation();
   const { domain, ticks } = chartAxis(rows);
   // Rows outside the axis would be drawn past its edges
@@ -22,7 +25,7 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
   return (
     <figure>
       {/* The SVG is decoration for screen readers: the sentence carries the data */}
-      <div aria-hidden="true" className="h-56 sm:h-64">
+      <div aria-hidden="true" className={cn("h-56 sm:h-64", tall && "lg:h-80")}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={visible} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
             <CartesianGrid vertical={false} stroke="var(--line)" />

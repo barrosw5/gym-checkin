@@ -301,7 +301,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
 - [ ] Ecrãs redesenhados
   - [x] Login com entrada rápida nas contas de demo
   - [x] Início do sócio
-  - [ ] Estatísticas
+  - [x] Estatísticas
   - [ ] Receção
   - [ ] Contas (admin)
   - [ ] Ecrã do QR
