@@ -13,6 +13,11 @@ export interface QrToken {
   /** When the screen must fetch a new token (start of the next window). */
   refreshAt: Date;
   windowSeconds: number;
+  /**
+   * The same moment as a duration, from the server's clock: the screen can
+   * count down correctly even when its own clock is wrong.
+   */
+  secondsLeft: number;
 }
 
 /**
@@ -37,10 +42,12 @@ export class QrTokenService {
   async current(now = new Date()): Promise<QrToken> {
     const { qrWindowSeconds } = await this.settings.get();
     const window = windowOf(now, qrWindowSeconds);
+    const refreshAt = new Date((window + 1) * qrWindowSeconds * 1000);
     return {
       token: this.sign(window, qrWindowSeconds),
-      refreshAt: new Date((window + 1) * qrWindowSeconds * 1000),
+      refreshAt,
       windowSeconds: qrWindowSeconds,
+      secondsLeft: (refreshAt.getTime() - now.getTime()) / 1000,
     };
   }
 

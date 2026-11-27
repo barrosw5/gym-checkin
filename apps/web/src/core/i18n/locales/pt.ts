@@ -104,8 +104,11 @@ export const pt = {
     failed: "Não foi possível entrar",
   },
   receptionScreen: {
-    title: "Entrar no ginásio",
-    instruction: "Aponta a câmara do telemóvel para o código",
+    title: "Entra no ginásio",
+    step1: "Abre a câmara do telemóvel",
+    step2: "Aponta para o código",
+    step3: "Abre o link e a entrada fica registada",
+    changesIn: "O código muda em {seconds} s",
     caption: "Ginásio Demo · Projeto de demonstração",
     qrTitle: "Código QR para entrar no ginásio",
     generating: "A gerar o código...",

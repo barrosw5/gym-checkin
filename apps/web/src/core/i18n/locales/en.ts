@@ -103,7 +103,10 @@ export const en: Messages = {
   },
   receptionScreen: {
     title: "Enter the gym",
-    instruction: "Point your phone camera at the code",
+    step1: "Open your phone camera",
+    step2: "Point it at the code",
+    step3: "Open the link and you are checked in",
+    changesIn: "The code changes in {seconds} s",
     caption: "Demo Gym · Demonstration project",
     qrTitle: "QR code to enter the gym",
     generating: "Generating the code...",
