@@ -11,16 +11,28 @@ export const en: Messages = {
     back: "Back",
     continue: "Continue",
     wait: "Please wait...",
-    signedInAs: "Signed in as {name}",
     room: "Member no. {room}",
     reconnecting: "Offline, trying again",
     goHome: "Go to home",
-    openQrScreen: "Open the QR screen",
   },
   layout: {
     appName: "Demo Gym",
     documentTitle: "{page} · Demo Gym",
     documentTitleHome: "Demo Gym",
+  },
+  nav: {
+    label: "Main navigation",
+    home: "Home",
+    desk: "Reception",
+    stats: "Statistics",
+    users: "Accounts",
+    qr: "QR screen",
+    account: "Account",
+  },
+  account: {
+    title: "Account",
+    preferences: "Preferences",
+    theme: "Theme",
   },
   theme: {
     toDark: "Switch to dark theme",
@@ -89,10 +101,6 @@ export const en: Messages = {
   },
   reception: {
     title: "Reception",
-    qrScreenHint: "Open it on the screen that faces the members",
-  },
-  admin: {
-    title: "Administration",
   },
   requests: {
     title: "Entry requests",
@@ -118,8 +126,6 @@ export const en: Messages = {
   },
   stats: {
     title: "Statistics",
-    link: "See statistics",
-    linkHint: "When it is busiest and how long people stay",
     range: {
       label: "Period",
       today: "Today",
