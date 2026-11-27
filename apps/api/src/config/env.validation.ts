@@ -22,6 +22,11 @@ export function validateEnv(
     }
   }
 
+  // A typo like "ture" would silently leave the demo off
+  if (![undefined, '', 'true', 'false'].includes(config.DEMO_MODE as string | undefined)) {
+    errors.push('DEMO_MODE must be "true" or "false"');
+  }
+
   if (errors.length > 0) {
     throw new Error(`Invalid environment: ${errors.join('; ')}`);
   }

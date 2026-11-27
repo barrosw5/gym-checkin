@@ -78,6 +78,9 @@ jobs:
     name: Docker (compose up, e2e)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # The e2e test counts the people inside: no simulated members coming and going
+      DEMO_MODE: "false"
     steps:
       - uses: actions/checkout@v7
       # --wait: returns once both healthchecks pass (migrations and seeds done)

@@ -66,7 +66,7 @@ With [Docker](https://docs.docker.com/get-docker/):
 docker compose up
 ```
 
-Open <http://localhost:3000> and log in with the accounts above (local admin: `admin` / `admin-local-only`). It comes with 90 days of fake visits, so the statistics are full.
+Open <http://localhost:3000> and log in with the accounts above (local admin: `admin` / `admin-local-only`). It comes with 90 days of fake visits and fictional members coming and going, so the app looks alive and the statistics are full.
 
 ## Development
 
@@ -78,7 +78,7 @@ pnpm --filter @gym-checkin/shared build
 cp apps/api/.env.example apps/api/.env   # fill in DATABASE_URL, JWT_SECRET, QR_SECRET, SEED_*
 pnpm --filter api exec prisma migrate deploy
 pnpm --filter api db:seed                # the accounts above
-pnpm --filter api db:seed-demo           # optional: 90 days of fake visits
+pnpm --filter api db:seed-demo           # optional: 90 days of fake visits (DEMO_MODE=true in .env keeps them coming)
 pnpm --filter api start:dev              # API: http://localhost:3000/api
 pnpm --filter web dev                    # app: http://localhost:5173
 ```
