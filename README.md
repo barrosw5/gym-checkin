@@ -18,22 +18,32 @@ A gym check-in app for **Demo Gym**, a fictional gym made up for this learning a
 | --- | --- | --- |
 | Member | `joaosilva` | `estudante-demo` |
 | Reception | `rececao` | `rececao-demo` |
+| Admin (read-only demo) | button on the login page | |
 
-| Member, light theme | Member, dark theme |
+No typing needed: the login page has one button for each of the three.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/tour-dark.webp">
+  <img src="docs/screenshots/tour-light.webp" alt="A tour of the app: login, member home, statistics, reception, accounts and the QR screen" width="100%">
+</picture>
+
+## Screens
+
+| Login, with live occupancy | Member home |
 | --- | --- |
-| <img src="docs/screenshots/student-phone-light.png" alt="Member home in the light theme: people in the gym now, ask to enter" width="300"> | <img src="docs/screenshots/student-phone-dark.png" alt="Member home in the dark theme: people in the gym now, ask to enter" width="300"> |
+| <img src="docs/screenshots/login-desktop-light.png" alt="Login: headline and live occupancy beside the form and the demo buttons" width="420"> | <img src="docs/screenshots/member-desktop-dark.png" alt="Member home: people inside now, ask to enter, today's curve and the best time to go" width="420"> |
 
-**Reception desk**
+| Reception desk | QR screen facing members |
+| --- | --- |
+| <img src="docs/screenshots/reception-desktop-dark.png" alt="Reception: occupancy, a pending entry request and who is inside" width="420"> | <img src="docs/screenshots/qr-screen-dark.png" alt="Full-screen rotating QR code with steps, live occupancy and a countdown" width="420"> |
 
-<img src="docs/screenshots/reception-desk.png" alt="Reception: occupancy, a pending entry request and today's visits as a timeline" width="860">
+| Statistics | Accounts (admin) |
+| --- | --- |
+| <img src="docs/screenshots/stats-desktop-light.png" alt="Statistics for 30 days: headline figures and today over the typical day" width="420"> | <img src="docs/screenshots/accounts-desktop-light.png" alt="Searchable table of accounts with an import button" width="420"> |
 
-**Statistics**
-
-<img src="docs/screenshots/stats-desktop.png" alt="Statistics for 30 days in the dark theme: today over the typical day, visit length and a weekday by hour heatmap" width="860">
-
-**QR screen at reception**
-
-<img src="docs/screenshots/qr-screen.png" alt="Full-screen rotating QR code with the live occupancy" width="860">
+| Phone, light | Phone, dark | Busiest hours |
+| --- | --- | --- |
+| <img src="docs/screenshots/member-phone-light.png" alt="Member home on a phone, light theme" width="260"> | <img src="docs/screenshots/member-phone-dark.png" alt="Member home on a phone, dark theme" width="260"> | <img src="docs/screenshots/heatmap-phone-dark.png" alt="Weekday by hour heatmap on a phone" width="260"> |
 
 ## Why
 
@@ -45,7 +55,8 @@ At the fictional Demo Gym, you pick up the key at reception and fill in a paper 
 - **Check in** by scanning the QR code on the reception screen, or by asking reception to accept you. A photo of the QR does not work from home: the code changes every 30 seconds.
 - **Check out** with one tap. Forgotten check-outs are closed automatically.
 - **See when it is quietest**: a typical day, the busiest hours of each weekday and the best time to go today.
-- **Reception** accepts requests, sees who is inside and today's visits on a timeline, and fixes wrong times.
+- **Reception** accepts requests, sees who is inside and today's visits on a timeline, and fixes wrong times, all on one screen.
+- **Admin** imports members from a CSV file and manages the accounts.
 - **Works like an app** on the phone (installable), in Portuguese and English, with light and dark themes.
 
 ## For developers
@@ -93,6 +104,8 @@ pnpm --filter web dev                    # app: http://localhost:5173
 ```
 
 Checks: `pnpm lint`, `pnpm test` and `pnpm build` in each package, `pnpm storybook` and `pnpm e2e` in `apps/web`. CI runs them on every pull request.
+
+The images above come from `pnpm --filter web screenshots` (with the API built and the web dev server running): it shows the same busy evening every time, so they can be retaken at any hour.
 
 ## Documentation
 

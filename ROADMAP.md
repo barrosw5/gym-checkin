@@ -305,7 +305,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
   - [x] Receção
   - [x] Contas (admin), com um admin de demonstração só de leitura
   - [x] Ecrã do QR
-- [ ] Screenshots e vídeo da app nos dois temas
+- [x] Screenshots e vídeo da app nos dois temas
 
 ### Fase 8: Piloto num ginásio real (opcional)
 
