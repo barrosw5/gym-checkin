@@ -7,7 +7,8 @@ const meta = {
   title: "Stats/StatsView",
   component: StatsView,
   args: { range: "month", onRangeChange: fn(), stats, loading: false, failed: false, onReload: fn() },
-  decorators: [(Story) => <div className="max-w-6xl">{Story()}</div>],
+  // The view is the whole page, title and period filter included
+  parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof StatsView>;
 
 export default meta;
@@ -22,3 +23,5 @@ export const FirstLoad: Story = { args: { stats: null, loading: true } };
 export const SwitchingPeriod: Story = { args: { range: "quarter", loading: true } };
 export const Failed: Story = { args: { stats: null, failed: true } };
 export const NoVisits: Story = { args: { stats: emptyStats } };
+/** The heatmap is rotated: days across, hours down. */
+export const OnPhone: Story = { globals: { viewport: { value: "mobile1" } } };

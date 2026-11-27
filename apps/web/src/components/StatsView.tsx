@@ -3,11 +3,12 @@ import type { Stats } from "../core/types/stats";
 import { chartSummary } from "../core/utils/chartSummary";
 import { cn } from "../core/utils/cn";
 import { useTranslation } from "../hooks/useTranslation";
-import BestHoursCard from "./BestHoursCard";
 import OccupancyChart from "./OccupancyChart";
 import StatsHeatmap from "./StatsHeatmap";
+import StatsHighlights from "./StatsHighlights";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
+import Page from "./ui/Page";
 import SegmentedControl from "./ui/SegmentedControl";
 
 export interface StatsViewProps {
@@ -26,15 +27,18 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
   const isToday = range === "today";
 
   return (
-    <div className="flex flex-col gap-4">
-      <SegmentedControl
-        label={t("stats.range.label")}
-        options={STATS_RANGES.map((value) => ({ value, label: t(`stats.range.${value}`) }))}
-        value={range}
-        onChange={onRangeChange}
-        className="self-start"
-      />
-
+    <Page
+      width="wide"
+      title={t("stats.title")}
+      actions={
+        <SegmentedControl
+          label={t("stats.range.label")}
+          options={STATS_RANGES.map((value) => ({ value, label: t(`stats.range.${value}`) }))}
+          value={range}
+          onChange={onRangeChange}
+        />
+      }
+    >
       {failed && (
         <div className="flex flex-wrap items-center gap-3">
           <p className="text-sm text-ink-2">{t("common.loadFailed")}</p>
@@ -51,43 +55,20 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
           aria-busy={loading}
           className={cn("flex flex-col gap-4 transition-opacity duration-150", loading && "opacity-60")}
         >
+          <StatsHighlights stats={stats} />
+
           <Card title={t("stats.chart.title")}>
             {stats.hasVisits ? (
-              <OccupancyChart rows={stats.chart} showTypical={!isToday} summary={chartSummary(stats, t, languageTag)} />
+              <OccupancyChart
+                rows={stats.chart}
+                showTypical={!isToday}
+                summary={chartSummary(stats, t, languageTag)}
+                tall
+              />
             ) : (
               <p className="text-sm text-ink-3">{t("stats.chart.empty")}</p>
             )}
           </Card>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {!isToday && <BestHoursCard best={stats.best} />}
-
-            <Card title={t("stats.duration.title")}>
-              {stats.duration.visits > 0 && stats.duration.averageMinutes !== null && stats.duration.medianMinutes !== null ? (
-                <>
-                  <dl className="flex flex-wrap gap-x-8 gap-y-2">
-                    <div>
-                      <dt className="text-sm text-ink-3">{t("stats.duration.average")}</dt>
-                      <dd className="text-2xl font-medium text-ink tabular-nums">
-                        {t("stats.duration.minutes", { value: stats.duration.averageMinutes })}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-ink-3">{t("stats.duration.median")}</dt>
-                      <dd className="text-2xl font-medium text-ink tabular-nums">
-                        {t("stats.duration.minutes", { value: stats.duration.medianMinutes })}
-                      </dd>
-                    </div>
-                  </dl>
-                  <p className="mt-3 text-sm text-ink-2 tabular-nums">
-                    {t("stats.duration.visits", { value: stats.duration.visits })}
-                  </p>
-                </>
-              ) : (
-                <p className="text-sm text-ink-3">{t("stats.duration.none")}</p>
-              )}
-            </Card>
-          </div>
 
           {/* One day fills one row only: the heatmap needs a longer period */}
           {!isToday && stats.hasVisits && (
@@ -98,6 +79,6 @@ export default function StatsView({ range, onRangeChange, stats, loading, failed
           )}
         </div>
       )}
-    </div>
+    </Page>
   );
 }

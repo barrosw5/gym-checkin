@@ -7,6 +7,8 @@ export interface PageProps {
   title?: string;
   /** One quiet line or row under the title (e.g. the user and their member number). */
   subtitle?: ReactNode;
+  /** Controls for the whole page, beside the title where there is room. */
+  actions?: ReactNode;
   /**
    * narrow: one column (forms, account). medium: two columns on a PC
    * (member home). wide: desks and statistics, using the whole width.
@@ -18,7 +20,7 @@ export interface PageProps {
 const WIDTHS = { narrow: "max-w-md", medium: "max-w-4xl", wide: "max-w-6xl" };
 
 /** The content of a page: title and what comes under it, without any chrome. */
-export default function Page({ title, subtitle, width = "narrow", children }: PageProps) {
+export default function Page({ title, subtitle, actions, width = "narrow", children }: PageProps) {
   const { t } = useTranslation();
 
   return (
@@ -28,9 +30,12 @@ export default function Page({ title, subtitle, width = "narrow", children }: Pa
           every route would not tell them that the page changed */}
       <title>{title ? t("layout.documentTitle", { page: title }) : t("layout.documentTitleHome")}</title>
       {(title || subtitle) && (
-        <div className="mb-2 flex flex-col gap-2">
-          {title && <h1 className="text-[28px] leading-tight font-medium text-ink">{title}</h1>}
-          {subtitle && <div className="flex flex-wrap items-center gap-2 text-ink-2">{subtitle}</div>}
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+          <div className="flex flex-col gap-2">
+            {title && <h1 className="text-[28px] leading-tight font-medium text-ink">{title}</h1>}
+            {subtitle && <div className="flex flex-wrap items-center gap-2 text-ink-2">{subtitle}</div>}
+          </div>
+          {actions}
         </div>
       )}
       {children}

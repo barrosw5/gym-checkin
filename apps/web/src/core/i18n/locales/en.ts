@@ -151,6 +151,16 @@ export const en: Messages = {
       summaryTypical: "On a typical day the busiest hour is {hour}:00, with {value} people on average.",
       empty: "No visits in this period yet.",
     },
+    highlights: {
+      visits: "Visits",
+      visitsHint: "finished in the period",
+      duration: "Time per visit",
+      median: "median {value} min",
+      busiest: "Busiest hour",
+      calmest: "Calmest left today",
+      peakTime: "Today's peak",
+      peakPeople: "Most at the same time",
+    },
     heatmap: {
       title: "By weekday and hour",
       hint: "Average people inside. Stronger colour means busier.",
@@ -158,12 +168,7 @@ export const en: Messages = {
       noData: "no data",
     },
     duration: {
-      title: "How long people stay",
-      average: "Average",
-      median: "Median",
       minutes: "{value} min",
-      visits: "{value} finished visits",
-      none: "No finished visits in this period yet.",
     },
     best: {
       title: "Best time to go today",
