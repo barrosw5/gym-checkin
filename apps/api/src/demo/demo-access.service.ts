@@ -4,11 +4,13 @@ import { Role } from '@prisma/client';
 import type { DemoRole, DemoStatus } from '@gym-checkin/shared';
 import { OccupancyService } from '../gym/occupancy.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { DEMO_ADMIN_USERNAME } from './demo-members.js';
 
-/** The public demo accounts of the README, one per role. */
+/** The public demo accounts, one per role. */
 export const DEMO_ACCOUNTS: Record<DemoRole, string> = {
   STUDENT: 'joaosilva',
   RECEPTION: 'rececao',
+  ADMIN: DEMO_ADMIN_USERNAME,
 };
 
 /** How long a public answer is reused: strangers cannot load the database. */

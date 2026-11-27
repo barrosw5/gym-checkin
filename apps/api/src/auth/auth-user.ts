@@ -17,4 +17,6 @@ export interface AuthUser {
   userId: string;
   username: string;
   role: Role;
+  /** Public demo account: some actions are refused to it. */
+  isDemo: boolean;
 }

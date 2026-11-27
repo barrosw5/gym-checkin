@@ -39,6 +39,7 @@ function errorKey(err: unknown): MessageKey {
     if (err.message === "You cannot deactivate your own account") {
       return "errors.users.cannotDeactivateSelf";
     }
+    if (err.message === "Demo accounts cannot manage accounts") return "users.demoDisabled";
     if (err.status === 409) return "errors.users.usernameTaken";
   }
   return "errors.unexpected";

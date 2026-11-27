@@ -28,7 +28,7 @@ const running = plan.find((v) => v.exitAt > NOW) as DemoVisit;
 
 describe('syncDemoData', () => {
   const db = {
-    user: { count: vi.fn(), findMany: vi.fn(), createMany: vi.fn() },
+    user: { count: vi.fn(), findUnique: vi.fn(), findMany: vi.fn(), createMany: vi.fn() },
     session: { findMany: vi.fn(), updateMany: vi.fn(), createMany: vi.fn(), deleteMany: vi.fn() },
     settings: { findUniqueOrThrow: vi.fn() },
   };
@@ -39,6 +39,7 @@ describe('syncDemoData', () => {
     vi.clearAllMocks();
     db.user.count.mockResolvedValue(0);
     db.user.findMany.mockResolvedValue(users);
+    db.user.findUnique.mockResolvedValue({ id: 'admin-demo' });
     db.settings.findUniqueOrThrow.mockResolvedValue({ capacity: 10, autoCloseHours: 2 });
     db.session.findMany.mockResolvedValue([]);
     db.session.updateMany.mockResolvedValue({ count: 1 });
@@ -53,6 +54,15 @@ describe('syncDemoData', () => {
     expect(db.user.createMany).not.toHaveBeenCalled();
     expect(db.session.deleteMany).not.toHaveBeenCalled();
     expect(db.session.createMany).not.toHaveBeenCalled();
+  });
+
+  it('creates the read-only demo admin once', async () => {
+    db.user.findUnique.mockResolvedValue(null);
+
+    await sync();
+
+    const [{ data }] = db.user.createMany.mock.calls[0];
+    expect(data).toEqual([expect.objectContaining({ username: 'admin.demo', role: 'ADMIN', isDemo: true })]);
   });
 
   it('creates only the fictional accounts that are missing', async () => {

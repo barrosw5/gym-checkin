@@ -30,6 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayload): Promise<AuthUser> {
     const user = await this.authService.getActiveUser(payload.sub, payload.iat);
     // Role from the DB, not from the token: role changes apply immediately
-    return { userId: user.id, username: user.username, role: user.role };
+    return { userId: user.id, username: user.username, role: user.role, isDemo: user.isDemo };
   }
 }

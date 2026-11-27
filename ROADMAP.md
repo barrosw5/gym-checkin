@@ -303,7 +303,7 @@ Uma fase só para o frontend ficar bonito, consistente e bem documentado. Vem an
   - [x] Início do sócio
   - [x] Estatísticas
   - [x] Receção
-  - [ ] Contas (admin)
+  - [x] Contas (admin), com um admin de demonstração só de leitura
   - [ ] Ecrã do QR
 - [ ] Screenshots e vídeo da app nos dois temas
 
