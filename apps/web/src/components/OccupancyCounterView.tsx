@@ -10,6 +10,8 @@ export interface OccupancyCounterViewProps {
   occupancy: OccupancyView | null;
   /** The live connection dropped: the value shown may be outdated. */
   stale: boolean;
+  /** Bigger figure and blocks, where the occupancy is the main thing on screen. */
+  large?: boolean;
 }
 
 /** Up to this capacity every place is drawn; above it, a single bar. */
@@ -19,7 +21,7 @@ const MAX_DRAWN_PLACES = 24;
  * The screen's moment: one block per place in the gym, like the hooks on
  * the reception key board. Taken places are lime; all turn orange when full.
  */
-export default function OccupancyCounterView({ occupancy, stale }: OccupancyCounterViewProps) {
+export default function OccupancyCounterView({ occupancy, stale, large = false }: OccupancyCounterViewProps) {
   const { t } = useTranslation();
 
   if (!occupancy) {
@@ -41,9 +43,9 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
           <p className="text-sm text-ink-2">{t("occupancy.label")}</p>
           {isFull && <p className="text-sm font-medium text-warn">{t("occupancy.full")}</p>}
         </div>
-        <p className="mt-1 text-5xl font-medium tracking-tight text-ink tabular-nums">
+        <p className={cn("mt-1 font-medium tracking-tight text-ink tabular-nums", large ? "text-6xl lg:text-8xl" : "text-5xl")}>
           {count}
-          <span className="text-2xl text-ink-3">/{capacity}</span>
+          <span className={cn("text-ink-3", large ? "text-3xl lg:text-4xl" : "text-2xl")}>/{capacity}</span>
         </p>
 
         {capacity <= MAX_DRAWN_PLACES ? (
@@ -56,7 +58,8 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
               <span
                 key={i}
                 className={cn(
-                  "h-8 flex-1 rounded-md transition-colors duration-300 ease-(--ease-out)",
+                  "flex-1 rounded-md transition-colors duration-300 ease-(--ease-out)",
+                  large ? "h-10 lg:h-16" : "h-8",
                   i < count ? taken : "bg-raised ring-1 ring-inset ring-line",
                 )}
               />

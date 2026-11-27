@@ -51,13 +51,22 @@ export const pt = {
     ADMIN: "Admin",
   },
   auth: {
-    title: "Ginásio Demo",
     username: "Username",
     password: "Password",
     submit: "Entrar",
     submitting: "A entrar...",
     logout: "Terminar sessão",
     changePassword: "Mudar password",
+  },
+  login: {
+    headline: "Sabe quão cheio está o ginásio antes de ires",
+    subline: "Entra e sai pelo telemóvel, com o QR do ecrã ou pedindo à receção",
+    footnote: "Ginásio fictício, criado para um projeto de portefólio",
+  },
+  demo: {
+    hint: "Experimentar a demo, sem password",
+    member: "Entrar como sócio",
+    reception: "Entrar como receção",
   },
   route: {
     serverDown: "Não foi possível ligar ao servidor.",
