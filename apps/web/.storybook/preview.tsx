@@ -2,10 +2,12 @@ import type { Preview } from "@storybook/react-vite";
 import { MemoryRouter } from "react-router-dom";
 import { LocaleContext } from "../src/core/i18n/context";
 import type { Locale } from "../src/core/i18n/types";
+import { ThemeContext } from "../src/core/theme/context";
+import type { Theme } from "../src/core/types/theme";
 import "../src/index.css";
 
 const preview: Preview = {
-  // A PT | EN switch in the toolbar: every story in both languages
+  // Toolbar switches: every story in both languages and both themes
   globalTypes: {
     locale: {
       description: "Language",
@@ -19,20 +21,40 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    theme: {
+      description: "Theme",
+      toolbar: {
+        title: "Theme",
+        icon: "contrast",
+        items: [
+          { value: "light", title: "Light" },
+          { value: "dark", title: "Dark" },
+        ],
+        dynamicTitle: true,
+      },
+    },
   },
-  initialGlobals: { locale: "pt" },
+  initialGlobals: { locale: "pt", theme: "light" },
 
   decorators: [
-    // Language from the toolbar (not localStorage), router for <Link>
-    (Story, context) => (
-      <LocaleContext.Provider
-        value={{ locale: context.globals.locale as Locale, setLocale: () => undefined }}
-      >
-        <MemoryRouter>
-          <Story />
-        </MemoryRouter>
-      </LocaleContext.Provider>
-    ),
+    // Language and theme from the toolbar (not localStorage), router for <Link>
+    (Story, context) => {
+      const theme = context.globals.theme as Theme;
+      // The same attribute ThemeProvider sets in the app
+      document.documentElement.dataset.theme = theme;
+
+      return (
+        <ThemeContext.Provider value={{ theme, setTheme: () => undefined }}>
+          <LocaleContext.Provider
+            value={{ locale: context.globals.locale as Locale, setLocale: () => undefined }}
+          >
+            <MemoryRouter>
+              <Story />
+            </MemoryRouter>
+          </LocaleContext.Provider>
+        </ThemeContext.Provider>
+      );
+    },
   ],
 
   parameters: {

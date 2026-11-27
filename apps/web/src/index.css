@@ -1,66 +1,127 @@
 @import "tailwindcss";
 
 /*
- * Design tokens, defined once. Direction: calm and institutional,
- * the reception desk and its key board. Surfaces stay neutral (slate, a
- * faintly blue "ink" grey); navy is the one accent for
- * actions and selection; gold only carries the signature (the member
- * number key tag). Text/background pairs used in components pass WCAG AA (4.5:1).
+ * Design tokens, defined once. Direction: sporty and exact. Neutral graphite
+ * surfaces, one lime accent for actions, selection and the data that matters,
+ * and the race bib as the signature (member numbers).
+ *
+ * Components use roles (surface, ink, accent), never fixed colours, so both
+ * themes come from this file. Text pairs pass WCAG AA (4.5:1), data colours
+ * pass 3:1 against their background.
  * Design pass based on unslop by Damir Sokolovsky (@heydamir), CC BY 4.0.
  */
 @theme {
-  /* Navy: the accent (primary action, selection) */
-  --color-navy-50: #eef1fb;
-  --color-navy-100: #d9def5;
-  --color-navy-200: #b3bdea;
-  --color-navy-300: #8494d8;
-  --color-navy-400: #5568c3;
-  --color-navy-500: #3447ad;
-  --color-navy-600: #26389a;
-  --color-navy-700: #1f2e85;
-  --color-navy-800: #1a2669;
-  --color-navy-900: #141d4f;
-  --color-navy-950: #0c1233;
-
-  /* Gold: signature only (brass key tags) */
-  --color-gold-50: #fdf7ec;
-  --color-gold-100: #f9e9cb;
-  --color-gold-200: #f3d293;
-  --color-gold-300: #ecb95c;
-  --color-gold-400: #e4a541;
-  --color-gold-500: #d48c25;
-  --color-gold-600: #b46f1b;
-  --color-gold-700: #8f5419;
-
-  /* Ember: the band of the shield. "Full" and warnings */
-  --color-ember-50: #fff6eb;
-  --color-ember-100: #fde8cc;
-  --color-ember-500: #f7941d;
-  --color-ember-700: #b45309;
-
-  /* Sky: the field of the shield. Informative states */
-  --color-sky-50: #f0f9ff;
-  --color-sky-100: #dbf2fb;
-  --color-sky-500: #33b5e5;
-  --color-sky-800: #075985;
-
   --font-sans: "Figtree Variable", system-ui, "Segoe UI", Roboto, sans-serif;
 
   /* One easing curve for every transition */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Role -> utility (bg-surface, text-ink...). `inline`: the utility reads the
+   variable of the active theme, not a copy taken at :root */
+@theme inline {
+  /* Surfaces, from the page to what sits on it */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-selected: var(--selected);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  /* Three text roles */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  /* Lime: `accent` is a fill (with on-accent text on it), `accent-ink` is the
+     accent used as text, which needs a darker shade on light surfaces */
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+
+  /* Charts, occupancy, "inside now" */
+  --color-data: var(--data);
+  --color-data-soft: var(--data-soft);
+
+  /* The race bib (member numbers only) */
+  --color-bib: var(--bib);
+  --color-bib-ink: var(--bib-ink);
+
+  /* Meaning only */
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-solid: var(--warn-solid);
+}
+
 @layer base {
   :root {
+    /* Native controls (date picker, file input, scrollbars) follow the theme */
     color-scheme: light;
+
+    --canvas: #f4f4f1;
+    --surface: #ffffff;
+    --raised: #ecece8;
+    --selected: #ffffff;
+    --line: rgb(22 22 24 / 0.09);
+    --line-strong: rgb(22 22 24 / 0.2);
+    --ink: #17171a;
+    --ink-2: #4a4a51;
+    --ink-3: #5f5f67;
+    --accent: #c6f24e;
+    --accent-hover: #b8e63a;
+    --on-accent: #16190a;
+    --accent-ink: #456100;
+    --accent-soft: #eefac9;
+    --data: #5c9400;
+    --data-soft: #dcefa6;
+    --bib: #17171a;
+    --bib-ink: #c6f24e;
+    --danger: #b42318;
+    --danger-soft: #fdecea;
+    --warn: #924500;
+    --warn-soft: #fdf0e0;
+    --warn-solid: #c2590a;
+  }
+
+  /* Set on <html> by the script in index.html, then by ThemeProvider */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --canvas: #0f0f11;
+    --surface: #18181b;
+    --raised: #232327;
+    --selected: #38383f;
+    --line: rgb(255 255 255 / 0.08);
+    --line-strong: rgb(255 255 255 / 0.2);
+    --ink: #f4f4f2;
+    --ink-2: #bcbcc2;
+    --ink-3: #9a9aa2;
+    --accent: #c6f24e;
+    --accent-hover: #d4f77a;
+    --on-accent: #16190a;
+    --accent-ink: #c6f24e;
+    --accent-soft: #26300f;
+    --data: #c6f24e;
+    --data-soft: #34431a;
+    --bib: #c6f24e;
+    --bib-ink: #16190a;
+    --danger: #ff9a90;
+    --danger-soft: #3a1a17;
+    --warn: #ffb870;
+    --warn-soft: #38240f;
+    --warn-solid: #ff9f45;
   }
 
   body {
-    @apply bg-slate-50 font-sans text-slate-900 antialiased;
+    @apply bg-canvas font-sans text-ink antialiased;
   }
 
   /* One visible focus ring everywhere (keyboard users), in the accent */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-navy-500;
+    @apply outline-2 outline-offset-2 outline-accent-ink;
   }
 }

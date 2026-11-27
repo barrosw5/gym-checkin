@@ -21,7 +21,7 @@ export default function QrCheckinView({ state, alreadyIn }: QrCheckinViewProps) 
     <div className="flex flex-col gap-4">
       {state.status === "working" && (
         <Card>
-          <p className="text-sm text-slate-500">{t("qrCheckin.working")}</p>
+          <p className="text-sm text-ink-3">{t("qrCheckin.working")}</p>
         </Card>
       )}
 
@@ -29,21 +29,21 @@ export default function QrCheckinView({ state, alreadyIn }: QrCheckinViewProps) 
         // role="status": screen readers announce the result
         <Card>
           <div role="status" className="flex flex-col items-start gap-3">
-            <span className="grid size-12 place-items-center rounded-full bg-green-50 text-green-700">
+            <span className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent-ink">
               <CircleCheck size={28} strokeWidth={1.5} aria-hidden="true" />
             </span>
-            <h1 className="text-2xl font-medium text-slate-900">{t("qrCheckin.success")}</h1>
-            <p className="text-slate-600 tabular-nums">
+            <h1 className="text-2xl font-medium text-ink">{t("qrCheckin.success")}</h1>
+            <p className="text-ink-2 tabular-nums">
               {t("qrCheckin.successAt", { time: formatTime(state.session.entryAt, languageTag) })}
             </p>
-            <p className="text-sm text-slate-500">{t("qrCheckin.howToLeave")}</p>
+            <p className="text-sm text-ink-3">{t("qrCheckin.howToLeave")}</p>
           </div>
         </Card>
       )}
 
       {state.status === "already-in" && (
         <>
-          <h1 className="text-2xl font-medium text-slate-900">{t("qrCheckin.alreadyIn")}</h1>
+          <h1 className="text-2xl font-medium text-ink">{t("qrCheckin.alreadyIn")}</h1>
           {alreadyIn}
         </>
       )}
@@ -51,14 +51,14 @@ export default function QrCheckinView({ state, alreadyIn }: QrCheckinViewProps) 
       {state.status === "error" && (
         <Card>
           <div className="flex flex-col gap-3">
-            <h1 className="text-2xl font-medium text-slate-900">{t("qrCheckin.failed")}</h1>
+            <h1 className="text-2xl font-medium text-ink">{t("qrCheckin.failed")}</h1>
             <Alert tone="error">{tm(state.message)}</Alert>
           </div>
         </Card>
       )}
 
       {state.status !== "working" && (
-        <Link to="/dashboard" className="inline-flex h-11 items-center font-medium text-navy-700 hover:text-navy-900">
+        <Link to="/dashboard" className="inline-flex h-11 items-center font-medium text-accent-ink hover:text-ink">
           {t("common.goHome")}
         </Link>
       )}

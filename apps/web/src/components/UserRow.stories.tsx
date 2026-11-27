@@ -16,7 +16,7 @@ const meta = {
   component: UserRow,
   args: { user: student, busy: false, onUpdate: fn() },
   // A row is an <li>: render it inside a list, as UsersAdminView does
-  decorators: [(Story) => <ul className="max-w-3xl divide-y divide-slate-200">{Story()}</ul>],
+  decorators: [(Story) => <ul className="max-w-3xl divide-y divide-line">{Story()}</ul>],
 } satisfies Meta<typeof UserRow>;
 
 export default meta;

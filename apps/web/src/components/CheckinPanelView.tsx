@@ -33,7 +33,7 @@ export default function CheckinPanelView({
   return (
     <Card>
       <div className="flex flex-col gap-4">
-        {state.status === "loading" && <p className="text-sm text-slate-500">{t("checkin.checking")}</p>}
+        {state.status === "loading" && <p className="text-sm text-ink-3">{t("checkin.checking")}</p>}
 
         {state.status === "error" && (
           <>
@@ -46,8 +46,8 @@ export default function CheckinPanelView({
 
         {state.status === "in" && (
           <>
-            <p className="flex items-center gap-2.5 text-[15px] font-medium text-slate-900 tabular-nums">
-              <span aria-hidden="true" className="size-2.5 rounded-full bg-green-600 ring-4 ring-green-600/15" />
+            <p className="flex items-center gap-2.5 text-[15px] font-medium text-ink tabular-nums">
+              <span aria-hidden="true" className="size-2.5 rounded-full bg-data ring-4 ring-data/20" />
               {t("checkin.inSince", { time: formatTime(state.session.entryAt, languageTag) })}
             </p>
             <Button size="lg" fullWidth loading={busy} onClick={onLeave}>
@@ -65,7 +65,7 @@ export default function CheckinPanelView({
 
         {state.status === "out" && (
           <>
-            <p className="text-[15px] text-slate-600">{t("checkin.out")}</p>
+            <p className="text-[15px] text-ink-2">{t("checkin.out")}</p>
             {state.methods.includes("RECEPTION_APPROVAL") && (
               <Button size="lg" fullWidth loading={busy} onClick={onRequestEntry}>
                 {!busy && <LogIn {...ICON} />}
@@ -73,7 +73,7 @@ export default function CheckinPanelView({
               </Button>
             )}
             {state.methods.includes("SCREEN_QR") && (
-              <p className="flex items-center gap-2 text-sm text-slate-500">
+              <p className="flex items-center gap-2 text-sm text-ink-3">
                 <QrCode {...ICON} className="shrink-0" />
                 {t("checkin.orScanQr")}
               </p>

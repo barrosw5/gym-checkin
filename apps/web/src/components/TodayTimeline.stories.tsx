@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Finished visits light, people still inside dark. */
 export const Day: Story = {};
-/** A forgotten key closed by the job stands out in ember. */
+/** A forgotten key closed by the job stands out in orange. */
 export const AutoClosed: Story = {
   args: {
     sessions: [{ id: "s9", name: "Rui Costa", room: "102", entryAt: at("06:00:00"), exitAt: at("10:00:00"), closedBy: "AUTO" }],

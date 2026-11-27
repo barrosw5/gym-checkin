@@ -38,17 +38,17 @@ export default function TodayTimeline({ sessions, now }: TodayTimelineProps) {
           });
           return (
             <li key={s.id} className="grid grid-cols-[6rem_1fr] items-center gap-2 text-sm">
-              <span className="truncate text-slate-700" aria-hidden="true">
+              <span className="truncate text-ink-2" aria-hidden="true">
                 {s.name}
               </span>
-              <span className="relative h-4 rounded-sm bg-slate-50">
+              <span className="relative h-4 rounded-sm bg-raised">
                 <span className="sr-only">{label}</span>
                 <span
                   aria-hidden="true"
                   className={cn(
                     "absolute inset-y-0 rounded-sm",
-                    s.exitAt ? "bg-navy-300" : "bg-navy-700",
-                    s.closedBy === "AUTO" && "bg-ember-500/60",
+                    s.exitAt ? "bg-data/45" : "bg-data",
+                    s.closedBy === "AUTO" && "bg-warn-solid/70",
                   )}
                   // Dynamic: where the bar starts and how long it is (at least visible)
                   style={{ left: percent(start), width: `max(3px, ${percent(Math.max(0, end - start))})` }}
@@ -59,7 +59,7 @@ export default function TodayTimeline({ sessions, now }: TodayTimelineProps) {
           );
         })}
       </ol>
-      <div aria-hidden="true" className="mt-2 grid grid-cols-[6rem_1fr] gap-2 text-xs text-slate-500 tabular-nums">
+      <div aria-hidden="true" className="mt-2 grid grid-cols-[6rem_1fr] gap-2 text-xs text-ink-3 tabular-nums">
         <span />
         <span className="flex justify-between">
           {TICKS.map((minute) => (

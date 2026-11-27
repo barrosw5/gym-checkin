@@ -5,7 +5,7 @@ import { cn } from "../core/utils/cn";
 import { useTranslation } from "../hooks/useTranslation";
 import Button from "./ui/Button";
 import { ICON } from "./ui/icon";
-import KeyTag from "./ui/KeyTag";
+import MemberBib from "./ui/MemberBib";
 
 interface UserRowProps {
   user: AdminUser;
@@ -23,12 +23,12 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
     // drop every text in the row below WCAG AA contrast)
     <li className="flex flex-wrap items-center gap-x-4 gap-y-3 py-3">
       <div className="min-w-48 flex-1">
-        <p className={cn("flex items-center gap-2 font-medium", user.active ? "text-slate-900" : "text-slate-500")}>
+        <p className={cn("flex items-center gap-2 font-medium", user.active ? "text-ink" : "text-ink-3")}>
           {user.name}
-          <KeyTag room={user.room} />
+          <MemberBib room={user.room} />
         </p>
         {/* Usernames have no spaces: let a long one break instead of overflowing on a phone */}
-        <p className="mt-0.5 text-sm text-slate-500 wrap-anywhere">
+        <p className="mt-0.5 text-sm text-ink-3 wrap-anywhere">
           {user.username} · {t(`roles.${user.role}`)}
           {!user.active && ` · ${t("users.deactivated")}`}
         </p>
@@ -48,7 +48,7 @@ export default function UserRow({ user, busy, onUpdate }: UserRowProps) {
             onChange={(e) => setRoom(e.target.value)}
             required
             // 16 px on phones: below that, iOS zooms the page in on focus
-            className="block h-9 w-20 rounded-lg bg-white px-2 text-base tabular-nums sm:text-sm ring-1 ring-inset ring-slate-900/15 focus:outline-none focus:ring-2 focus:ring-navy-500"
+            className="block h-9 w-20 rounded-lg bg-surface px-2 text-base tabular-nums sm:text-sm ring-1 ring-inset ring-line-strong focus:outline-none focus:ring-2 focus:ring-accent-ink"
           />
         </label>
         <Button size="sm" variant="secondary" type="submit" disabled={busy || room.trim() === user.room}>

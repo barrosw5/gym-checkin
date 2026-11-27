@@ -14,10 +14,10 @@ export interface AlertProps {
 }
 
 const TONES: Record<AlertTone, { box: string; Icon: typeof Info }> = {
-  error: { box: "bg-red-50 text-red-800", Icon: CircleAlert },
-  warning: { box: "bg-ember-50 text-ember-700", Icon: TriangleAlert },
-  info: { box: "bg-sky-50 text-sky-800", Icon: Info },
-  success: { box: "bg-green-50 text-green-800", Icon: CircleCheck },
+  error: { box: "bg-danger-soft text-danger", Icon: CircleAlert },
+  warning: { box: "bg-warn-soft text-warn", Icon: TriangleAlert },
+  info: { box: "bg-raised text-ink-2", Icon: Info },
+  success: { box: "bg-accent-soft text-accent-ink", Icon: CircleCheck },
 };
 
 /**

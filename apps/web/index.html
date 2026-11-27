@@ -14,8 +14,22 @@
     <!-- iOS ignores the manifest icons: it needs its own PNG -->
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Ginásio" />
-    <!-- Browser bar colour on Android: the white header -->
+    <!-- Browser bar colour on Android: the header (ThemeProvider updates it) -->
     <meta name="theme-color" content="#ffffff" />
+    <!-- Picks the theme before the first paint, so a dark-theme user never
+         sees a white flash while the app loads. Same rule as themeService -->
+    <script>
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem("theme");
+        } catch {
+          // Storage blocked: follow the device
+        }
+        const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

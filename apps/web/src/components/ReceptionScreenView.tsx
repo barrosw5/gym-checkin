@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import type { ReactNode } from "react";
 import { useTranslation } from "../hooks/useTranslation";
 import LanguagePicker from "./LanguagePicker";
+import ThemeToggle from "./ThemeToggle";
 import { ICON } from "./ui/icon";
 
 export interface ReceptionScreenViewProps {
@@ -16,27 +17,28 @@ export interface ReceptionScreenViewProps {
 
 /**
  * Full screen for the reception PC/tablet, facing students. The second
- * moment: the QR set in a navy ring, with a gold caption.
+ * moment: the QR set in a lime plaque.
  */
 export default function ReceptionScreenView({ qrUrl, stale, occupancy }: ReceptionScreenViewProps) {
   const { t } = useTranslation();
 
   return (
-    <main className="relative flex min-h-svh flex-col items-center justify-center gap-6 bg-slate-50 px-4 py-8 text-center">
+    <main className="relative flex min-h-svh flex-col items-center justify-center gap-6 bg-canvas px-4 py-8 text-center">
       {/* No PageLayout here (full screen), so the tab title is set here */}
       <title>{t("layout.documentTitle", { page: t("receptionScreen.title") })}</title>
-      {/* Staff picks the language the screen shows to students */}
-      <div className="absolute top-4 right-4">
+      {/* Staff picks the language and theme the screen shows to students */}
+      <div className="absolute top-4 right-4 flex items-center gap-2">
         <LanguagePicker />
+        <ThemeToggle />
       </div>
 
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-medium text-slate-900 sm:text-5xl">{t("receptionScreen.title")}</h1>
-        <p className="text-lg text-slate-600">{t("receptionScreen.instruction")}</p>
+        <h1 className="text-4xl font-medium text-ink sm:text-5xl">{t("receptionScreen.title")}</h1>
+        <p className="text-lg text-ink-2">{t("receptionScreen.instruction")}</p>
       </div>
 
-      {/* The plaque: navy ring, white field, gold caption */}
-      <figure className="flex flex-col items-center gap-3 rounded-[32px] bg-navy-700 p-3 shadow-[0_8px_24px_rgba(15,23,42,0.12)] sm:p-4">
+      {/* The plaque: lime frame, white field (in both themes: scanners need it) */}
+      <figure className="flex flex-col items-center gap-3 rounded-[32px] bg-accent p-3 shadow-[0_8px_24px_rgba(15,23,42,0.12)] sm:p-4">
         <div className="rounded-[20px] bg-white p-3 sm:p-4">
           {qrUrl ? (
             <QRCodeSVG
@@ -51,16 +53,16 @@ export default function ReceptionScreenView({ qrUrl, stale, occupancy }: Recepti
               style={{ width: "min(70vw, 52vh)", height: "auto" }}
             />
           ) : (
-            <div className="grid aspect-square w-[min(70vw,52vh)] place-items-center text-slate-500">
+            <div className="grid aspect-square w-[min(70vw,52vh)] place-items-center text-ink-3">
               {t("receptionScreen.generating")}
             </div>
           )}
         </div>
-        <figcaption className="pb-1 text-sm font-medium text-gold-300">{t("receptionScreen.caption")}</figcaption>
+        <figcaption className="pb-1 text-sm font-semibold text-on-accent">{t("receptionScreen.caption")}</figcaption>
       </figure>
 
       {stale && (
-        <p role="alert" className="flex items-center gap-2 text-sm font-medium text-red-700">
+        <p role="alert" className="flex items-center gap-2 text-sm font-medium text-danger">
           <WifiOff {...ICON} />
           {t("receptionScreen.offline")}
         </p>

@@ -24,6 +24,10 @@ export const pt = {
     documentTitle: "{page} · Ginásio Demo",
     documentTitleHome: "Ginásio Demo",
   },
+  theme: {
+    toDark: "Mudar para o tema escuro",
+    toLight: "Mudar para o tema claro",
+  },
   language: {
     label: "Língua",
     pt: "Português",
@@ -138,7 +142,7 @@ export const pt = {
     },
     heatmap: {
       title: "Por dia da semana e hora",
-      hint: "Média de pessoas lá dentro. Mais escuro, mais gente.",
+      hint: "Média de pessoas lá dentro. Cor mais forte, mais gente.",
       cell: "{day}, {hour}h: {value}",
       noData: "sem dados",
     },

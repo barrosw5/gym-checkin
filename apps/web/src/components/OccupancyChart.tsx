@@ -24,20 +24,20 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
       <div aria-hidden="true" className="h-56 sm:h-64">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
-            <CartesianGrid vertical={false} stroke="var(--color-slate-200)" />
+            <CartesianGrid vertical={false} stroke="var(--line)" />
             <XAxis
               dataKey="minute"
               type="number"
               domain={[0, 1440]}
               ticks={TICKS}
               tickFormatter={formatMinute}
-              tick={{ fontSize: 12, fill: "var(--color-slate-500)" }}
+              tick={{ fontSize: 12, fill: "var(--ink-3)" }}
               tickLine={false}
-              axisLine={{ stroke: "var(--color-slate-300)" }}
+              axisLine={{ stroke: "var(--line-strong)" }}
             />
             <YAxis
               allowDecimals={false}
-              tick={{ fontSize: 12, fill: "var(--color-slate-500)" }}
+              tick={{ fontSize: 12, fill: "var(--ink-3)" }}
               tickLine={false}
               axisLine={false}
             />
@@ -47,15 +47,22 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
                 t("stats.chart.people", { value: formatNumber(Number(value), languageTag) }),
                 name,
               ]}
-              contentStyle={{ borderRadius: 8, borderColor: "var(--color-slate-200)", fontSize: 13 }}
+              contentStyle={{
+                borderRadius: 8,
+                borderColor: "var(--line-strong)",
+                background: "var(--surface)",
+                fontSize: 13,
+              }}
+              labelStyle={{ color: "var(--ink)" }}
+              itemStyle={{ color: "var(--ink-2)" }}
             />
             {showTypical && (
               <Area
                 dataKey="typical"
                 name={t("stats.chart.typical")}
                 type="monotone"
-                stroke="var(--color-navy-300)"
-                fill="var(--color-navy-100)"
+                stroke="var(--line-strong)"
+                fill="var(--raised)"
                 fillOpacity={0.6}
                 isAnimationActive={false}
               />
@@ -65,7 +72,7 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
                 dataKey="today"
                 name={t("stats.chart.today")}
                 type="stepAfter"
-                stroke="var(--color-navy-700)"
+                stroke="var(--data)"
                 strokeWidth={2}
                 dot={false}
                 isAnimationActive={false}
@@ -75,8 +82,8 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
                 dataKey="today"
                 name={t("stats.chart.today")}
                 type="stepAfter"
-                stroke="var(--color-navy-700)"
-                fill="var(--color-navy-100)"
+                stroke="var(--data)"
+                fill="var(--data-soft)"
                 strokeWidth={2}
                 isAnimationActive={false}
               />
@@ -84,16 +91,16 @@ export default function OccupancyChart({ rows, showTypical, summary }: Occupancy
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <figcaption className="mt-3 flex flex-col gap-2 text-sm text-slate-600">
+      <figcaption className="mt-3 flex flex-col gap-2 text-sm text-ink-2">
         {showTypical && (
           // The legend: both lines named, with the same colours as drawn
           <span className="flex flex-wrap gap-x-4 gap-y-1" aria-hidden="true">
             <span className="flex items-center gap-1.5">
-              <span className="h-0.5 w-4 rounded bg-navy-700" />
+              <span className="h-0.5 w-4 rounded bg-data" />
               {t("stats.chart.today")}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-4 rounded-sm bg-navy-100 ring-1 ring-navy-300" />
+              <span className="h-2.5 w-4 rounded-sm bg-raised ring-1 ring-line-strong" />
               {t("stats.chart.typical")}
             </span>
           </span>

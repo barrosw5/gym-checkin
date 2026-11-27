@@ -11,13 +11,13 @@ export default function AccountActions() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-900/[0.08] pt-4">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
       {user.isDemo ? (
         <span />
       ) : (
         <Link
           to="/password"
-          className="inline-flex h-11 items-center gap-2 rounded-lg px-1 text-[15px] font-medium text-navy-700 hover:text-navy-900"
+          className="inline-flex h-11 items-center gap-2 rounded-lg px-1 text-[15px] font-medium text-accent-ink hover:text-ink"
         >
           <KeyRound {...ICON} />
           {t("auth.changePassword")}

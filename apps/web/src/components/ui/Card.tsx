@@ -18,18 +18,18 @@ export default function Card({ title, meta, className, children }: CardProps) {
     <section
       aria-labelledby={title ? titleId : undefined}
       className={cn(
-        "rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] ring-1 ring-slate-900/[0.08] sm:p-6",
+        "rounded-2xl bg-surface p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] ring-1 ring-line sm:p-6",
         className,
       )}
     >
       {(title || meta) && (
         <div className="mb-4 flex items-baseline justify-between gap-4">
           {title && (
-            <h2 id={titleId} className="text-base font-medium text-slate-900">
+            <h2 id={titleId} className="text-base font-medium text-ink">
               {title}
             </h2>
           )}
-          {meta && <div className="text-sm text-slate-500 tabular-nums">{meta}</div>}
+          {meta && <div className="text-sm text-ink-3 tabular-nums">{meta}</div>}
         </div>
       )}
       {children}

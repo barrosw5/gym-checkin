@@ -14,7 +14,7 @@ export default function TextField({ label, error, className, ...rest }: TextFiel
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="text-sm font-medium text-ink-2">
         {label}
       </label>
       <input
@@ -24,13 +24,13 @@ export default function TextField({ label, error, className, ...rest }: TextFiel
         aria-describedby={error ? errorId : undefined}
         className={cn(
           // text-base: 16 px stops iOS from zooming in when the field gets focus
-          "h-11 rounded-lg bg-white px-3 text-base text-slate-900 ring-1 ring-inset",
+          "h-11 rounded-lg bg-surface px-3 text-base text-ink ring-1 ring-inset",
           "transition-[box-shadow] duration-150 focus:outline-none focus:ring-2",
-          error ? "ring-red-700" : "ring-slate-900/15 focus:ring-navy-500",
+          error ? "ring-danger" : "ring-line-strong focus:ring-accent-ink",
         )}
       />
       {error && (
-        <p id={errorId} className="text-sm text-red-700">
+        <p id={errorId} className="text-sm text-danger">
           {error}
         </p>
       )}

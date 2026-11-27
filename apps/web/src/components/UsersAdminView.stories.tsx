@@ -24,7 +24,7 @@ const meta = {
     onClearImport: fn(),
     onUpdate: fn(),
   },
-  decorators: [(Story) => <div className="max-w-6xl bg-slate-50 p-6">{Story()}</div>],
+  decorators: [(Story) => <div className="max-w-6xl bg-raised p-6">{Story()}</div>],
 } satisfies Meta<typeof UsersAdminView>;
 
 export default meta;

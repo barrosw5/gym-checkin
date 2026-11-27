@@ -25,7 +25,7 @@ export default function SessionCorrectionForm({ session, busy, onSave }: Session
         e.preventDefault();
         onSave(entry, exit);
       }}
-      className="mt-3 flex flex-wrap items-end gap-3 rounded-xl bg-slate-50 p-3"
+      className="mt-3 flex flex-wrap items-end gap-3 rounded-xl bg-raised p-3"
     >
       <TextField
         label={t("sessions.entry")}

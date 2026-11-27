@@ -17,7 +17,7 @@ const MAX_DRAWN_PLACES = 24;
 
 /**
  * The screen's moment: one block per place in the gym, like the hooks on
- * the reception key board. Taken places are navy; all turn ember when full.
+ * the reception key board. Taken places are lime; all turn orange when full.
  */
 export default function OccupancyCounterView({ occupancy, stale }: OccupancyCounterViewProps) {
   const { t } = useTranslation();
@@ -25,25 +25,25 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
   if (!occupancy) {
     return (
       <Card>
-        <p className="text-sm text-slate-500">{t("occupancy.loading")}</p>
+        <p className="text-sm text-ink-3">{t("occupancy.loading")}</p>
       </Card>
     );
   }
 
   const { count, capacity, isFull } = occupancy;
-  const taken = isFull ? "bg-ember-700" : "bg-navy-700";
+  const taken = isFull ? "bg-warn-solid" : "bg-data";
 
   return (
     <Card>
       {/* aria-live: screen readers announce the new count when it changes */}
       <div aria-live="polite">
         <div className="flex items-baseline justify-between gap-4">
-          <p className="text-sm text-slate-600">{t("occupancy.label")}</p>
-          {isFull && <p className="text-sm font-medium text-ember-700">{t("occupancy.full")}</p>}
+          <p className="text-sm text-ink-2">{t("occupancy.label")}</p>
+          {isFull && <p className="text-sm font-medium text-warn">{t("occupancy.full")}</p>}
         </div>
-        <p className="mt-1 text-5xl font-medium tracking-tight text-slate-900 tabular-nums">
+        <p className="mt-1 text-5xl font-medium tracking-tight text-ink tabular-nums">
           {count}
-          <span className="text-2xl text-slate-500">/{capacity}</span>
+          <span className="text-2xl text-ink-3">/{capacity}</span>
         </p>
 
         {capacity <= MAX_DRAWN_PLACES ? (
@@ -57,7 +57,7 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
                 key={i}
                 className={cn(
                   "h-8 flex-1 rounded-md transition-colors duration-300 ease-(--ease-out)",
-                  i < count ? taken : "bg-slate-100 ring-1 ring-inset ring-slate-900/[0.06]",
+                  i < count ? taken : "bg-raised ring-1 ring-inset ring-line",
                 )}
               />
             ))}
@@ -66,7 +66,7 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
           <div
             role="img"
             aria-label={t("occupancy.places", { count, capacity })}
-            className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100"
+            className="mt-4 h-3 overflow-hidden rounded-full bg-raised"
           >
             {/* scaleX instead of width: animates on the GPU, never re-lays out */}
             <div
@@ -78,7 +78,7 @@ export default function OccupancyCounterView({ occupancy, stale }: OccupancyCoun
       </div>
 
       {stale && (
-        <p className="mt-3 flex items-center gap-2 text-sm text-slate-500">
+        <p className="mt-3 flex items-center gap-2 text-sm text-ink-3">
           <WifiOff {...ICON} />
           {t("common.reconnecting")}
         </p>

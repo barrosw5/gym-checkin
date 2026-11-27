@@ -11,12 +11,12 @@ export default function StatsLink() {
   return (
     <Card>
       <Link to="/stats" className="group flex min-h-11 items-center gap-3 rounded-lg">
-        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-700">
+        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-ink">
           <ChartColumn {...ICON} />
         </span>
         <span className="flex-1">
-          <span className="block font-medium text-navy-700 group-hover:text-navy-900">{t("stats.link")}</span>
-          <span className="block text-sm text-slate-500">{t("stats.linkHint")}</span>
+          <span className="block font-medium text-accent-ink group-hover:text-ink">{t("stats.link")}</span>
+          <span className="block text-sm text-ink-3">{t("stats.linkHint")}</span>
         </span>
       </Link>
     </Card>
