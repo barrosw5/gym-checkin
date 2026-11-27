@@ -36,6 +36,13 @@ describe('validateEnv', () => {
     );
   });
 
+  it('accepts DEMO_MODE "true" or "false" and rejects anything else', () => {
+    for (const DEMO_MODE of ['true', 'false']) {
+      expect(() => validateEnv({ ...validEnv, DEMO_MODE })).not.toThrow();
+    }
+    expect(() => validateEnv({ ...validEnv, DEMO_MODE: 'ture' })).toThrow(/DEMO_MODE/);
+  });
+
   it('reports every problem at once', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL.*JWT_SECRET.*QR_SECRET/);
   });

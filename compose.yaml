@@ -25,6 +25,8 @@ services:
       JWT_SECRET: local-only-jwt-secret-do-not-use-in-production
       QR_SECRET: local-only-qr-secret-do-not-use-in-production
       NODE_ENV: production
+      # Fictional members come and go during the day (the e2e test turns it off)
+      DEMO_MODE: ${DEMO_MODE:-true}
       # Same demo accounts as the README; admin only exists locally
       SEED_STUDENT_PASSWORD: estudante-demo
       SEED_RECEPTION_PASSWORD: rececao-demo

@@ -1,98 +1,23 @@
 /**
- * Demo statistics: 15 fake members and 90 days of visits.
- * Run on purpose only (pnpm db:seed-demo), never as part of a deploy.
+ * Demo data once: the fictional members and 90 days of their visits up to
+ * now. Run on purpose only (pnpm db:seed-demo), never as part of a deploy.
+ * To keep the data fresh, run the API with DEMO_MODE=true instead: it does
+ * this on startup and then keeps simulating the day (src/demo/).
  *
- * Safe to re-run: it recreates the visits of these fake members (so the
- * 90 days end today again) and touches nothing else.
+ * Safe to re-run: it only touches the sessions of the fictional members.
  */
-import { PrismaClient, Role } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import { randomBytes } from 'node:crypto';
-import { GYM_TIME_ZONE } from '@gym-checkin/shared';
-import { offsetAt } from '../src/stats/stats-window.js';
-import { DEMO_HABITS, buildDemoVisits, seededRandom } from './seed-data.js';
+import { PrismaClient } from '@prisma/client';
+import { DEMO_HISTORY_DAYS, syncDemoData } from '../src/demo/demo-sync.js';
 
 const prisma = new PrismaClient();
 
-const DAYS = 90;
-// Fixed seed: the same demo on every machine
-const DEMO_SEED = 90;
-
-const MEMBERS = [
-  ['ana.ferreira', 'Ana Ferreira', '214'],
-  ['rui.costa', 'Rui Costa', '102'],
-  ['ines.rocha', 'Inês Rocha', '318'],
-  ['tiago.matos', 'Tiago Matos', '411'],
-  ['joana.reis', 'Joana Reis', '118'],
-  ['pedro.alves', 'Pedro Alves', '220'],
-  ['marta.lopes', 'Marta Lopes', '305'],
-  ['diogo.santos', 'Diogo Santos', '407'],
-  ['beatriz.nunes', 'Beatriz Nunes', '126'],
-  ['miguel.sousa', 'Miguel Sousa', '233'],
-  ['sofia.pinto', 'Sofia Pinto', '312'],
-  ['andre.gomes', 'André Gomes', '419'],
-  ['carolina.dias', 'Carolina Dias', '109'],
-  ['francisco.lima', 'Francisco Lima', '226'],
-  ['leonor.cardoso', 'Leonor Cardoso', '330'],
-] as const;
-
-/** Today's date in Lisbon (the server may run in UTC). */
-function localToday(now: Date) {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: GYM_TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(now);
-  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
-  return { year: get('year'), month: get('month'), day: get('day') };
-}
-
 async function main() {
-  // Guard on the data itself, not on a flag that can be forgotten: a real
-  // install has imported members (isDemo = false), and then this stops
-  const realStudents = await prisma.user.count({ where: { role: Role.STUDENT, isDemo: false } });
-  if (realStudents > 0) {
-    throw new Error(
-      `Refusing to add demo data: this database has ${realStudents} real student account(s).`,
-    );
-  }
-
-  const members = [];
-  for (const [i, [username, name, room]] of MEMBERS.entries()) {
-    // A random password nobody knows: these accounts exist for the charts,
-    // nobody can log in with them
-    const passwordHash = await bcrypt.hash(randomBytes(32).toString('base64url'), 10);
-    const user = await prisma.user.upsert({
-      where: { username },
-      update: { isDemo: true, active: true },
-      create: { username, name, room, role: Role.STUDENT, isDemo: true, passwordHash },
-    });
-    members.push({ userId: user.id, habit: DEMO_HABITS[i % DEMO_HABITS.length] });
-  }
-
-  const { autoCloseHours } = await prisma.settings.findUniqueOrThrow({ where: { id: 'global' } });
-  const now = new Date();
-  const visits = buildDemoVisits({
-    members,
-    now,
-    days: DAYS,
-    autoCloseHours,
-    localMidnight: (year, month, day) => {
-      const utcMidnight = Date.UTC(year, month - 1, day);
-      return utcMidnight - offsetAt(utcMidnight, GYM_TIME_ZONE);
-    },
-    today: localToday(now),
-    random: seededRandom(DEMO_SEED),
+  const { created, closed, pruned } = await syncDemoData(prisma, {
+    now: new Date(),
+    days: DEMO_HISTORY_DAYS,
+    prune: true,
   });
-
-  // Replace only these members' visits, in one transaction: never half a demo
-  const ids = members.map((r) => r.userId);
-  const [, { count }] = await prisma.$transaction([
-    prisma.session.deleteMany({ where: { userId: { in: ids } } }),
-    prisma.session.createMany({ data: visits }),
-  ]);
-  console.log(`Seeded ${members.length} demo members and ${count} visits over ${DAYS} days`);
+  console.log(`Demo data ready: ${created} visits added, ${closed} closed, ${pruned} old ones removed`);
 }
 
 main()

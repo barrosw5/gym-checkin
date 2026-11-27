@@ -1,6 +1,7 @@
 import { PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { buildFakeSessions, seededRandom } from './seed-data.js';
+import { seededRandom } from '../src/demo/random.js';
+import { buildFakeSessions } from './seed-data.js';
 
 const prisma = new PrismaClient();
 

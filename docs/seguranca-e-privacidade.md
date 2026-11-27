@@ -18,6 +18,8 @@ Só o que o ginásio precisa: sem e-mail, telefone, fotografia nem localização
 
 O demo público só tem pessoas falsas. Os dados reais dos sócios destinam-se a uma instalação local, dentro da rede do ginásio (roadmap, fase 8), nunca ao demo na cloud.
 
+Para parecer viva, a demo simula sócios fictícios a entrar e a sair (`DEMO_MODE=true`, desligado por defeito). Ninguém consegue iniciar sessão com essas contas, só as visitas delas são alteradas, e a simulação recusa-se a correr se a base de dados tiver uma única conta de um sócio real.
+
 ## Quem vê o quê
 
 | | Sócio | Receção | Admin |

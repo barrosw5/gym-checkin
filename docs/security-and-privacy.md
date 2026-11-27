@@ -18,6 +18,8 @@ Only what the gym needs: no e-mail, phone number, photo or location.
 
 The public demo holds fake people only. Real members' data is meant for an on-premises install inside the gym's network (roadmap, phase 8), never the cloud demo.
 
+To look alive, the demo simulates fictional members coming and going (`DEMO_MODE=true`, off by default). Nobody can log in as them, only their own visits are changed, and the simulation refuses to run if the database holds a single real member account.
+
 ## Who sees what
 
 | | Member | Reception | Admin |

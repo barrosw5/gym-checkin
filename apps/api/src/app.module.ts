@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { AdminModule } from './admin/admin.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
+import { DemoModule } from './demo/demo.module.js';
 import { GymModule } from './gym/gym.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { StatsModule } from './stats/stats.module.js';
@@ -27,6 +28,8 @@ import { StatsModule } from './stats/stats.module.js';
     GymModule,
     AdminModule,
     StatsModule,
+    // Does nothing unless DEMO_MODE=true
+    DemoModule,
   ],
   controllers: [HealthController],
 })

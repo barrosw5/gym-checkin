@@ -66,7 +66,7 @@ Com o [Docker](https://docs.docker.com/get-docker/):
 docker compose up
 ```
 
-Abre <http://localhost:3000> e entra com as contas acima (admin local: `admin` / `admin-local-only`). Vem com 90 dias de visitas falsas, por isso as estatísticas aparecem cheias.
+Abre <http://localhost:3000> e entra com as contas acima (admin local: `admin` / `admin-local-only`). Vem com 90 dias de visitas falsas e sócios fictícios a entrar e a sair, por isso a app parece viva e as estatísticas aparecem cheias.
 
 ## Desenvolvimento
 
@@ -78,7 +78,7 @@ pnpm --filter @gym-checkin/shared build
 cp apps/api/.env.example apps/api/.env   # preencher DATABASE_URL, JWT_SECRET, QR_SECRET, SEED_*
 pnpm --filter api exec prisma migrate deploy
 pnpm --filter api db:seed                # as contas acima
-pnpm --filter api db:seed-demo           # opcional: 90 dias de visitas falsas
+pnpm --filter api db:seed-demo           # opcional: 90 dias de visitas falsas (DEMO_MODE=true no .env continua a gerá-las)
 pnpm --filter api start:dev              # API: http://localhost:3000/api
 pnpm --filter web dev                    # app: http://localhost:5173
 ```
