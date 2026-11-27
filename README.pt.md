@@ -18,22 +18,32 @@ Uma app de check-in para o **Ginásio Demo**, um ginásio fictício criado para 
 | --- | --- | --- |
 | Sócio | `joaosilva` | `estudante-demo` |
 | Receção | `rececao` | `rececao-demo` |
+| Admin (demo, só de leitura) | botão no login | |
 
-| Sócio, tema claro | Sócio, tema escuro |
+Não é preciso escrever nada: o login tem um botão para cada uma das três.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/tour-dark.webp">
+  <img src="docs/screenshots/tour-light.webp" alt="Uma volta pela app: login, início do sócio, estatísticas, receção, contas e ecrã do QR" width="100%">
+</picture>
+
+## Ecrãs
+
+| Login, com a ocupação ao vivo | Início do sócio |
 | --- | --- |
-| <img src="docs/screenshots/student-phone-light.png" alt="Início do sócio no tema claro: pessoas no ginásio agora, pedir entrada" width="300"> | <img src="docs/screenshots/student-phone-dark.png" alt="Início do sócio no tema escuro: pessoas no ginásio agora, pedir entrada" width="300"> |
+| <img src="docs/screenshots/login-desktop-light.png" alt="Login: frase e ocupação ao vivo ao lado do formulário e dos botões de demo" width="420"> | <img src="docs/screenshots/member-desktop-dark.png" alt="Início do sócio: pessoas lá dentro, pedir entrada, a curva de hoje e a melhor altura para ir" width="420"> |
 
-**Balcão da receção**
+| Balcão da receção | Ecrã do QR virado para os sócios |
+| --- | --- |
+| <img src="docs/screenshots/reception-desktop-dark.png" alt="Receção: ocupação, um pedido de entrada pendente e quem está lá dentro" width="420"> | <img src="docs/screenshots/qr-screen-dark.png" alt="Código QR rotativo em ecrã inteiro, com passos, ocupação ao vivo e contagem" width="420"> |
 
-<img src="docs/screenshots/reception-desk.png" alt="Receção: ocupação, um pedido de entrada pendente e as visitas de hoje numa linha do tempo" width="860">
+| Estatísticas | Contas (admin) |
+| --- | --- |
+| <img src="docs/screenshots/stats-desktop-light.png" alt="Estatísticas de 30 dias: números principais e hoje sobre o dia típico" width="420"> | <img src="docs/screenshots/accounts-desktop-light.png" alt="Tabela de contas com pesquisa e botão de importar" width="420"> |
 
-**Estatísticas**
-
-<img src="docs/screenshots/stats-desktop.png" alt="Estatísticas de 30 dias no tema escuro: hoje sobre o dia típico, duração das visitas e heatmap por dia da semana e hora" width="860">
-
-**Ecrã do QR na receção**
-
-<img src="docs/screenshots/qr-screen.png" alt="Código QR rotativo em ecrã inteiro, com a ocupação em tempo real" width="860">
+| Telemóvel, claro | Telemóvel, escuro | Horas com mais gente |
+| --- | --- | --- |
+| <img src="docs/screenshots/member-phone-light.png" alt="Início do sócio no telemóvel, tema claro" width="260"> | <img src="docs/screenshots/member-phone-dark.png" alt="Início do sócio no telemóvel, tema escuro" width="260"> | <img src="docs/screenshots/heatmap-phone-dark.png" alt="Heatmap por dia da semana e hora no telemóvel" width="260"> |
 
 ## Porquê
 
@@ -45,7 +55,8 @@ No Ginásio Demo, que é fictício, é preciso ir buscar a chave à receção e 
 - **Entras** lendo o QR do ecrã da receção, ou pedindo à receção que te aceite. Uma foto do QR não funciona a partir de casa: o código muda a cada 30 segundos.
 - **Sais** com um toque. Quem se esquece de sair é fechado automaticamente.
 - **Vês quando está mais calmo**: um dia típico, as horas com mais gente em cada dia da semana e a melhor altura para ir hoje.
-- **A receção** aceita pedidos, vê quem está lá dentro e as visitas de hoje numa linha do tempo, e corrige horas erradas.
+- **A receção** aceita pedidos, vê quem está lá dentro e as visitas de hoje numa linha do tempo, e corrige horas erradas, tudo num só ecrã.
+- **O admin** importa sócios de um ficheiro CSV e gere as contas.
 - **Funciona como uma app** no telemóvel (instalável), em português e inglês, com tema claro e escuro.
 
 ## Para quem programa
@@ -93,6 +104,8 @@ pnpm --filter web dev                    # app: http://localhost:5173
 ```
 
 Verificações: `pnpm lint`, `pnpm test` e `pnpm build` em cada pacote, `pnpm storybook` e `pnpm e2e` em `apps/web`. O CI corre-as em cada pull request.
+
+As imagens acima saem de `pnpm --filter web screenshots` (com a API compilada e o servidor de desenvolvimento do site a correr): mostra sempre o mesmo fim de tarde cheio, por isso podem ser refeitas a qualquer hora.
 
 ## Documentação
 
