@@ -1,5 +1,13 @@
 # gym-checkin
 
+[![CI](https://github.com/barrosw5/gym-checkin/actions/workflows/ci.yml/badge.svg)](https://github.com/barrosw5/gym-checkin/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/barrosw5/gym-checkin/actions/workflows/codeql.yml/badge.svg)](https://github.com/barrosw5/gym-checkin/actions/workflows/codeql.yml)
+![Node](https://img.shields.io/badge/Node-24-3c873a)
+![React](https://img.shields.io/badge/Web-React%20%2B%20Vite%20%2B%20TypeScript-0b0b0b)
+![NestJS](https://img.shields.io/badge/API-NestJS%20%2B%20Prisma-5a8000)
+![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-336791)
+[![License](https://img.shields.io/badge/License-MIT-52514e)](LICENSE)
+
 **English** · [Português](README.pt.md)
 
 A gym check-in app for **Demo Gym**, a fictional gym made up for this learning and portfolio project: know how full the gym is before you go, and check in and out from your phone.
@@ -30,7 +38,7 @@ At the fictional Demo Gym, you pick up the key at reception and fill in a paper 
 - **Check out** with one tap. Forgotten check-outs are closed automatically.
 - **See when it is quietest**: a typical day, the busiest hours of each weekday and the best time to go today.
 - **Reception** accepts requests, sees who is inside and today's visits on a timeline, and fixes wrong times.
-- **Works like an app** on the phone (installable), in Portuguese and English.
+- **Works like an app** on the phone (installable), in Portuguese and English, with light and dark themes.
 
 ## For developers
 
